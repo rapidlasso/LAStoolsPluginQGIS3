@@ -29,6 +29,8 @@ __copyright__ = '(C) 2018, rapidlasso GmbH, http://rapidlasso.com'
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
+from processing.core.ProcessingConfig import Setting, ProcessingConfig
+
 from .LAStoolsUtils import LAStoolsUtils
 from .LAStools.lasinfo import lasinfo
 from .LAStools.lasview import lasview
@@ -42,20 +44,42 @@ class LAStoolsProvider(QgsProcessingProvider):
     def __init__(self):
         QgsProcessingProvider.__init__(self)
 
+    def load(self):
+        """In this method we add settings needed to configure our
+        provider.
+        """
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(), 'LASTOOLS_ACTIVATED', 'Activate', True))
+        ProcessingConfig.addSetting(Setting(self.name(), 'LASTOOLS_FOLDER', 'LAStools folder', "C:\LAStools", valuetype=Setting.FOLDER))
+        ProcessingConfig.addSetting(Setting(self.name(), 'WINE_FOLDER', 'Wine folder', "", valuetype=Setting.FOLDER))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
+
     def unload(self):
         """
         Unloads the provider. Any tear-down steps required by the provider
         should be implemented here.
         """
+        ProcessingConfig.removeSetting('LASTOOLS_ACTIVATED')
+        ProcessingConfig.removeSetting('LASTOOLS_FOLDER')
+        ProcessingConfig.removeSetting('WINE_FOLDER')
         pass
 
+    def isActive(self):
+        """Return True if the provider is activated and ready to run algorithms"""
+        return ProcessingConfig.getSetting('LASTOOLS_ACTIVATED')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('LASTOOLS_ACTIVATED', active)        
+        
     def loadAlgorithms(self):
         """
         Loads all algorithms belonging to this provider.
         """
 
         # LAStools for processing single files
-		
+        
         self.algs = [lasinfo(), lasview(), laszip(), laszipPro(), hugeFileGroundClassify()]
 
         for alg in self.algs:

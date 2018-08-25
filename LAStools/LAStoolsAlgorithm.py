@@ -228,11 +228,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         return step
 
     def addParametersPointOutputGUI(self):
-        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_LASLAZ, "output LAS/LAZ file"))
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.OUTPUT_LASLAZ, "output LAS/LAZ file", QgsProcessingParameterFile.File, "laz", None, True))
 
     def addParametersPointOutputCommands(self, parameters, context, commands):
         output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_LASLAZ, context)
-        if output is not None:
+        if output != "":
             commands.append("-o")
             commands.append('"' + output + '"')
 

@@ -8,8 +8,8 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : October 2014
-    Copyright            : (C) 2014 by Martin Isenburg
+    Date                 : October 2014 and August 2018
+    Copyright            : (C) 2014 - 2018 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -21,38 +21,31 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
 
 import os
 import subprocess
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
 
-
 class LAStoolsUtils:
-
-    WINE_FOLDER = "WINE_FOLDER"
-
+ 
     @staticmethod
     def hasWine():
-        wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
-        return wine_folder is not None and wine_folder != ""
+        wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
+        return (wine_folder is not None) and (wine_folder != "")
 
     @staticmethod
     def LAStoolsPath():
-        lastools_folder = os.path.join(os.path.dirname(os.path.dirname(__file__)), "bin", "lastools")
+        lastools_folder = ProcessingConfig.getSetting("LASTOOLS_FOLDER")	
         if isWindows():
             wine_folder = ""
         else:
-            wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
-        if wine_folder is None or wine_folder == "":
+            wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
+        if (wine_folder is None) or (wine_folder == ""):
             folder = lastools_folder
         else:
             folder = wine_folder + "/wine " + lastools_folder
@@ -60,14 +53,9 @@ class LAStoolsUtils:
 
     @staticmethod
     def runLAStools(commands, feedback):
-        loglines = []
         commandline = " ".join(commands)
-        loglines.append("LAStools command line")
-        loglines.append(commandline)
-        loglines.append("LAStools console output")
-        proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),
-                                stderr=subprocess.STDOUT, universal_newlines=False).stdout
-        for line in iter(proc.readline, ""):
-            loglines.append(line)
-#            feedback.pushConsoleInfo(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        feedback.pushConsoleInfo("LAStools command line")
+        feedback.pushConsoleInfo(commandline)
+        feedback.pushConsoleInfo("LAStools console output")
+        output = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull), stderr=subprocess.STDOUT, universal_newlines=False).communicate()[0]
+        feedback.pushConsoleInfo(output.decode("utf-8"))
