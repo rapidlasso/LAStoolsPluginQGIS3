@@ -166,7 +166,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersGenericInputFolderGUI(self, wildcard):
         self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", QgsProcessingParameterFile.Folder, '', None, True))
-        self.addParameter(QgsProcessingQgsProcessingParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", wildcard))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", wildcard))
 
     def addParametersGenericInputFolderCommands(self, parameters, context, commands):
         input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_DIRECTORY, commands)
@@ -338,7 +338,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersFilter1CoordsIntensityGUI(self):
         self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, "filter (by coordinate, intensity, GPS time, ...)", LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, False, 0))
-        self.addParameter(QgsProcessingQgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, "value for filter (by coordinate, intensity, GPS time, ...)"))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, "value for filter (by coordinate, intensity, GPS time, ...)"))
 
     def addParametersFilter1CoordsIntensityCommands(self, parameters, context, commands):
         filter1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, context)
@@ -349,7 +349,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersFilter2CoordsIntensityGUI(self):
         self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2, "second filter (by coordinate, intensity, GPS time, ...)", LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, False, 0))
-        self.addParameter(QgsProcessingQgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, "value for second filter (by coordinate, intensity, GPS time, ...)"))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, "value for second filter (by coordinate, intensity, GPS time, ...)"))
 
     def addParametersFilter2CoordsIntensityCommands(self, parameters, context, commands):
         filter2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2, context)
@@ -360,7 +360,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersTransform1CoordinateGUI(self):
         self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_COORDINATE1, "transform (coordinates)", LAStoolsAlgorithm.TRANSFORM_COORDINATES, False, 0))
-        self.addParameter(QgsProcessingQgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG, "value for transform (coordinates)"))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG, "value for transform (coordinates)"))
 
     def addParametersTransform1CoordinateCommands(self, parameters, context, commands):
         transform1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE1, context)
