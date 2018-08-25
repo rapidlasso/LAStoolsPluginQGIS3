@@ -29,7 +29,7 @@ import os
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
-from qgis.core import QgsProcessingParameterFileDestination
+from qgis.core import QgsProcessingParameterFile
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
@@ -60,7 +60,7 @@ class lasinfo(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasinfo.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasinfo.HISTO3, "histogram", lasinfo.HISTOGRAM, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasinfo.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
-        self.addParameter(QgsProcessingParameterFileDestination(lasinfo.OUTPUT,"Output ASCII file"))
+        self.addParameter(QgsProcessingParameterFile(lasinfo.OUTPUT, "Output ASCII file", QgsProcessingParameterFile.File, "txt", None, True))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -91,11 +91,15 @@ class lasinfo(LAStoolsAlgorithm):
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
             commands.append(unicode(self.parameterAsFloat(parameters, lasinfo.HISTO3_BIN, context)))
-        commands.append("-o")
-        commands.append(self.parameterAsString(parameters, lasinfo.OUTPUT, context))
+        output = self.parameterAsString(parameters, lasinfo.OUTPUT, context)
+        if output != '':
+            commands.append("-o")
+            commands.append('"' + output + '"')
         self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
+
+        return {"": None}
 
     def name(self):
         return 'lasinfo'

@@ -64,9 +64,9 @@ class laszipPro(LAStoolsAlgorithm):
         self.addParametersAdditionalCommands(parameters, context, commands)
         self.addParametersCoresCommands(parameters, context, commands)
 
-        print(commands)
-
         LAStoolsUtils.runLAStools(commands, feedback)
+
+        return {"": None}
 
     def name(self):
         return 'laszipPro'

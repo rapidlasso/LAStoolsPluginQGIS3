@@ -64,9 +64,9 @@ class lasview(LAStoolsAlgorithm):
             commands.append("-win " + lasview.SIZES[size])
         self.addParametersAdditionalCommands(parameters, context, commands)
 
-        print(commands)
-
         LAStoolsUtils.runLAStools(commands, feedback)
+
+        return {"": None}
 
     def name(self):
         return 'lasview'

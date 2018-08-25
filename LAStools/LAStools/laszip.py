@@ -57,10 +57,10 @@ class laszip(LAStoolsAlgorithm):
             commands.append("-append")
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
-
-        print(commands)
 		
         LAStoolsUtils.runLAStools(commands, feedback)
+
+        return {"": None}
 
     def name(self):
         return 'laszip'
