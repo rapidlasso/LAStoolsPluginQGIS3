@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    laszip.py
+    shp2las.py
     ---------------------
-    Date                 : September 2013 and August 2018, August 2018
-    Copyright            : (C) 2013 - 2018 by Martin Isenburg
+    Date                 : September 2013 and August 2018
+    Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -22,51 +22,48 @@ __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
+from qgis.core import QgsProcessingParameterNumber
+from qgis.core import QgsProcessingParameterFile
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-	
-class laszip(LAStoolsAlgorithm):
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+class shp2las(LAStoolsAlgorithm):
+
+    INPUT = "INPUT"
+    SCALE_FACTOR_XY = "SCALE_FACTOR_XY"
+    SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def initAlgorithm(self, config):
         self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(QgsProcessingParameterFile(shp2las.INPUT, "Input SHP file", QgsProcessingParameterFile.File, "shp"))
+        self.addParameter(QgsProcessingParameterNumber(shp2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.0))
+        self.addParameter(QgsProcessingParameterNumber(shp2las.SCALE_FACTOR_Z, "resolution of z coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "shp2las")]
         self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszip.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszip.APPEND_LAX, context):
-            commands.append("-append")
+        commands.append("-i")
+        commands.append('"'+self.parameterAsString(parameters, shp2las.INPUT, context)+'"')
+        scale_factor_xy = self.parameterAsDouble(parameters, shp2las.SCALE_FACTOR_XY, context)
+        scale_factor_z = self.parameterAsInt(parameters, shp2las.SCALE_FACTOR_Z, context)
+        if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
+            commands.append("-set_scale_factor")
+            commands.append(unicode(scale_factor_xy) + " " + unicode(scale_factor_xy) + " " + unicode(scale_factor_z))
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
-		
+
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'shp2las'
 
     def displayName(self):
-        return 'laszip'
+        return 'shp2las'
 
     def group(self):
         return 'LAStools'
@@ -75,5 +72,4 @@ class laszip(LAStoolsAlgorithm):
         return 'LAStools'
 
     def createInstance(self):
-        return laszip()
-	
+        return shp2las()

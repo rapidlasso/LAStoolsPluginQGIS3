@@ -1,0 +1,96 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    lasgrid.py
+    ---------------------
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : September 2013 and August 2018
+    Copyright            : (C) 2013 by Martin Isenburg
+    Email                : martin near rapidlasso point com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+
+
+import os
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+
+from qgis.core import QgsProcessingParameterEnum
+from qgis.core import QgsProcessingParameterBoolean
+
+
+class lasgrid(LAStoolsAlgorithm):
+
+    ATTRIBUTE = "ATTRIBUTE"
+    METHOD = "METHOD"
+    ATTRIBUTES = ["elevation", "intensity", "rgb", "classification"]
+    METHODS = ["lowest", "highest", "average", "stddev"]
+    USE_TILE_BB = "USE_TILE_BB"
+
+    def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('lasgrid')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
+        self.addParametersVerboseGUI()
+        self.addParametersPointInputGUI()
+        self.addParametersFilter1ReturnClassFlagsGUI()
+        self.addParametersStepGUI()
+        self.addParameter(QgsProcessingParameterEnum(lasgrid.ATTRIBUTE,
+                                             self.tr("Attribute"), lasgrid.ATTRIBUTES, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasgrid.METHOD,
+                                             self.tr("Method"), lasgrid.METHODS, 0))
+        self.addParameter(QgsProcessingParameterBoolean(lasgrid.USE_TILE_BB,
+                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
+        self.addParametersRasterOutputGUI()
+        self.addParametersAdditionalGUI()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid")]
+        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersPointInputCommands(parameters, context, commands)
+        self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
+        self.addParametersStepCommands(parameters, context, commands)
+        attribute = self.parameterAsInt(parameters, lasgrid.ATTRIBUTE)
+        if attribute != 0:
+            commands.append("-" + lasgrid.ATTRIBUTES[attribute])
+        method = self.parameterAsInt(parameters, lasgrid.METHOD)
+        if method != 0:
+            commands.append("-" + lasgrid.METHODS[method])
+        if (self.parameterAsInt(parameters, lasgrid.USE_TILE_BB)):
+            commands.append("-use_tile_bb")
+        self.addParametersRasterOutputCommands(parameters, context, commands)
+        self.addParametersAdditionalCommands(parameters, context, commands)
+
+        LAStoolsUtils.runLAStools(commands, feedback)
+
+        return {"": None}
+
+    def name(self):
+        return 'laszip'
+
+    def displayName(self):
+        return 'laszip'
+
+    def group(self):
+        return 'LAStools'
+
+    def groupId(self):
+        return 'LAStools'
+
+    def createInstance(self):
+        return laszip()
+	

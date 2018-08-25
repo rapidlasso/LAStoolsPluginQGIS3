@@ -2,10 +2,14 @@
 
 """
 ***************************************************************************
-    laszip.py
+    lasprecision.py
     ---------------------
-    Date                 : September 2013 and August 2018, August 2018
-    Copyright            : (C) 2013 - 2018 by Martin Isenburg
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : September 2013 and August 2018
+    Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -17,47 +21,38 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Martin Isenburg'
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
-
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-	
-class laszip(LAStoolsAlgorithm):
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+from processing.core.outputs import OutputFile
+
+
+class lasprecision(LAStoolsAlgorithm):
+
+    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('lasprecision')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
-        self.addParametersPointOutputGUI()
+        self.addOutput(OutputFile(lasprecision.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasprecision")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszip.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszip.APPEND_LAX, context):
-            commands.append("-append")
-        self.addParametersPointOutputCommands(parameters, context, commands)
+        commands.append("-o")
+        commands.append(self.getOutputValue(lasprecision.OUTPUT))
         self.addParametersAdditionalCommands(parameters, context, commands)
-		
+
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}

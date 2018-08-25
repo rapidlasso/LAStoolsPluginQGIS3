@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    laszip.py
+    lassort.py
     ---------------------
-    Date                 : September 2013 and August 2018, August 2018
-    Copyright            : (C) 2013 - 2018 by Martin Isenburg
+    Date                 : September 2013 and August 2018
+    Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -26,47 +26,44 @@ from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-	
-class laszip(LAStoolsAlgorithm):
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+class lassort(LAStoolsAlgorithm):
+
+    BY_GPS_TIME = "BY_GPS_TIME"
+    BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
+    BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
     def initAlgorithm(self, config):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(lassort.BY_GPS_TIME, "sort by GPS time", False))
+        self.addParameter(QgsProcessingParameterBoolean(lassort.BY_RETURN_NUMBER, "sort by return number", False))
+        self.addParameter(QgsProcessingParameterBoolean(lassort.BY_POINT_SOURCE_ID, "sort by point source ID", False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassort")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszip.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszip.APPEND_LAX, context):
-            commands.append("-append")
+        if self.parameterAsBool(parameters, lassort.BY_GPS_TIME, context):
+            commands.append("-gps_time")
+        if self.parameterAsBool(parameters, lassort.BY_RETURN_NUMBER, context):
+            commands.append("-return_number")
+        if self.parameterAsBool(parameters, lassort.BY_POINT_SOURCE_ID, context):
+            commands.append("-point_source")
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
-		
+
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lassort'
 
     def displayName(self):
-        return 'laszip'
+        return 'lassort'
 
     def group(self):
         return 'LAStools'
@@ -75,5 +72,4 @@ class laszip(LAStoolsAlgorithm):
         return 'LAStools'
 
     def createInstance(self):
-        return laszip()
-	
+        return lassort()

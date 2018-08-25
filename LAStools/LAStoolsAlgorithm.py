@@ -218,13 +218,13 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(LAStoolsAlgorithm.STEP, "step size / pixel size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
 
     def addParametersStepCommands(self, parameters, context, commands):
-        step = self.parameterAsFloat(parameters,LAStoolsAlgorithm.STEP, context)
+        step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
         if step != 0.0:
             commands.append("-step")
             commands.append(unicode(step))
 
     def getParametersStepValue(self):
-        step = self.parameterAsFloat(parameters,LAStoolsAlgorithm.STEP, context)
+        step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
         return step
 
     def addParametersPointOutputGUI(self):
@@ -342,7 +342,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersFilter1CoordsIntensityCommands(self, parameters, context, commands):
         filter1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, context)
-        filter1_arg = self.parameterAsFloat(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, context)
+        filter1_arg = self.parameterAsDouble(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, context)
         if filter1 != 0 and filter1_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY[filter1])
             commands.append(unicode(filter1_arg))
@@ -353,7 +353,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersFilter2CoordsIntensityCommands(self, parameters, context, commands):
         filter2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2, context)
-        filter2_arg = self.parameterAsFloat(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, context)
+        filter2_arg = self.parameterAsDouble(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, context)
         if filter2 != 0 and filter2_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY[filter2])
             commands.append(unicode(filter2_arg))
@@ -364,7 +364,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersTransform1CoordinateCommands(self, parameters, context, commands):
         transform1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE1, context)
-        transform1_arg = self.parameterAsFloat(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG, context)
+        transform1_arg = self.parameterAsDouble(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG, context)
         if transform1 != 0 and transform1_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_COORDINATES[transform1])
             commands.append(unicode(transform1_arg))
@@ -375,7 +375,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersTransform2CoordinateCommands(self, parameters, context, commands):
         transform2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE2, context)
-        transform2_arg = self.parameterAsFloat(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG, context)
+        transform2_arg = self.parameterAsDouble(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG, context)
         if transform2 != 0 and transform2_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_COORDINATES[transform2])
             commands.append(unicode(transform2_arg))
@@ -386,7 +386,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersTransform1OtherCommands(self, parameters, context, commands):
         transform1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER1, context)
-        transform1_arg = self.parameterAsFloat(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG, context)
+        transform1_arg = self.parameterAsDouble(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG, context)
         if transform1 != 0:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_OTHERS[transform1])
             if transform1 < 11 and transform1_arg is not None:
@@ -398,7 +398,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersTransform2OtherCommands(self, parameters, context, commands):
         transform2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER2, context)
-        transform2_arg = self.parameterAsFloat(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG, context)
+        transform2_arg = self.parameterAsDouble(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG, context)
         if transform2 != 0:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_OTHERS[transform2])
             if transform2 < 11 and transform2_arg is not None:

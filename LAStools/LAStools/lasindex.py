@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    laszip.py
+    lasindex.py
     ---------------------
-    Date                 : September 2013 and August 2018, August 2018
-    Copyright            : (C) 2013 - 2018 by Martin Isenburg
+    Date                 : September 2013, May 2016 and August 2018
+    Copyright            : (C) 2013 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -26,47 +26,44 @@ from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-	
-class laszip(LAStoolsAlgorithm):
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
+class lasindex(LAStoolsAlgorithm):
+
+    MOBILE_OR_TERRESTRIAL = "MOBILE_OR_TERRESTRIAL"
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
-        self.addParametersPointOutputGUI()
+        self.addParameter(QgsProcessingParameterBoolean(lasindex.APPEND_LAX, "append *.lax file to *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasindex.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
         else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszip.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszip.APPEND_LAX, context):
+        if (self.parameterAsBool(parameters, lasindex.APPEND_LAX, context)):
             commands.append("-append")
-        self.addParametersPointOutputCommands(parameters, context, commands)
+        if (self.parameterAsBool(parameters, lasindex.MOBILE_OR_TERRESTRIAL, context)):
+            commands.append("-tile_size")
+            commands.append("10")
+            commands.append("-maximum")
+            commands.append("-100")
         self.addParametersAdditionalCommands(parameters, context, commands)
-		
+
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasindex'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasindex'
 
     def group(self):
         return 'LAStools'
@@ -75,5 +72,4 @@ class laszip(LAStoolsAlgorithm):
         return 'LAStools'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasindex()

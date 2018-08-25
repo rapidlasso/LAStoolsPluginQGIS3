@@ -32,12 +32,21 @@ from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 from .LAStoolsUtils import LAStoolsUtils
+#from .LAStools.blast2dem import blast2dem
 from .LAStools.las2las_filter import las2las_filter
 from .LAStools.las2las_project import las2las_project
 from .LAStools.las2las_transform import las2las_transform
+#from .LAStools.las2tin import las2tin
+from .LAStools.lasground import lasground
+from .LAStools.lasheight import lasheight
+from .LAStools.lasindex import lasindex
 from .LAStools.lasinfo import lasinfo
+from .LAStools.lasnoise import lasnoise
+from .LAStools.lassort import lassort
+from .LAStools.lasthin import lasthin
 from .LAStools.lasview import lasview
 from .LAStools.laszip import laszip
+from .LAStools.shp2las import shp2las
 from .LAStoolsProduction.laszipPro import laszipPro
 from .LAStoolsPipelines.hugeFileGroundClassify import hugeFileGroundClassify
 from . import resources
@@ -83,7 +92,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing single files
         
-        self.algs = [las2las_filter(), las2las_project(), las2las_transform(), lasinfo(), lasview(), laszip(), laszipPro(), hugeFileGroundClassify()]
+        self.algs = [las2las_filter(), las2las_project(), las2las_transform(), lasground(), lasheight(), lasindex(), lasinfo(), lasnoise(), lassort(), lasthin(), lasview(), laszip(), shp2las(), laszipPro(), hugeFileGroundClassify()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )
