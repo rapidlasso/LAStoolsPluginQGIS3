@@ -1,33 +1,20 @@
-# Plugin metadata
-
 [general]
-name=Contour plugin
-qgisMinimumVersion=3.0
-description=Generates contours from point layer
-version=2.0.6
-
-about=Generate a contour layer based on an attribute of a point vector layer. 
-
- Builds a processing plugin and a GUI interface for simple direct contouring of point layers.
- The source point layer Can be either gridded or randomly organised. 
- The layer resulting contours can be rendered with a graduated renderer using a colour ramp. 
- The layer includes properties that can be used to replicate or modify the contouring parameters.
-
- Requires python modules numpy and matplotlib
-
- Recommends loading the MemoryLayerSaver plugin to save the contours with the project
-
-author=Chris Crook, Lionel Roubeyrie
-email=ccrook@linz.govt.nz
-tracker=https://github.com/ccrook/QGIS-Contour-Plugin/issues
-repository=https:://github.com/ccrook/QGIS-Contour-Plugin
-
-# Non manadatory items
-
-tags=python, contour, processing
-homepage=https:://github.com/ccrook/QGIS-Contour-Plugin
-category=Vector
-icon=./images/contour.png
-experimental=False
+name=LAStools
+qgisMinimumVersion=3.2
+description=tools for processing point clouds in LAS, LAZ, and ASCII formats
+experimental=True
 deprecated=False
-
+category=Plugins
+version=0.2
+author=Victor Olaya, Martin Isenburg
+email=volayaf@gmail.com,martin.isenburg@gmail.com
+icon=LAStools.png
+homepage=http://github.com/rapidlasso/LAStoolsPluginQGIS3
+tracker=http://github.com/rapidlasso/LAStoolsPluginQGIS3/issues
+repository=http://github.com/rapidlasso/LAStoolsPluginQGIS3
+tags=LAS,LAZ,LiDAR,PhoDAR,pointclouds,points,DEM,DTM,DSM,CHM,contours,LAStools
+about=
+    The LAStools plugin exposes the capabilities of the LAStools point processing software within QGIS 3.2 using the Processing framework.
+changelog=
+    0.2 - adapted for QGIS 3.2 during hackfest in Zanzibar by Martin Isenburg
+    0.1 - initial version by Victor Olaya
