@@ -22,8 +22,7 @@ __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
 import os
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputFile
+from qgis.core import QgsProcessingParameterString
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
@@ -31,16 +30,12 @@ from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 class las2txt(LAStoolsAlgorithm):
 
     PARSE = "PARSE"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('las2txt')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterString(las2txt.PARSE,
-                                          self.tr("parse string"), "xyz"))
-        self.addOutput(OutputFile(las2txt.OUTPUT, self.tr("Output ASCII file")))
+        self.addParameter(QgsProcessingParameterString(las2txt.PARSE, "parse string", "xyz"))
+        self.addParametersGenericOutputGUI("Output ASCII file", "txt", False)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -54,8 +49,7 @@ class las2txt(LAStoolsAlgorithm):
         if parse != "xyz":
             commands.append("-parse")
             commands.append(parse)
-        commands.append("-o")
-        commands.append(self.getOutputValue(las2txt.OUTPUT))
+        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
@@ -63,17 +57,16 @@ class las2txt(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'las2txt'
 
     def displayName(self):
-        return 'laszip'
+        return 'las2txt'
 
     def group(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def createInstance(self):
-        return laszip()
-	
+        return las2txt()

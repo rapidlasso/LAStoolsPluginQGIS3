@@ -75,11 +75,10 @@ class lasview(LAStoolsAlgorithm):
         return 'lasview'
 
     def group(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def createInstance(self):
         return lasview()
-	

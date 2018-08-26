@@ -21,15 +21,13 @@ __author__ = 'Martin Isenburg'
 __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Martin Isenburg'
 
-
 import os
-from LAStoolsUtils import LAStoolsUtils
-from LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasheight_classify(LAStoolsAlgorithm):
 
@@ -45,37 +43,24 @@ class lasheight_classify(LAStoolsAlgorithm):
     CLASSIFY_ABOVE = "CLASSIFY_ABOVE"
     CLASSIFY_ABOVE_HEIGHT = "CLASSIFY_ABOVE_HEIGHT"
 
-    CLASSIFY_CLASSES = ["---", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)", "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "water (9)", "rail (10)", "road (11)", "overlap (12)"]
+    CLASSIFY_CLASSES = ["---", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)", "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "water (9)", "rail (10)", "road surface (11)", "overlap (12)"]
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasheight_classify')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersIgnoreClass2GUI()
-        self.addParameter(QgsProcessingParameterBoolean(lasheight_classify.REPLACE_Z,
-                                           self.tr("replace z"), False))
-        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BELOW,
-                                             self.tr("classify below height as"), lasheight_classify.CLASSIFY_CLASSES, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BELOW_HEIGHT,
-                                          self.tr("below height"), None, None, -2.0))
-        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BETWEEN1,
-                                             self.tr("classify between height as"), lasheight_classify.CLASSIFY_CLASSES, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_FROM,
-                                          self.tr("between height ... "), None, None, 0.5))
-        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_TO,
-                                          self.tr("... and height"), None, None, 2.0))
-        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BETWEEN2,
-                                             self.tr("classify between height as"), lasheight_classify.CLASSIFY_CLASSES, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_FROM,
-                                          self.tr("between height ..."), None, None, 2.0))
-        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_TO,
-                                          self.tr("... and height"), None, None, 5.0))
-        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_ABOVE,
-                                             self.tr("classify above"), lasheight_classify.CLASSIFY_CLASSES, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_ABOVE_HEIGHT,
-                                          self.tr("classify above height"), None, None, 100.0))
+        self.addParameter(QgsProcessingParameterBoolean(lasheight_classify.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BELOW, "classify below height as", lasheight_classify.CLASSIFY_CLASSES, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BELOW_HEIGHT, "below height", QgsProcessingParameterNumber.Double, -2.0, False))
+        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BETWEEN1,  "classify between height as", lasheight_classify.CLASSIFY_CLASSES, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_FROM, "between height ... ", QgsProcessingParameterNumber.Double, 0.5))
+        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_TO, "... and height", QgsProcessingParameterNumber.Double, 2.0))
+        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BETWEEN2, "classify between height as", lasheight_classify.CLASSIFY_CLASSES, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_FROM, "between height ...", QgsProcessingParameterNumber.Double, 2.0))
+        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_TO, "... and height", QgsProcessingParameterNumber.Double, 5.0))
+        self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_ABOVE, "classify above", lasheight_classify.CLASSIFY_CLASSES, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_ABOVE_HEIGHT, "classify above height", QgsProcessingParameterNumber.Double, 100.0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -85,30 +70,30 @@ class lasheight_classify(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersIgnoreClass2Commands(parameters, context, commands)
-        if self.parameterAsInt(parameters, lasheight_classify.REPLACE_Z):
+        if (self.parameterAsBool(parameters, lasheight_classify.REPLACE_Z, context)):
             commands.append("-replace_z")
-        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BELOW)
+        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BELOW, context)
         if (classify != 0):
             commands.append("-classify_below")
-            commands.append(unicode(self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BELOW_HEIGHT)))
-            commands.append(unicode(classify))
-        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN1)
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_BELOW_HEIGHT, context)))
+            commands.append(unicode(classify-1))
+        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN1, context)
         if (classify != 0):
             commands.append("-classify_between")
-            commands.append(unicode(self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_FROM)))
-            commands.append(unicode(self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_TO)))
-            commands.append(unicode(classify))
-        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN2)
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_FROM, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_BETWEEN1_HEIGHT_TO, context)))
+            commands.append(unicode(classify-1))
+        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN2, context)
         if (classify != 0):
             commands.append("-classify_between")
-            commands.append(unicode(self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_FROM)))
-            commands.append(unicode(self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_TO)))
-            commands.append(unicode(classify))
-        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_ABOVE)
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_FROM, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_TO, context)))
+            commands.append(unicode(classify-1))
+        classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_ABOVE, context)
         if (classify != 0):
             commands.append("-classify_above")
-            commands.append(unicode(self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_ABOVE_HEIGHT)))
-            commands.append(unicode(classify))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_ABOVE_HEIGHT, context)))
+            commands.append(unicode(classify-1))
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
 
@@ -117,17 +102,16 @@ class lasheight_classify(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasheight_classify'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasheight_classify'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasheight_classify()

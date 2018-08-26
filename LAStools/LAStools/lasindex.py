@@ -66,10 +66,10 @@ class lasindex(LAStoolsAlgorithm):
         return 'lasindex'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return lasindex()

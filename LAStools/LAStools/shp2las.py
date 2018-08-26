@@ -23,20 +23,18 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 
 import os
 from qgis.core import QgsProcessingParameterNumber
-from qgis.core import QgsProcessingParameterFile
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class shp2las(LAStoolsAlgorithm):
 
-    INPUT = "INPUT"
     SCALE_FACTOR_XY = "SCALE_FACTOR_XY"
     SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def initAlgorithm(self, config):
         self.addParametersVerboseGUI()
-        self.addParameter(QgsProcessingParameterFile(shp2las.INPUT, "Input SHP file", QgsProcessingParameterFile.File, "shp"))
+        self.addParametersGenericInputGUI("Input SHP file", "shp", False)
         self.addParameter(QgsProcessingParameterNumber(shp2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(shp2las.SCALE_FACTOR_Z, "resolution of z coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.0))
         self.addParametersPointOutputGUI()
@@ -45,8 +43,7 @@ class shp2las(LAStoolsAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "shp2las")]
         self.addParametersVerboseCommands(parameters, context, commands)
-        commands.append("-i")
-        commands.append('"'+self.parameterAsString(parameters, shp2las.INPUT, context)+'"')
+        self.addParametersGenericInputCommands(parameters, context, commands, "-i")
         scale_factor_xy = self.parameterAsDouble(parameters, shp2las.SCALE_FACTOR_XY, context)
         scale_factor_z = self.parameterAsInt(parameters, shp2las.SCALE_FACTOR_Z, context)
         if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
@@ -66,10 +63,10 @@ class shp2las(LAStoolsAlgorithm):
         return 'shp2las'
 
     def group(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def createInstance(self):
         return shp2las()

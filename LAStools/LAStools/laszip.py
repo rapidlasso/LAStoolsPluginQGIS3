@@ -69,10 +69,10 @@ class laszip(LAStoolsAlgorithm):
         return 'laszip'
 
     def group(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def createInstance(self):
         return laszip()

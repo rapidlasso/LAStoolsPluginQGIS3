@@ -86,10 +86,10 @@ class lasnoise(LAStoolsAlgorithm):
         return 'lasnoise'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return lasnoise()

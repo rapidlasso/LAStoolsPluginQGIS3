@@ -57,10 +57,10 @@ class las2tin(LAStoolsAlgorithm):
         return 'las2tin'
 
     def group(self):
-        return 'LAStools'
+        return 'file - vector derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - vector derivatives'
 
     def createInstance(self):
         return las2tin()

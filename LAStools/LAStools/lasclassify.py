@@ -25,17 +25,13 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-
 class lasclassify(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasclassify')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersIgnoreClass1GUI()
@@ -45,7 +41,10 @@ class lasclassify(LAStoolsAlgorithm):
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
+        if (LAStoolsUtils.hasWine()):
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify.exe")]
+        else:
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
@@ -59,17 +58,16 @@ class lasclassify(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasclassify'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasclassify'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasclassify()

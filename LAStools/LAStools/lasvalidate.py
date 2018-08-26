@@ -23,7 +23,6 @@ __copyright__ = '(C) 2013, Martin Isenburg'
 
 import os
 from qgis.core import QgsProcessingParameterBoolean
-from processing.core.outputs import OutputFile
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
@@ -34,22 +33,17 @@ class lasvalidate(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasvalidate')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterBoolean(lasvalidate.ONE_REPORT_PER_FILE,
-                                           self.tr("save report to '*_LVS.xml'"), False))
-        self.addOutput(OutputFile(lasvalidate.OUTPUT, self.tr("Output XML file")))
+        self.addParameter(QgsProcessingParameterBoolean(lasvalidate.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
+        self.addParametersGenericOutputGUI("Output XML file", "xml", True)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate")]
         self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsInt(parameters, lasvalidate.ONE_REPORT_PER_FILE):
+        if (self.parameterAsBool(parameters, lasvalidate.ONE_REPORT_PER_FILE, context)):
             commands.append("-oxml")
-        else:
-            commands.append("-o")
-            commands.append(self.getOutputValue(lasvalidate.OUTPUT))
+        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
@@ -57,17 +51,16 @@ class lasvalidate(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasvalidate'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasvalidate'
 
     def group(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasvalidate()

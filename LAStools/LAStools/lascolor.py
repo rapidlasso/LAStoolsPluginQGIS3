@@ -25,25 +25,18 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
-from processing.core.parameters import ParameterRaster
-
 
 class lascolor(LAStoolsAlgorithm):
 
     ORTHO = "ORTHO"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lascolor')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterRaster(lascolor.ORTHO,
-                                          self.tr("Input ortho")))
+        self.addParametersGenericInputGUI("Input ortho", "tif", False)
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -51,10 +44,7 @@ class lascolor(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascolor")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        ortho = self.parameterAsInt(parameters, lascolor.ORTHO)
-        if ortho is not None:
-            commands.append("-image")
-            commands.append(ortho)
+        self.addParametersGenericInputCommands(parameters, context, commands, "-image")
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
 
@@ -63,17 +53,16 @@ class lascolor(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lascolor'
 
     def displayName(self):
-        return 'laszip'
+        return 'lascolor'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
-        return laszip()
-	
+        return lascolor()

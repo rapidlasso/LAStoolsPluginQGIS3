@@ -21,7 +21,6 @@ __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
-
 import os
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
@@ -101,10 +100,10 @@ class lasmerge(LAStoolsAlgorithm):
         return 'laszip'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return laszip()

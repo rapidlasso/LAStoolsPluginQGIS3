@@ -32,21 +32,44 @@ from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 from .LAStoolsUtils import LAStoolsUtils
-#from .LAStools.blast2dem import blast2dem
+
+from .LAStools.blast2dem import blast2dem
+from .LAStools.blast2iso import blast2iso
 from .LAStools.las2las_filter import las2las_filter
 from .LAStools.las2las_project import las2las_project
 from .LAStools.las2las_transform import las2las_transform
-#from .LAStools.las2tin import las2tin
+from .LAStools.las2dem import las2dem
+from .LAStools.las2iso import las2iso
+from .LAStools.las2shp import las2shp
+from .LAStools.las2tin import las2tin
+from .LAStools.las2txt import las2txt
+from .LAStools.lasboundary import lasboundary
+from .LAStools.lascanopy import lascanopy
+from .LAStools.lasclassify import lasclassify
+from .LAStools.lasclip import lasclip
+from .LAStools.lascolor import lascolor
+from .LAStools.lascontrol import lascontrol
+from .LAStools.lasdiff import lasdiff
+from .LAStools.lasduplicate import lasduplicate
+from .LAStools.lasgrid import lasgrid
 from .LAStools.lasground import lasground
+from .LAStools.lasground_new import lasground_new
 from .LAStools.lasheight import lasheight
+from .LAStools.lasheight_classify import lasheight_classify
 from .LAStools.lasindex import lasindex
 from .LAStools.lasinfo import lasinfo
 from .LAStools.lasnoise import lasnoise
+from .LAStools.lasoverage import lasoverage
+from .LAStools.lasoverlap import lasoverlap
+from .LAStools.lasprecision import lasprecision
+from .LAStools.laspublish import laspublish
 from .LAStools.lassort import lassort
 from .LAStools.lasthin import lasthin
+from .LAStools.lasvalidate import lasvalidate
 from .LAStools.lasview import lasview
 from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
+from .LAStools.txt2las import txt2las
 from .LAStoolsProduction.laszipPro import laszipPro
 from .LAStoolsPipelines.hugeFileGroundClassify import hugeFileGroundClassify
 from . import resources
@@ -91,8 +114,22 @@ class LAStoolsProvider(QgsProcessingProvider):
         """
 
         # LAStools for processing single files
-        
-        self.algs = [las2las_filter(), las2las_project(), las2las_transform(), lasground(), lasheight(), lasindex(), lasinfo(), lasnoise(), lassort(), lasthin(), lasview(), laszip(), shp2las(), laszipPro(), hugeFileGroundClassify()]
+
+        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2las_project(), las2las_transform(), las2dem(), las2iso(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(), lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(), lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasnoise(), lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lasthin(), lasvalidate(), lasview(), laszip(), shp2las(), txt2las()]
+
+        for alg in self.algs:
+            self.addAlgorithm( alg )
+
+        # LAStools for processing entire folders of files
+
+        self.algs = [laszipPro()]
+
+        for alg in self.algs:
+            self.addAlgorithm( alg )
+
+        # LAStools pipelines
+
+        self.algs = [hugeFileGroundClassify()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )
@@ -106,7 +143,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         string should be a unique, short, character only string, eg "qgis" or
         "gdal". This string should not be localised.
         """
-        return 'lastools'
+        return 'LAStools'
 
     def name(self):
         """

@@ -76,10 +76,10 @@ class las2las_transform(LAStoolsAlgorithm):
         return 'las2las_transform'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return las2las_transform()

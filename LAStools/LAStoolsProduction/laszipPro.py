@@ -75,10 +75,10 @@ class laszipPro(LAStoolsAlgorithm):
         return 'laszipPro'
 
     def group(self):
-        return 'LAStools Production'
+        return 'folder - conversion'
 
     def groupId(self):
-        return 'LAStools'
+        return 'folder - conversion'
 
     def createInstance(self):
         return laszipPro()

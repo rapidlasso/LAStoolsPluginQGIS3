@@ -28,15 +28,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import os
 from qgis.PyQt import QtGui
 from PyQt5.QtGui import QIcon
-from qgis.core import (QgsProcessingAlgorithm,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFileDestination,
-					   QgsProcessingParameterFolderDestination,
-					   QgsProcessingParameterFeatureSink)
+					   QgsProcessingParameterFolderDestination)
 
 from .LAStoolsUtils import LAStoolsUtils
 
@@ -45,10 +45,14 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
     VERBOSE = "VERBOSE"
     GUI = "GUI"
     CORES = "CORES"
+    INPUT_GENERIC = "INPUT_GENERIC"
+    INPUT_GENERIC_DIRECTORY = "INPUT_GENERIC_DIRECTORY"
+    INPUT_GENERIC_WILDCARDS = "INPUT_GENERIC_WILDCARDS"
     INPUT_LASLAZ = "INPUT_LASLAZ"
     INPUT_DIRECTORY = "INPUT_DIRECTORY"
     INPUT_WILDCARDS = "INPUT_WILDCARDS"
     MERGED = "MERGED"
+    OUTPUT_GENERIC = "OUTPUT_GENERIC"
     OUTPUT_LASLAZ = "OUTPUT_LASLAZ"
     OUTPUT_DIRECTORY = "OUTPUT_DIRECTORY"
     OUTPUT_APPENDIX = "OUTPUT_APPENDIX"
@@ -112,7 +116,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def checkBeforeOpeningParametersDialog(self):
         path = LAStoolsUtils.LAStoolsPath()
-        if path == "":
+        if (path == ""):
             return "LAStools folder is not configured. Please configure it before running LAStools algorithms."
 
     def addParametersVerboseGUI(self):
@@ -130,16 +134,39 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersCoresCommands(self, parameters, context, commands):
         cores = self.parameterAsInt(parameters, LAStoolsAlgorithm.CORES, context)
-        if cores != 1:
+        if (cores != 1):
             commands.append("-cores")
             commands.append(unicode(cores))
+
+    def addParametersGenericInputGUI(self, description, extension, optional):
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_GENERIC, description, QgsProcessingParameterFile.File, extension, None, optional))
+
+    def addParametersGenericInputCommands(self, parameters, context, commands, switch):
+        input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC, context)
+        if (input != ""):
+            commands.append(switch)
+            commands.append('"' + input + '"')
+
+    def addParametersGenericInputFolderGUI(self, wildcard):
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, "input directory", QgsProcessingParameterFile.Folder))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, "input wildcard(s)", wildcard))
+
+    def addParametersGenericInputFolderCommands(self, parameters, context, commands):
+        input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, commands)
+        wildcards = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, commands).split()
+        for wildcard in wildcards:
+            commands.append("-i")
+            if input is not None:
+                commands.append('"' + input + "\\" + wildcard + '"')
+            else:
+                commands.append('"' + wildcard + '"')
 
     def addParametersPointInputGUI(self):
         self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file", QgsProcessingParameterFile.File, "laz"))
 
     def addParametersPointInputCommands(self, parameters, context, commands):
         input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_LASLAZ, context)
-        if input is not None:
+        if (input is not None):
             commands.append("-i")
             commands.append('"' + input + '"')
 
@@ -152,7 +179,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         wildcards = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_WILDCARDS, context).split()
         for wildcard in wildcards:
             commands.append("-i")
-            if input is not None:
+            if (input is not None):
                 commands.append('"' + input + "\\" + wildcard + '"')
             else:
                 commands.append('"' + wildcard + '"')
@@ -163,20 +190,6 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
     def addParametersPointInputMergedCommands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LAStoolsAlgorithm.MERGED, context):
             commands.append("-merged")
-
-    def addParametersGenericInputFolderGUI(self, wildcard):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", QgsProcessingParameterFile.Folder, '', None, True))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", wildcard))
-
-    def addParametersGenericInputFolderCommands(self, parameters, context, commands):
-        input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_DIRECTORY, commands)
-        wildcards = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_WILDCARDS, commands).split()
-        for wildcard in wildcards:
-            commands.append("-i")
-            if input is not None:
-                commands.append('"' + input + "\\" + wildcard + '"')
-            else:
-                commands.append('"' + wildcard + '"')
 
     def addParametersHorizontalFeetGUI(self):
         self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.HORIZONTAL_FEET, "horizontal feet", False))
@@ -219,7 +232,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     def addParametersStepCommands(self, parameters, context, commands):
         step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
-        if step != 0.0:
+        if (step != 0.0):
             commands.append("-step")
             commands.append(unicode(step))
 
@@ -227,12 +240,21 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
         return step
 
+    def addParametersGenericOutputGUI(self, description, extension, optional):
+        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_GENERIC, description, extension, "", optional, False))
+
+    def addParametersGenericOutputCommands(self, parameters, context, commands, switch):
+        output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_GENERIC, context)
+        if (output != ""):
+            commands.append(switch)
+            commands.append('"' + output + '"')
+
     def addParametersPointOutputGUI(self):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.OUTPUT_LASLAZ, "output LAS/LAZ file", QgsProcessingParameterFile.File, "laz", None, True))
+        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_LASLAZ, "Output LAS/LAZ file", "laz", "", True, False))
 
     def addParametersPointOutputCommands(self, parameters, context, commands):
         output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_LASLAZ, context)
-        if output != "":
+        if (output != ""):
             commands.append("-o")
             commands.append('"' + output + '"')
 
@@ -244,11 +266,13 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         commands.append("-o" + LAStoolsAlgorithm.OUTPUT_POINT_FORMATS[format])
 
     def addParametersRasterOutputGUI(self):
-        self.addOutput(QgsProcessingParameterFeatureSink(LAStoolsAlgorithm.OUTPUT_RASTER, "Output raster file"))
+        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_RASTER, "Output raster file", "tif", "", True, False))
 
     def addParametersRasterOutputCommands(self, parameters, context, commands):
-        commands.append("-o")
-        commands.append(self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_RASTER, context))
+        output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_RASTER, context)
+        if (output != ""):
+            commands.append("-o")
+            commands.append('"' + output + '"')
 
     def addParametersRasterOutputFormatGUI(self):
         self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_RASTER_FORMAT, "output format", LAStoolsAlgorithm.OUTPUT_RASTER_FORMATS, False, 0))
@@ -258,11 +282,13 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         commands.append("-o" + LAStoolsAlgorithm.OUTPUT_RASTER_FORMATS[format])
 
     def addParametersVectorOutputGUI(self):
-        self.addOutput(QgsProcessingParameterFeatureSink(LAStoolsAlgorithm.OUTPUT_VECTOR, "Output vector file"))
+        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_VECTOR, "Output vector file", "shp", "", True, False))
 
     def addParametersVectorOutputCommands(self, parameters, context, commands):
-        commands.append("-o")
-        commands.append(self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_VECTOR, context))
+        output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_VECTOR, context)
+        if (output != ""):
+            commands.append("-o")
+            commands.append('"' + output + '"')
 
     def addParametersVectorOutputFormatGUI(self):
         self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_VECTOR_FORMAT, "output format", LAStoolsAlgorithm.OUTPUT_VECTOR_FORMATS, False, 0))
@@ -278,7 +304,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         odir = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_DIRECTORY, context)
         if odir != "":
             commands.append("-odir")
-            commands.append(odir)
+            commands.append('"' + odir + '"')
 
     def addParametersOutputAppendixGUI(self):
         self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.OUTPUT_APPENDIX, "output appendix", None, False, True))
@@ -287,7 +313,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         odix = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_APPENDIX, context)
         if odix != "":
             commands.append("-odix")
-            commands.append(odix)
+            commands.append('"' + odix + '"')
 
     def addParametersTemporaryDirectoryGUI(self):
         self.addParameter(QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.TEMPORARY_DIRECTORY, "empty temporary directory", None, False))
@@ -296,7 +322,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         odir = self.parameterAsString(parameters, LAStoolsAlgorithm.TEMPORARY_DIRECTORY, context)
         if odir != "":
             commands.append("-odir")
-            commands.append(odir)
+            commands.append('"' + odir + '"')
 
     def addParametersTemporaryDirectoryAsInputFilesCommands(self, parameters, context, commands, files):
         idir = self.parameterAsString(parameters, LAStoolsAlgorithm.TEMPORARY_DIRECTORY, context)

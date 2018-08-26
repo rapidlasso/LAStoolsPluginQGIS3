@@ -29,7 +29,6 @@ import os
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
-from qgis.core import QgsProcessingParameterFile
 
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
@@ -46,7 +45,6 @@ class lasinfo(LAStoolsAlgorithm):
     HISTO1_BIN = "HISTO1_BIN"
     HISTO2_BIN = "HISTO2_BIN"
     HISTO3_BIN = "HISTO3_BIN"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
         self.addParametersVerboseGUI()
@@ -60,7 +58,7 @@ class lasinfo(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasinfo.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasinfo.HISTO3, "histogram", lasinfo.HISTOGRAM, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasinfo.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
-        self.addParameter(QgsProcessingParameterFile(lasinfo.OUTPUT, "Output ASCII file", QgsProcessingParameterFile.File, "txt", None, True))
+        self.addParametersGenericOutputGUI("Output ASCII file", "txt", False)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -91,10 +89,7 @@ class lasinfo(LAStoolsAlgorithm):
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
             commands.append(unicode(self.parameterAsFloat(parameters, lasinfo.HISTO3_BIN, context)))
-        output = self.parameterAsString(parameters, lasinfo.OUTPUT, context)
-        if output != '':
-            commands.append("-o")
-            commands.append('"' + output + '"')
+        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
@@ -108,11 +103,10 @@ class lasinfo(LAStoolsAlgorithm):
         return 'lasinfo'
 
     def group(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def createInstance(self):
         return lasinfo()
-	

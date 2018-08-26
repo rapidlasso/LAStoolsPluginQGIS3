@@ -30,7 +30,7 @@ from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasground_new(LAStoolsAlgorithm):
     TERRAIN = "TERRAIN"
-    TERRAINS = ["archaeology", "wilderness", "nature", "town", "city", "metro", "custom"]
+    TERRAINS = ["wilderness", "nature", "town", "city", "metro", "custom"]
     GRANULARITY = "GRANULARITY"
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine", "hyper_fine"]
     STEP = "STEP"
@@ -44,13 +44,13 @@ class lasground_new(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(QgsProcessingParameterEnum(lasground_new.TERRAIN, "terrain type", lasground_new.TERRAINS, False, 2))
-        self.addParameter(QgsProcessingParameterEnum(lasground_new.GRANULARITY, "preprocessing", lasground_new.GRANULARITIES, False, 1))
-        self.addParameter(QgsProcessingParameterNumber(lasground_new.STEP, "step (for 'custom' terrain only)", 25.0))
-        self.addParameter(QgsProcessingParameterNumber(lasground_new.BULGE, "bulge (for 'custom' terrain only)", 2.0))
-        self.addParameter(QgsProcessingParameterNumber(lasground_new.SPIKE, "spike (for 'custom' terrain only)", 1.0))
-        self.addParameter(QgsProcessingParameterNumber(lasground_new.DOWN_SPIKE, "down spike (for 'custom' terrain only)", 1.0))
-        self.addParameter(QgsProcessingParameterNumber(lasground_new.OFFSET, "offset (for 'custom' terrain only)", 0.05))
+        self.addParameter(QgsProcessingParameterEnum(lasground_new.TERRAIN, "terrain type", lasground_new.TERRAINS, False, 3))
+        self.addParameter(QgsProcessingParameterEnum(lasground_new.GRANULARITY, "preprocessing", lasground_new.GRANULARITIES, False, 2))
+        self.addParameter(QgsProcessingParameterNumber(lasground_new.STEP, "step (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0, 500.0))
+        self.addParameter(QgsProcessingParameterNumber(lasground_new.BULGE, "bulge (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 2.0, False, 0.0, 25.0))
+        self.addParameter(QgsProcessingParameterNumber(lasground_new.SPIKE, "spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
+        self.addParameter(QgsProcessingParameterNumber(lasground_new.DOWN_SPIKE, "down spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
+        self.addParameter(QgsProcessingParameterNumber(lasground_new.OFFSET, "offset (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 0.05, False, 0.0, 1.0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -60,8 +60,8 @@ class lasground_new(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)
-        method = self.parameterAsInt(parameters, lasground_new.TERRAIN)
-        if (method == 6):
+        method = self.parameterAsInt(parameters, lasground_new.TERRAIN, context)
+        if (method == 5):
             commands.append("-step")
             commands.append(unicode(self.parameterAsDouble(parameters, lasground_new.STEP, context)))
             commands.append("-bulge")
@@ -74,7 +74,7 @@ class lasground_new(LAStoolsAlgorithm):
             commands.append(unicode(self.parameterAsDouble(parameters, lasground_new.OFFSET, context)))
         else:
             commands.append("-" + lasground_new.TERRAINS[method])
-        granularity = self.parameterAsInt(parameters, lasground_new.GRANULARITY)
+        granularity = self.parameterAsInt(parameters, lasground_new.GRANULARITY, context)
         if (granularity != 1):
             commands.append("-" + lasground_new.GRANULARITIES[granularity])
         self.addParametersPointOutputCommands(parameters, context, commands)
@@ -91,10 +91,10 @@ class lasground_new(LAStoolsAlgorithm):
         return 'lasground_new'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return lasground_new()

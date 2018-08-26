@@ -54,10 +54,10 @@ class blast2dem(LAStoolsAlgorithm):
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersStepCommands(parameters, context, commands)
         attribute = self.parameterAsInt(parameters, blast2dem.ATTRIBUTE, context)
-        if attribute != 0:
+        if (attribute != 0):
             commands.append("-" + blast2dem.ATTRIBUTES[attribute])
         product = self.parameterAsInt(parameters, blast2dem.PRODUCT, context)
-        if product != 0:
+        if (product != 0):
             commands.append("-" + blast2dem.PRODUCTS[product])
         if (self.parameterAsBool(parameters, blast2dem.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
@@ -75,10 +75,10 @@ class blast2dem(LAStoolsAlgorithm):
         return 'blast2dem'
 
     def group(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def createInstance(self):
         return blast2dem()

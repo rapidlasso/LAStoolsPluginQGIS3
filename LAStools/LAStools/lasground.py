@@ -83,10 +83,10 @@ class lasground(LAStoolsAlgorithm):
         return 'lasground'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return lasground()

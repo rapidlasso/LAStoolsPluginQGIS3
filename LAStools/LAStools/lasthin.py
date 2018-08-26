@@ -87,10 +87,10 @@ class lasthin(LAStoolsAlgorithm):
         return 'lasthin'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
         return lasthin()

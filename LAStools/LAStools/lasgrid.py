@@ -25,14 +25,12 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasgrid(LAStoolsAlgorithm):
 
@@ -43,18 +41,13 @@ class lasgrid(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasgrid')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(QgsProcessingParameterEnum(lasgrid.ATTRIBUTE,
-                                             self.tr("Attribute"), lasgrid.ATTRIBUTES, 0))
-        self.addParameter(QgsProcessingParameterEnum(lasgrid.METHOD,
-                                             self.tr("Method"), lasgrid.METHODS, 0))
-        self.addParameter(QgsProcessingParameterBoolean(lasgrid.USE_TILE_BB,
-                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
+        self.addParameter(QgsProcessingParameterEnum(lasgrid.ATTRIBUTE, "Attribute", lasgrid.ATTRIBUTES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasgrid.METHOD, "Method", lasgrid.METHODS, False, 0))
+        self.addParameter(QgsProcessingParameterBoolean(lasgrid.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -64,13 +57,13 @@ class lasgrid(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersStepCommands(parameters, context, commands)
-        attribute = self.parameterAsInt(parameters, lasgrid.ATTRIBUTE)
-        if attribute != 0:
+        attribute = self.parameterAsInt(parameters, lasgrid.ATTRIBUTE, context)
+        if (attribute != 0):
             commands.append("-" + lasgrid.ATTRIBUTES[attribute])
-        method = self.parameterAsInt(parameters, lasgrid.METHOD)
-        if method != 0:
+        method = self.parameterAsInt(parameters, lasgrid.METHOD, context)
+        if (method != 0):
             commands.append("-" + lasgrid.METHODS[method])
-        if (self.parameterAsInt(parameters, lasgrid.USE_TILE_BB)):
+        if (self.parameterAsBool(parameters, lasgrid.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
         self.addParametersRasterOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
@@ -80,17 +73,16 @@ class lasgrid(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasgrid'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasgrid'
 
     def group(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasgrid()

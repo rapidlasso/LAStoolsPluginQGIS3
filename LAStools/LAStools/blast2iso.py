@@ -36,23 +36,13 @@ class blast2iso(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('blast2iso')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterNumber(blast2iso.SMOOTH,
-                                          self.tr("smooth underlying TIN"), 0, None, 0))
-        self.addParameter(QgsProcessingParameterNumber(blast2iso.ISO_EVERY,
-                                          self.tr("extract isoline with a spacing of"), 0, None, 10.0))
-        self.addParameter(QgsProcessingParameterNumber(blast2iso.CLEAN,
-                                          self.tr("clean isolines shorter than (0 = do not clean)"),
-                                          None, None, 0.0))
-        self.addParameter(QgsProcessingParameterNumber(blast2iso.SIMPLIFY_LENGTH,
-                                          self.tr("simplify segments shorter than (0 = do not simplify)"),
-                                          None, None, 0.0))
-        self.addParameter(QgsProcessingParameterNumber(blast2iso.SIMPLIFY_AREA,
-                                          self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
-                                          None, None, 0.0))
+        self.addParameter(QgsProcessingParameterNumber(blast2iso.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
+        self.addParameter(QgsProcessingParameterNumber(blast2iso.ISO_EVERY, "extract isoline with a spacing of", QgsProcessingParameterNumber.Double, 10.0, False, 0.05, 1000.0))
+        self.addParameter(QgsProcessingParameterNumber(blast2iso.CLEAN, "clean isolines shorter than (0 = do not clean)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
+        self.addParameter(QgsProcessingParameterNumber(blast2iso.SIMPLIFY_LENGTH, "simplify segments shorter than (0 = do not simplify)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
+        self.addParameter(QgsProcessingParameterNumber(blast2iso.SIMPLIFY_AREA, "simplify segments pairs with area less than (0 = do not simplify)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -60,24 +50,24 @@ class blast2iso(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2iso")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        smooth = self.parameterAsInt(parameters, blast2iso.SMOOTH)
-        if smooth != 0:
+        smooth = self.parameterAsInt(parameters, blast2iso.SMOOTH, context)
+        if (smooth != 0):
             commands.append("-smooth")
             commands.append(unicode(smooth))
         commands.append("-iso_every")
-        commands.append(unicode(self.parameterAsInt(parameters, blast2iso.ISO_EVERY)))
-        simplify_length = self.parameterAsInt(parameters, blast2iso.SIMPLIFY_LENGTH)
-        if simplify_length != 0:
-            commands.append("-simplify_length")
-            commands.append(unicode(simplify_length))
-        simplify_area = self.parameterAsInt(parameters, blast2iso.SIMPLIFY_AREA)
-        if simplify_area != 0:
-            commands.append("-simplify_area")
-            commands.append(unicode(simplify_area))
-        clean = self.parameterAsInt(parameters, blast2iso.CLEAN)
-        if clean != 0:
+        commands.append(unicode(self.parameterAsDouble(parameters, blast2iso.ISO_EVERY, context)))
+        clean = self.parameterAsDouble(parameters, blast2iso.CLEAN, context)
+        if (clean != 0):
             commands.append("-clean")
             commands.append(unicode(clean))
+        simplify_length = self.parameterAsDouble(parameters, blast2iso.SIMPLIFY_LENGTH, context)
+        if (simplify_length != 0):
+            commands.append("-simplify_length")
+            commands.append(unicode(simplify_length))
+        simplify_area = self.parameterAsDouble(parameters, blast2iso.SIMPLIFY_AREA, context)
+        if (simplify_area != 0):
+            commands.append("-simplify_area")
+            commands.append(unicode(simplify_area))
         self.addParametersVectorOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
 
@@ -86,17 +76,16 @@ class blast2iso(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'blast2iso'
 
     def displayName(self):
-        return 'laszip'
+        return 'blast2iso'
 
     def group(self):
-        return 'LAStools'
+        return 'file - vector derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - vector derivatives'
 
     def createInstance(self):
-        return laszip()
-	
+        return blast2iso()

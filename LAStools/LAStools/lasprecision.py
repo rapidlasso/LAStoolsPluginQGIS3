@@ -25,32 +25,24 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
+
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.core.outputs import OutputFile
-
-
 class lasprecision(LAStoolsAlgorithm):
 
-    OUTPUT = "OUTPUT"
-
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasprecision')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addOutput(OutputFile(lasprecision.OUTPUT, self.tr("Output ASCII file")))
+        self.addParametersGenericOutputGUI("Output ASCII file", "txt", True)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasprecision")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        commands.append("-o")
-        commands.append(self.getOutputValue(lasprecision.OUTPUT))
+        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
@@ -58,17 +50,16 @@ class lasprecision(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasprecision'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasprecision'
 
     def group(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - checking quality'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasprecision()

@@ -17,69 +17,57 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
-from processing.core.outputs import OutputVector
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class las2shp(LAStoolsAlgorithm):
 
     POINT_Z = "POINT_Z"
     RECORD_SIZE = "RECORD_SIZE"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('las2shp')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterBoolean(las2shp.POINT_Z,
-                                           self.tr("use PointZ instead of MultiPointZ"), False))
-        self.addParameter(QgsProcessingParameterNumber(las2shp.RECORD_SIZE,
-                                          self.tr("number of points per record"), 0, None, 1024))
-        self.addOutput(OutputVector(las2shp.OUTPUT,
-                                    self.tr("Output SHP file")))
+        self.addParameter(QgsProcessingParameterBoolean(las2shp.POINT_Z, "use PointZ instead of MultiPointZ", False))
+        self.addParameter(QgsProcessingParameterNumber(las2shp.RECORD_SIZE, "number of points per record", QgsProcessingParameterNumber.Integer, 1024, False, 0, 65536))
+        self.addParametersGenericOutputGUI("Output SHP file", "shp", True)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2shp")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsInt(parameters, las2shp.POINT_Z):
+        if (self.parameterAsBool(parameters, las2shp.POINT_Z, context)):
             commands.append("-single_points")
-        record_size = self.parameterAsInt(parameters, las2shp.RECORD_SIZE)
-        if record_size != 1024:
+        record_size = self.parameterAsInt(parameters, las2shp.RECORD_SIZE, context)
+        if (record_size != 1024):
             commands.append("-record_size")
             commands.append(unicode(record_size))
-        commands.append("-o")
-        commands.append(self.getOutputValue(las2shp.OUTPUT))
+        self.addParametersGenericOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'las2shp'
 
     def displayName(self):
-        return 'laszip'
+        return 'las2shp'
 
     def group(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - conversion'
 
     def createInstance(self):
-        return laszip()
-	
+        return las2shp()

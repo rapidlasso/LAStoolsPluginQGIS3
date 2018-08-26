@@ -21,22 +21,19 @@ __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
-from processing.core.parameters import ParameterString
+from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lascanopy(LAStoolsAlgorithm):
 
     PLOT_SIZE = "PLOT_SIZE"
     HEIGHT_CUTOFF = "HEIGHT_CUTOFF"
-    ATTRIBUTE = "ATTRIBUTE"
     PRODUCT1 = "PRODUCT1"
     PRODUCT2 = "PRODUCT2"
     PRODUCT3 = "PRODUCT3"
@@ -56,40 +53,23 @@ class lascanopy(LAStoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lascanopy')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterNumber(lascanopy.PLOT_SIZE,
-                                          self.tr("square plot size"), 0, None, 20))
-        self.addParameter(QgsProcessingParameterNumber(lascanopy.HEIGHT_CUTOFF,
-                                          self.tr("height cutoff / breast height"), 0, None, 1.37))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT1,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT2,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT3,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT4,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT5,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT6,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT7,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT8,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT9,
-                                             self.tr("create"), lascanopy.PRODUCTS, 0))
-        self.addParameter(ParameterString(lascanopy.COUNTS,
-                                          self.tr("count rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
-        self.addParameter(ParameterString(lascanopy.DENSITIES,
-                                          self.tr("density rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
-        self.addParameter(QgsProcessingParameterBoolean(lascanopy.USE_TILE_BB,
-                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
-        self.addParameter(QgsProcessingParameterBoolean(lascanopy.FILES_ARE_PLOTS,
-                                           self.tr("input file is single plot"), False))
+        self.addParameter(QgsProcessingParameterNumber(lascanopy.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterNumber(lascanopy.HEIGHT_CUTOFF, "height cutoff / breast height", QgsProcessingParameterNumber.Double, 1.37, False))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT1, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT2, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT3, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT4, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT5, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT6, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT7, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT8, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT9, "create", lascanopy.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterString(lascanopy.COUNTS, "count rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
+        self.addParameter(QgsProcessingParameterString(lascanopy.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
+        self.addParameter(QgsProcessingParameterBoolean(lascanopy.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
+        self.addParameter(QgsProcessingParameterBoolean(lascanopy.FILES_ARE_PLOTS, "input file is single plot", False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -97,54 +77,54 @@ class lascanopy(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascanopy")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        plot_size = self.parameterAsInt(parameters, lascanopy.PLOT_SIZE)
-        if plot_size != 20:
+        plot_size = self.parameterAsDouble(parameters, lascanopy.PLOT_SIZE, context)
+        if (plot_size != 20.0):
             commands.append("-step")
             commands.append(unicode(plot_size))
-        height_cutoff = self.parameterAsInt(parameters, lascanopy.HEIGHT_CUTOFF)
-        if height_cutoff != 1.37:
+        height_cutoff = self.parameterAsDouble(parameters, lascanopy.HEIGHT_CUTOFF, context)
+        if (height_cutoff != 1.37):
             commands.append("-height_cutoff")
             commands.append(unicode(height_cutoff))
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT1)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT1, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT2)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT2, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT3)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT3, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT4)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT4, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT5)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT5, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT6)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT6, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT7)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT7, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT8)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT8, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, lascanopy.PRODUCT9)
-        if product != 0:
+        product = self.parameterAsInt(parameters, lascanopy.PRODUCT9, context)
+        if (product != 0):
             commands.append("-" + lascanopy.PRODUCTS[product])
-        array = self.parameterAsInt(parameters, lascanopy.COUNTS).split()
+        array = self.parameterAsString(parameters, lascanopy.COUNTS, context).split()
         if (len(array) > 1):
             commands.append("-c")
             for a in array:
                 commands.append(a)
-        array = self.parameterAsInt(parameters, lascanopy.DENSITIES).split()
+        array = self.parameterAsString(parameters, lascanopy.DENSITIES, context).split()
         if (len(array) > 1):
             commands.append("-d")
             for a in array:
                 commands.append(a)
-        if (self.parameterAsInt(parameters, lascanopy.USE_TILE_BB)):
+        if (self.parameterAsBool(parameters, lascanopy.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
-        if (self.parameterAsInt(parameters, lascanopy.FILES_ARE_PLOTS)):
+        if (self.parameterAsBool(parameters, lascanopy.FILES_ARE_PLOTS, context)):
             commands.append("-files_are_plots")
         self.addParametersRasterOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
@@ -154,17 +134,16 @@ class lascanopy(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lascanopy'
 
     def displayName(self):
-        return 'laszip'
+        return 'lascanopy'
 
     def group(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def createInstance(self):
-        return laszip()
-	
+        return lascanopy()

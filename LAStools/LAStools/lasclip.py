@@ -25,38 +25,28 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
-from processing.core.parameters import ParameterVector
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasclip(LAStoolsAlgorithm):
 
-    POLYGON = "POLYGON"
     INTERIOR = "INTERIOR"
     OPERATION = "OPERATION"
     OPERATIONS = ["clip", "classify"]
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasclip')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterVector(lasclip.POLYGON,
-                                          self.tr("Input polygon(s)"), ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(QgsProcessingParameterBoolean(lasclip.INTERIOR,
-                                           self.tr("interior"), False))
-        self.addParameter(QgsProcessingParameterEnum(lasclip.OPERATION,
-                                             self.tr("what to do with points"), lasclip.OPERATIONS, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasclip.CLASSIFY_AS,
-                                          self.tr("classify as"), 0, None, 12))
+        self.addParametersGenericInputGUI("Input polygon(s)", "shp", False)
+        self.addParameter(QgsProcessingParameterBoolean(lasclip.INTERIOR, "interior", False))
+        self.addParameter(QgsProcessingParameterEnum(lasclip.OPERATION, "what to do with points", lasclip.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasclip.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 12, False, 0, 255))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -64,16 +54,13 @@ class lasclip(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclip")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        poly = self.parameterAsInt(parameters, lasclip.POLYGON)
-        if poly is not None:
-            commands.append("-poly")
-            commands.append(poly)
-        if self.parameterAsInt(parameters, lasclip.INTERIOR):
+        self.addParametersGenericInputCommands(parameters, context, commands, "-poly")
+        if (self.parameterAsBool(parameters, lasclip.INTERIOR, context)):
             commands.append("-interior")
-        operation = self.parameterAsInt(parameters, lasclip.OPERATION)
+        operation = self.parameterAsInt(parameters, lasclip.OPERATION, context)
         if operation != 0:
             commands.append("-classify")
-            classify_as = self.parameterAsInt(parameters, lasclip.CLASSIFY_AS)
+            classify_as = self.parameterAsInt(parameters, lasclip.CLASSIFY_AS, context)
             commands.append(unicode(classify_as))
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
@@ -83,17 +70,16 @@ class lasclip(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasclip'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasclip'
 
     def group(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - processing points'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasclip()

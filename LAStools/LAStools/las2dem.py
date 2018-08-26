@@ -25,15 +25,12 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
-
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class las2dem(LAStoolsAlgorithm):
 
@@ -44,18 +41,13 @@ class las2dem(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('las2dem')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(QgsProcessingParameterEnum(las2dem.ATTRIBUTE,
-                                             self.tr("Attribute"), las2dem.ATTRIBUTES, 0))
-        self.addParameter(QgsProcessingParameterEnum(las2dem.PRODUCT,
-                                             self.tr("Product"), las2dem.PRODUCTS, 0))
-        self.addParameter(QgsProcessingParameterBoolean(las2dem.USE_TILE_BB,
-                                           self.tr("use tile bounding box (after tiling with buffer)"), False))
+        self.addParameter(QgsProcessingParameterEnum(las2dem.ATTRIBUTE, "Attribute", las2dem.ATTRIBUTES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(las2dem.PRODUCT, "Product", las2dem.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterBoolean(las2dem.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -66,12 +58,12 @@ class las2dem(LAStoolsAlgorithm):
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersStepCommands(parameters, context, commands)
         attribute = self.parameterAsInt(parameters, las2dem.ATTRIBUTE)
-        if attribute != 0:
+        if (attribute != 0):
             commands.append("-" + las2dem.ATTRIBUTES[attribute])
         product = self.parameterAsInt(parameters, las2dem.PRODUCT)
-        if product != 0:
+        if (product != 0):
             commands.append("-" + las2dem.PRODUCTS[product])
-        if (self.parameterAsInt(parameters, las2dem.USE_TILE_BB)):
+        if (self.parameterAsBool(parameters, las2dem.USE_TILE_BB)):
             commands.append("-use_tile_bb")
         self.addParametersRasterOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
@@ -81,17 +73,16 @@ class las2dem(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'las2dem'
 
     def displayName(self):
-        return 'laszip'
+        return 'las2dem'
 
     def group(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - raster derivatives'
 
     def createInstance(self):
-        return laszip()
-	
+        return las2dem()

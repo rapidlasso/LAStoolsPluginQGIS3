@@ -25,38 +25,32 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasboundary(LAStoolsAlgorithm):
 
     MODE = "MODE"
     MODES = ["points", "spatial index (the *.lax file)", "bounding box", "tile bounding box"]
     CONCAVITY = "CONCAVITY"
-    DISJOINT = "DISJOINT"
     HOLES = "HOLES"
+    DISJOINT = "DISJOINT"
+    LABELS = "LABELS"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasboundary')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParameter(QgsProcessingParameterEnum(lasboundary.MODE,
-                                             self.tr("compute boundary based on"), lasboundary.MODES, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasboundary.CONCAVITY,
-                                          self.tr("concavity"), 0, None, 50.0))
-        self.addParameter(QgsProcessingParameterBoolean(lasboundary.HOLES,
-                                           self.tr("interior holes"), False))
-        self.addParameter(QgsProcessingParameterBoolean(lasboundary.DISJOINT,
-                                           self.tr("disjoint polygon"), False))
+        self.addParameter(QgsProcessingParameterEnum(lasboundary.MODE, "compute boundary based on", lasboundary.MODES, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasboundary.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001))
+        self.addParameter(QgsProcessingParameterBoolean(lasboundary.HOLES, "interior holes", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasboundary.DISJOINT, "disjoint polygon", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasboundary.LABELS, "produce labels", False))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -65,7 +59,7 @@ class lasboundary(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
-        mode = self.parameterAsInt(parameters, lasboundary.MODE)
+        mode = self.parameterAsInt(parameters, lasboundary.MODE, context)
         if (mode != 0):
             if (mode == 1):
                 commands.append("-use_lax")
@@ -74,13 +68,15 @@ class lasboundary(LAStoolsAlgorithm):
             else:
                 commands.append("-use_tile_bb")
         else:
-            concavity = self.parameterAsInt(parameters, lasboundary.CONCAVITY)
+            concavity = self.parameterAsDouble(parameters, lasboundary.CONCAVITY, context)
             commands.append("-concavity")
             commands.append(unicode(concavity))
-            if self.parameterAsInt(parameters, lasboundary.HOLES):
+            if (self.parameterAsBool(parameters, lasboundary.HOLES, context)):
                 commands.append("-holes")
-            if self.parameterAsInt(parameters, lasboundary.DISJOINT):
+            if (self.parameterAsBool(parameters, lasboundary.DISJOINT, context)):
                 commands.append("-disjoint")
+            if (self.parameterAsBool(parameters, lasboundary.LABELS, context)):
+                commands.append("-labels")
         self.addParametersVectorOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
 
@@ -89,17 +85,16 @@ class lasboundary(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasboundary'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasboundary'
 
     def group(self):
-        return 'LAStools'
+        return 'file - vector derivatives'
 
     def groupId(self):
-        return 'LAStools'
+        return 'file - vector derivatives'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasboundary()
