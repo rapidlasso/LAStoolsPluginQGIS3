@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    laszipPro.py
+    lasviewPro.py
     ---------------------
-    Date                 : October 2014 and August 2018, August 2018
-    Copyright            : (C) 2014 - 2018 by Martin Isenburg
+    Date                 : October 2014 and August 2018
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -22,47 +22,51 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
-
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class laszipPro(LAStoolsAlgorithm):
+from qgis.core import QgsProcessingParameterEnum
+from qgis.core import QgsProcessingParameterNumber
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+
+class lasviewPro(LAStoolsAlgorithm):
+
+    POINTS = "POINTS"
+
+    SIZE = "SIZE"
+    SIZES = ["1024 768", "800 600", "1200 900", "1200 400", "1550 900", "1550 1150"]
+
+    COLORING = "COLORING"
+    COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('lasviewPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
+        self.addParametersFilesAreFlightlinesGUI()
+        self.addParameter(ParameterNumber(lasviewPro.POINTS,
+                                          self.tr("max number of points sampled"), 100000, 20000000, 5000000))
+        self.addParameter(ParameterSelection(lasviewPro.COLORING,
+                                             self.tr("color by"), lasviewPro.COLORINGS, 0))
+        self.addParameter(ParameterSelection(lasviewPro.SIZE,
+                                             self.tr("window size (x y) in pixels"), lasviewPro.SIZES, 0))
         self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszipPro.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszipPro.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszipPro.APPEND_LAX, context):
-            commands.append("-append")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
+        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
+        points = self.getParameterValue(lasviewPro.POINTS)
+        commands.append("-points " + unicode(points))
         self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        coloring = self.getParameterValue(lasviewPro.COLORING)
+        if coloring != 0:
+            commands.append("-color_by_" + lasviewPro.COLORINGS[coloring])
+        size = self.getParameterValue(lasviewPro.SIZE)
+        if size != 0:
+            commands.append("-win " + lasviewPro.SIZES[size])
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

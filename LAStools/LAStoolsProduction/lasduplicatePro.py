@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    laszipPro.py
+    lasduplicate.py
     ---------------------
-    Date                 : October 2014 and August 2018, August 2018
-    Copyright            : (C) 2014 - 2018 by Martin Isenburg
+    Date                 : October 2014 and August 2018
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -22,22 +22,31 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
-
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class laszipPro(LAStoolsAlgorithm):
+from qgis.core import QgsProcessingParameterBoolean
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+
+class lasduplicatePro(LAStoolsAlgorithm):
+
+    LOWEST_Z = "LOWEST_Z"
+    UNIQUE_XYZ = "UNIQUE_XYZ"
+    SINGLE_RETURNS = "SINGLE_RETURNS"
+    RECORD_REMOVED = "RECORD_REMOVED"
 
     def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('lasduplicatePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.LOWEST_Z,
+                                           self.tr("keep duplicate with lowest z coordinate"), False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.UNIQUE_XYZ,
+                                           self.tr("only remove duplicates in x y and z"), False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.SINGLE_RETURNS,
+                                           self.tr("mark surviving duplicate as single return"), False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.RECORD_REMOVED,
+                                           self.tr("record removed duplicates"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -46,18 +55,17 @@ class laszipPro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasduplicate")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszipPro.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszipPro.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszipPro.APPEND_LAX, context):
-            commands.append("-append")
+        if self.getParameterValue(lasduplicatePro.LOWEST_Z):
+            commands.append("-lowest_z")
+        if self.getParameterValue(lasduplicatePro.UNIQUE_XYZ):
+            commands.append("-unique_xyz")
+        if self.getParameterValue(lasduplicatePro.SINGLE_RETURNS):
+            commands.append("-single_returns")
+        if self.getParameterValue(lasduplicatePro.RECORD_REMOVED):
+            commands.append("-record_removed")
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)

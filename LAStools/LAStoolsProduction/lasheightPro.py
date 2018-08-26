@@ -1,11 +1,12 @@
+
 # -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
-    laszipPro.py
+    lasheightPro.py
     ---------------------
-    Date                 : October 2014 and August 2018, August 2018
-    Copyright            : (C) 2014 - 2018 by Martin Isenburg
+    Date                 : October 2014, May 2016 and August 2018
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -22,22 +23,37 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
-
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class laszipPro(LAStoolsAlgorithm):
+from qgis.core import QgsProcessingParameterBoolean
+from qgis.core import QgsProcessingParameterNumber
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+
+class lasheightPro(LAStoolsAlgorithm):
+
+    REPLACE_Z = "REPLACE_Z"
+    DROP_ABOVE = "DROP_ABOVE"
+    DROP_ABOVE_HEIGHT = "DROP_ABOVE_HEIGHT"
+    DROP_BELOW = "DROP_BELOW"
+    DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('lasheightPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParametersIgnoreClass1GUI()
+        self.addParametersIgnoreClass2GUI()
+        self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z,
+                                           self.tr("replace z"), False))
+        self.addParameter(ParameterBoolean(lasheightPro.DROP_ABOVE,
+                                           self.tr("drop above"), False))
+        self.addParameter(ParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT,
+                                          self.tr("drop above height"), None, None, 100.0))
+        self.addParameter(ParameterBoolean(lasheightPro.DROP_BELOW,
+                                           self.tr("drop below"), False))
+        self.addParameter(ParameterNumber(lasheightPro.DROP_BELOW_HEIGHT,
+                                          self.tr("drop below height"), None, None, -2.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -46,18 +62,19 @@ class laszipPro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszipPro.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszipPro.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszipPro.APPEND_LAX, context):
-            commands.append("-append")
+        self.addParametersIgnoreClass1Commands(parameters, context, commands)
+        self.addParametersIgnoreClass2Commands(parameters, context, commands)
+        if self.getParameterValue(lasheightPro.REPLACE_Z):
+            commands.append("-replace_z")
+        if self.getParameterValue(lasheightPro.DROP_ABOVE):
+            commands.append("-drop_above")
+            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_ABOVE_HEIGHT)))
+        if self.getParameterValue(lasheightPro.DROP_BELOW):
+            commands.append("-drop_below")
+            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_BELOW_HEIGHT)))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)

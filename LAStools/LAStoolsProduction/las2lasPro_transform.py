@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    laszipPro.py
+    las2lasPro_transform.py
     ---------------------
-    Date                 : October 2014 and August 2018, August 2018
-    Copyright            : (C) 2014 - 2018 by Martin Isenburg
+    Date                 : October 2014, May 2016 and August 2018
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -22,22 +22,32 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
-
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class laszipPro(LAStoolsAlgorithm):
+from qgis.core import QgsProcessingParameterString
+from qgis.core import QgsProcessingParameterEnum
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+
+class las2lasPro_transform(LAStoolsAlgorithm):
+
+    OPERATION = "OPERATION"
+    OPERATIONS = ["---", "set_point_type", "set_point_size", "set_version_minor", "set_version_major", "start_at_point", "stop_at_point", "remove_vlr", "week_to_adjusted", "adjusted_to_week", "auto_reoffset", "scale_rgb_up", "scale_rgb_down", "remove_all_vlrs", "remove_extra", "clip_to_bounding_box"]
+    OPERATIONARG = "OPERATIONARG"
 
     def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('las2lasPro_transform')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParametersTransform1CoordinateGUI()
+        self.addParametersTransform2CoordinateGUI()
+        self.addParametersTransform1OtherGUI()
+        self.addParametersTransform2OtherGUI()
+        self.addParameter(ParameterSelection(las2lasPro_transform.OPERATION,
+                                             self.tr("operations (first 8 need an argument)"),
+                                             las2lasPro_transform.OPERATIONS, 0))
+        self.addParameter(ParameterString(las2lasPro_transform.OPERATIONARG,
+                                          self.tr("argument for operation")))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -47,17 +57,20 @@ class laszipPro(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszipPro.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszipPro.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszipPro.APPEND_LAX, context):
-            commands.append("-append")
+        self.addParametersTransform1CoordinateCommands(parameters, context, commands)
+        self.addParametersTransform2CoordinateCommands(parameters, context, commands)
+        self.addParametersTransform1OtherCommands(parameters, context, commands)
+        self.addParametersTransform2OtherCommands(parameters, context, commands)
+        operation = self.getParameterValue(las2lasPro_transform.OPERATION)
+        if operation != 0:
+            commands.append("-" + las2lasPro_transform.OPERATIONS[operation])
+            if operation > 8:
+                commands.append(self.getParameterValue(las2lasPro_transform.OPERATIONARG))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)

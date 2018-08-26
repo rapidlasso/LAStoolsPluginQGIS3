@@ -73,7 +73,10 @@ from .LAStools.lasview import lasview
 from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
 from .LAStools.txt2las import txt2las
+
 from .LAStoolsProduction.laszipPro import laszipPro
+from .LAStoolsProduction.txt2lasPro import txt2lasPro
+
 from .LAStoolsPipelines.hugeFileGroundClassify import hugeFileGroundClassify
 from . import resources
 
@@ -125,7 +128,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing entire folders of files
 
-        self.algs = [laszipPro()]
+        self.algs = [laszipPro(), txt2lasPro()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )

@@ -2,10 +2,14 @@
 
 """
 ***************************************************************************
-    laszipPro.py
+    lasgroundPro.py
     ---------------------
-    Date                 : October 2014 and August 2018, August 2018
-    Copyright            : (C) 2014 - 2018 by Martin Isenburg
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+    ---------------------
+    Date                 : April 2014
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -17,27 +21,37 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'October 2014'
-__copyright__ = '(C) 2014, Martin Isenburg'
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
-from qgis.core import QgsProcessingParameterBoolean
-
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class laszipPro(LAStoolsAlgorithm):
+from qgis.core import QgsProcessingParameterBoolean
+from qgis.core import QgsProcessingParameterEnum
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
+
+class lasgroundPro(LAStoolsAlgorithm):
+
+    NO_BULGE = "NO_BULGE"
+    TERRAIN = "TERRAIN"
+    TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
+    GRANULARITY = "GRANULARITY"
+    GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def initAlgorithm(self, config):
+        self.name, self.i18n_name = self.trAlgorithm('lasgroundPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParametersHorizontalAndVerticalFeetGUI()
+        self.addParameter(ParameterBoolean(lasgroundPro.NO_BULGE,
+                                           self.tr("no triangle bulging during TIN refinement"), False))
+        self.addParameter(ParameterSelection(lasgroundPro.TERRAIN,
+                                             self.tr("terrain type"), lasgroundPro.TERRAINS, 1))
+        self.addParameter(ParameterSelection(lasgroundPro.GRANULARITY,
+                                             self.tr("preprocessing"), lasgroundPro.GRANULARITIES, 1))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -46,18 +60,19 @@ class laszipPro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LAStoolsUtils.hasWine()):
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszipPro.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszipPro.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszipPro.APPEND_LAX, context):
-            commands.append("-append")
+        self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)
+        if (self.getParameterValue(lasgroundPro.NO_BULGE)):
+            commands.append("-no_bulge")
+        method = self.getParameterValue(lasgroundPro.TERRAIN)
+        if (method != 1):
+            commands.append("-" + lasgroundPro.TERRAINS[method])
+        granularity = self.getParameterValue(lasgroundPro.GRANULARITY)
+        if (granularity != 1):
+            commands.append("-" + lasgroundPro.GRANULARITIES[granularity])
+        self.addParametersCoresCommands(parameters, context, commands)
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)

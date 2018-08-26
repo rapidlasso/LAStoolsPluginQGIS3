@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    txt2las.py
+    txt2lasPro.py
     ---------------------
-    Date                 : September 2013, May 2016 and August 2018
-    Copyright            : (C) 2013 by Martin Isenburg
+    Date                 : October 2014, May 2016 and August 2018
+    Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, Martin Isenburg'
+__date__ = 'October 2014'
+__copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
 from qgis.core import QgsProcessingParameterNumber
@@ -29,7 +29,7 @@ from qgis.core import QgsProcessingParameterEnum
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class txt2las(LAStoolsAlgorithm):
+class txt2lasPro(LAStoolsAlgorithm):
 
     PARSE = "PARSE"
     SKIP = "SKIP"
@@ -48,18 +48,21 @@ class txt2las(LAStoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
-        self.addParametersGenericInputGUI("Input ASCII file", "txt", False)
-        self.addParameter(QgsProcessingParameterString(txt2las.PARSE, "parse lines as", "xyz"))
-        self.addParameter(QgsProcessingParameterNumber(txt2las.SKIP, "skip the first n lines", QgsProcessingParameterNumber.Integer, 0))
-        self.addParameter(QgsProcessingParameterNumber(txt2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
-        self.addParameter(QgsProcessingParameterNumber(txt2las.SCALE_FACTOR_Z, "resolution of z coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
-        self.addParameter(QgsProcessingParameterEnum(txt2las.PROJECTION, "projection", txt2las.PROJECTIONS, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(txt2las.EPSG_CODE, "EPSG code", QgsProcessingParameterNumber.Integer, 25832))
-        self.addParameter(QgsProcessingParameterEnum(txt2las.UTM, "utm zone", txt2las.UTM_ZONES, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(txt2las.SP, "state plane code", txt2las.STATE_PLANES, False, 0))
-        self.addParametersPointOutputGUI()
+        self.addParametersGenericInputFolderGUI("*.txt")
+        self.addParameter(QgsProcessingParameterString(txt2lasPro.PARSE, "parse lines as", "xyz"))
+        self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SKIP, "skip the first n lines", QgsProcessingParameterNumber.Integer, 0))
+        self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
+        self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SCALE_FACTOR_Z, "resolution of z coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
+        self.addParameter(QgsProcessingParameterEnum(txt2lasPro.PROJECTION, "projection", txt2lasPro.PROJECTIONS, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(txt2lasPro.EPSG_CODE, "EPSG code", QgsProcessingParameterNumber.Integer, 25832))
+        self.addParameter(QgsProcessingParameterEnum(txt2lasPro.UTM, "utm zone", txt2lasPro.UTM_ZONES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(txt2lasPro.SP, "state plane code", txt2lasPro.STATE_PLANES, False, 0))
+        self.addParametersOutputDirectoryGUI()
+        self.addParametersOutputAppendixGUI()
+        self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
+        self.addParametersCoresGUI()
+        self.addParametersVerboseGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
@@ -67,62 +70,65 @@ class txt2las(LAStoolsAlgorithm):
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
         self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersGenericInputCommands(parameters, context, commands, "-i")
-        parse_string = self.parameterAsString(parameters, txt2las.PARSE, context)
+        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        parse_string = self.parameterAsString(parameters, txt2lasPro.PARSE, context)
         if (parse_string != "xyz"):
             commands.append("-parse")
             commands.append(parse_string)
-        skip = self.parameterAsInt(parameters, txt2las.SKIP, context)
+        skip = self.parameterAsInt(parameters, txt2lasPro.SKIP, context)
         if (skip != 0):
             commands.append("-skip")
             commands.append(unicode(skip))
-        scale_factor_xy = self.parameterAsDouble(parameters, txt2las.SCALE_FACTOR_XY, context)
-        scale_factor_z = self.parameterAsDouble(parameters, txt2las.SCALE_FACTOR_Z, context)
+        scale_factor_xy = self.parameterAsDouble(parameters, txt2lasPro.SCALE_FACTOR_XY, context)
+        scale_factor_z = self.parameterAsDouble(parameters, txt2lasPro.SCALE_FACTOR_Z, context)
         if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
             commands.append("-set_scale")
             commands.append(unicode(scale_factor_xy))
             commands.append(unicode(scale_factor_xy))
             commands.append(unicode(scale_factor_z))
-        projection = self.parameterAsInt(parameters, txt2las.PROJECTION, context)
+        projection = self.parameterAsInt(parameters, txt2lasPro.PROJECTION, context)
         if (projection != 0):
             if (projection == 1):
-                epsg_code = self.parameterAsInt(parameters, txt2las.EPSG_CODE, context)
+                epsg_code = self.parameterAsInt(parameters, txt2lasPro.EPSG_CODE, context)
                 if (epsg_code != 0):
-                    commands.append("-" + txt2las.PROJECTIONS[projection])
+                    commands.append("-" + txt2lasPro.PROJECTIONS[projection])
                     commands.append(unicode(epsg_code))
             elif (projection == 2):
-                utm_zone = self.parameterAsInt(parameters, txt2las.UTM, context)
+                utm_zone = self.parameterAsInt(parameters, txt2lasPro.UTM, context)
                 if (utm_zone != 0):
-                    commands.append("-" + txt2las.PROJECTIONS[projection])
+                    commands.append("-" + txt2lasPro.PROJECTIONS[projection])
                     if (utm_zone > 60):
                         commands.append(unicode(utm_zone - 60) + "south")
                     else:
                         commands.append(unicode(utm_zone) + "north")
             elif (projection < 5):
-                sp_code = self.parameterAsInt(parameters, txt2las.SP, context)
+                sp_code = self.parameterAsInt(parameters, txt2lasPro.SP, context)
                 if (sp_code != 0):
-                    commands.append("-" + txt2las.PROJECTIONS[projection])
-                    commands.append(txt2las.STATE_PLANES[sp_code])
+                    commands.append("-" + txt2lasPro.PROJECTIONS[projection])
+                    commands.append(txt2lasPro.STATE_PLANES[sp_code])
             else:
-                commands.append("-" + txt2las.PROJECTIONS[projection])
-        self.addParametersPointOutputCommands(parameters, context, commands)
+                commands.append("-" + txt2lasPro.PROJECTIONS[projection])
+        self.addParametersOutputDirectoryCommands(parameters, context, commands)
+        self.addParametersOutputAppendixCommands(parameters, context, commands)
+        self.addParametersPointOutputFormatCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
+        self.addParametersCoresCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}
 
     def name(self):
-        return 'txt2las'
+        return 'txt2lasPro'
 
     def displayName(self):
-        return 'txt2las'
+        return 'txt2lasPro'
 
     def group(self):
-        return 'file - conversion'
+        return 'folder - conversion'
 
     def groupId(self):
-        return 'file - conversion'
+        return 'folder - conversion'
 
     def createInstance(self):
-        return txt2las()
+        return txt2lasPro()
