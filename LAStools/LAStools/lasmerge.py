@@ -22,11 +22,10 @@ __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
 import os
+from qgis.core import QgsProcessingParameterFile
+
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
-from processing.core.parameters import ParameterFile
-
 
 class lasmerge(LAStoolsAlgorithm):
 
@@ -38,18 +37,16 @@ class lasmerge(LAStoolsAlgorithm):
     FILE7 = "FILE7"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasmerge')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterFile(lasmerge.FILE2, self.tr("2nd file")))
-        self.addParameter(ParameterFile(lasmerge.FILE3, self.tr("3rd file")))
-        self.addParameter(ParameterFile(lasmerge.FILE4, self.tr("4th file")))
-        self.addParameter(ParameterFile(lasmerge.FILE5, self.tr("5th file")))
-        self.addParameter(ParameterFile(lasmerge.FILE6, self.tr("6th file")))
-        self.addParameter(ParameterFile(lasmerge.FILE7, self.tr("7th file")))
+        self.addParameter(QgsProcessingParameterFile(lasmerge.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True))
+        self.addParameter(QgsProcessingParameterFile(lasmerge.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True))
+        self.addParameter(QgsProcessingParameterFile(lasmerge.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True))
+        self.addParameter(QgsProcessingParameterFile(lasmerge.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True))
+        self.addParameter(QgsProcessingParameterFile(lasmerge.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True))
+        self.addParameter(QgsProcessingParameterFile(lasmerge.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -60,27 +57,27 @@ class lasmerge(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        file2 = self.parameterAsInt(parameters, lasmerge.FILE2)
+        file2 = self.parameterAsString(parameters, lasmerge.FILE2, context)
         if file2 is not None:
             commands.append("-i")
             commands.append(file2)
-        file3 = self.parameterAsInt(parameters, lasmerge.FILE3)
+        file3 = self.parameterAsString(parameters, lasmerge.FILE3, context)
         if file3 is not None:
             commands.append("-i")
             commands.append(file3)
-        file4 = self.parameterAsInt(parameters, lasmerge.FILE4)
+        file4 = self.parameterAsString(parameters, lasmerge.FILE4, context)
         if file4 is not None:
             commands.append("-i")
             commands.append(file4)
-        file5 = self.parameterAsInt(parameters, lasmerge.FILE5)
+        file5 = self.parameterAsString(parameters, lasmerge.FILE5, context)
         if file5 is not None:
             commands.append("-i")
             commands.append(file5)
-        file6 = self.parameterAsInt(parameters, lasmerge.FILE6)
+        file6 = self.parameterAsString(parameters, lasmerge.FILE6, context)
         if file6 is not None:
             commands.append("-i")
             commands.append(file6)
-        file7 = self.parameterAsInt(parameters, lasmerge.FILE7)
+        file7 = self.parameterAsString(parameters, lasmerge.FILE7, context)
         if file7 is not None:
             commands.append("-i")
             commands.append(file7)
@@ -94,17 +91,16 @@ class lasmerge(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lasmerge'
 
     def displayName(self):
-        return 'laszip'
+        return 'lasmerge'
 
     def group(self):
-        return 'file - processing points'
+        return 'file - conversion'
 
     def groupId(self):
-        return 'file - processing points'
+        return 'file - conversion'
 
     def createInstance(self):
-        return laszip()
-	
+        return lasmerge()

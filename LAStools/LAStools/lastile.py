@@ -21,14 +21,12 @@ __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lastile(LAStoolsAlgorithm):
 
@@ -38,20 +36,12 @@ class lastile(LAStoolsAlgorithm):
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lastile')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterNumber(lastile.TILE_SIZE,
-                                          self.tr("tile size (side length of square tile)"),
-                                          0.0, None, 1000.0))
-        self.addParameter(QgsProcessingParameterNumber(lastile.BUFFER,
-                                          self.tr("buffer around each tile"),
-                                          0.0, None, 25.0))
-        self.addParameter(QgsProcessingParameterBoolean(lastile.FLAG_AS_WITHHELD,
-                                           self.tr("flag buffer points as 'withheld' for easier removal later"), True))
-        self.addParameter(QgsProcessingParameterBoolean(lastile.REVERSIBLE,
-                                           self.tr("make tiling reversible (advanced, usually not needed)"), False))
+        self.addParameter(QgsProcessingParameterNumber(lastile.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 4.0, 10000.0))
+        self.addParameter(QgsProcessingParameterNumber(lastile.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0))
+        self.addParameter(QgsProcessingParameterBoolean(lastile.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True))
+        self.addParameter(QgsProcessingParameterBoolean(lastile.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -59,16 +49,16 @@ class lastile(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        tile_size = self.parameterAsInt(parameters, lastile.TILE_SIZE)
+        tile_size = self.parameterAsInt(parameters, lastile.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
-        buffer = self.parameterAsInt(parameters, lastile.BUFFER)
-        if buffer != 0.0:
+        buffer = self.parameterAsDouble(parameters, lastile.BUFFER, context)
+        if (buffer != 0.0):
             commands.append("-buffer")
             commands.append(unicode(buffer))
-        if self.parameterAsInt(parameters, lastile.FLAG_AS_WITHHELD):
+        if (self.parameterAsBool(parameters, lastile.FLAG_AS_WITHHELD, context)):
             commands.append("-flag_as_withheld")
-        if self.parameterAsInt(parameters, lastile.REVERSIBLE):
+        if (self.parameterAsBool(parameters, lastile.REVERSIBLE, context)):
             commands.append("-reversible")
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
@@ -78,10 +68,10 @@ class lastile(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lastile'
 
     def displayName(self):
-        return 'laszip'
+        return 'lastile'
 
     def group(self):
         return 'file - processing points'
@@ -90,5 +80,4 @@ class lastile(LAStoolsAlgorithm):
         return 'file - processing points'
 
     def createInstance(self):
-        return laszip()
-	
+        return lastile()

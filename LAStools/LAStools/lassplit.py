@@ -21,14 +21,12 @@ __author__ = 'Martin Isenburg'
 __date__ = 'March 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
-
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lassplit(LAStoolsAlgorithm):
 
@@ -38,16 +36,11 @@ class lassplit(LAStoolsAlgorithm):
     INTERVAL = "INTERVAL"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lassplit')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterNumber(lassplit.DIGITS,
-                                          self.tr("number of digits for file names"), 0, None, 5))
-        self.addParameter(QgsProcessingParameterEnum(lassplit.OPERATION,
-                                             self.tr("how to split"), lassplit.OPERATIONS, 0))
-        self.addParameter(QgsProcessingParameterNumber(lassplit.INTERVAL,
-                                          self.tr("interval or number"), 0, None, 5))
+        self.addParameter(QgsProcessingParameterNumber(lassplit.DIGITS, "number of digits for file names", QgsProcessingParameterNumber.Integer, 5, False, 2, 10))
+        self.addParameter(QgsProcessingParameterEnum(lassplit.OPERATION, "how to split", lassplit.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lassplit.INTERVAL, "interval or number", QgsProcessingParameterNumber.Double, 5.0, False, 0.00001, 100000.0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
@@ -55,18 +48,18 @@ class lassplit(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassplit")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        digits = self.parameterAsInt(parameters, lassplit.DIGITS)
-        if digits != 5:
+        digits = self.parameterAsInt(parameters, lassplit.DIGITS, context)
+        if (digits != 5):
             commands.append("-digits")
             commands.append(unicode(digits))
-        operation = self.parameterAsInt(parameters, lassplit.OPERATION)
-        if operation != 0:
+        operation = self.parameterAsInt(parameters, lassplit.OPERATION, context)
+        if (operation != 0):
             if operation == 9:
                 commands.append("-split")
             else:
                 commands.append("-" + lassplit.OPERATIONS[operation])
         if operation > 1 and operation < 10:
-            interval = self.parameterAsInt(parameters, lassplit.INTERVAL)
+            interval = self.parameterAsDouble(parameters, lassplit.INTERVAL, context)
             commands.append(unicode(interval))
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
@@ -76,10 +69,10 @@ class lassplit(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszip'
+        return 'lassplit'
 
     def displayName(self):
-        return 'laszip'
+        return 'lassplit'
 
     def group(self):
         return 'file - processing points'
@@ -88,5 +81,4 @@ class lassplit(LAStoolsAlgorithm):
         return 'file - processing points'
 
     def createInstance(self):
-        return laszip()
-	
+        return lassplit()

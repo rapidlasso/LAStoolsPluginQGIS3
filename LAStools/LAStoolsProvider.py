@@ -58,12 +58,15 @@ from .LAStools.lasheight import lasheight
 from .LAStools.lasheight_classify import lasheight_classify
 from .LAStools.lasindex import lasindex
 from .LAStools.lasinfo import lasinfo
+from .LAStools.lasmerge import lasmerge
 from .LAStools.lasnoise import lasnoise
 from .LAStools.lasoverage import lasoverage
 from .LAStools.lasoverlap import lasoverlap
 from .LAStools.lasprecision import lasprecision
 from .LAStools.laspublish import laspublish
 from .LAStools.lassort import lassort
+from .LAStools.lassplit import lassplit
+from .LAStools.lastile import lastile
 from .LAStools.lasthin import lasthin
 from .LAStools.lasvalidate import lasvalidate
 from .LAStools.lasview import lasview
@@ -115,7 +118,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing single files
 
-        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2las_project(), las2las_transform(), las2dem(), las2iso(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(), lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(), lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasnoise(), lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lasthin(), lasvalidate(), lasview(), laszip(), shp2las(), txt2las()]
+        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2las_project(), las2las_transform(), las2dem(), las2iso(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(), lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(), lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasmerge(), lasnoise(), lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lassplit(), lastile(), lasthin(), lasvalidate(), lasview(), laszip(), shp2las(), txt2las()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )
