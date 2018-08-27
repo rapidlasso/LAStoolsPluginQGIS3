@@ -74,6 +74,9 @@ from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
 from .LAStools.txt2las import txt2las
 
+from .LAStoolsProduction.lasboundaryPro import lasboundaryPro
+from .LAStoolsProduction.lasclassifyPro import lasclassifyPro
+from .LAStoolsProduction.lasinfoPro import lasinfoPro
 from .LAStoolsProduction.laszipPro import laszipPro
 from .LAStoolsProduction.txt2lasPro import txt2lasPro
 
@@ -128,7 +131,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing entire folders of files
 
-        self.algs = [laszipPro(), txt2lasPro()]
+        self.algs = [lasboundaryPro(), lasclassifyPro(), lasinfoPro(), laszipPro(), txt2lasPro()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )

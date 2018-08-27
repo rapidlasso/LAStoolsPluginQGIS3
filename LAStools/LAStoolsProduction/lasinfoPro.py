@@ -22,13 +22,12 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasinfoPro(LAStoolsAlgorithm):
 
@@ -38,33 +37,22 @@ class lasinfoPro(LAStoolsAlgorithm):
     HISTO1 = "HISTO1"
     HISTO2 = "HISTO2"
     HISTO3 = "HISTO3"
-    HISTOGRAM = ["---", "x", "y", "z", "intensity", "classification", "scan_angle", "user_data", "point_source", "gps_time", "X", "Y", "Z"]
+    HISTOGRAM = ["---", "x", "y", "z", "intensity", "classification", "scan_angle", "user_data", "point_source", "gps_time", "X", "Y", "Z", "attribute0", "attribute1", "attribute2"]
     HISTO1_BIN = "HISTO1_BIN"
     HISTO2_BIN = "HISTO2_BIN"
     HISTO3_BIN = "HISTO3_BIN"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasinfoPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasinfoPro.COMPUTE_DENSITY,
-                                           self.tr("compute density"), False))
-        self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_BB,
-                                           self.tr("repair bounding box"), False))
-        self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_COUNTERS,
-                                           self.tr("repair counters"), False))
-        self.addParameter(ParameterSelection(lasinfoPro.HISTO1,
-                                             self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfoPro.HISTO1_BIN,
-                                          self.tr("bin size"), 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasinfoPro.HISTO2,
-                                             self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfoPro.HISTO2_BIN,
-                                          self.tr("bin size"), 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasinfoPro.HISTO3,
-                                             self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfoPro.HISTO3_BIN,
-                                          self.tr("bin size"), 0, None, 1.0))
+        self.addParameter(QgsProcessingParameterBoolean(lasinfoPro.COMPUTE_DENSITY, "compute density", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasinfoPro.REPAIR_BB, "repair bounding box", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasinfoPro.REPAIR_COUNTERS, "repair counters", False))
+        self.addParameter(QgsProcessingParameterEnum(lasinfoPro.HISTO1, "histogram", lasinfoPro.HISTOGRAM, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasinfoPro.HISTO1_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasinfoPro.HISTO2, "histogram", lasinfoPro.HISTOGRAM, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasinfoPro.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasinfoPro.HISTO3, "histogram", lasinfoPro.HISTOGRAM, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasinfoPro.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()
@@ -78,27 +66,27 @@ class lasinfoPro(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.getParameterValue(lasinfoPro.COMPUTE_DENSITY):
+        if self.parameterAsBool(parameters, lasinfoPro.COMPUTE_DENSITY, context):
             commands.append("-cd")
-        if self.getParameterValue(lasinfoPro.REPAIR_BB):
+        if self.parameterAsBool(parameters, lasinfoPro.REPAIR_BB, context):
             commands.append("-repair_bb")
-        if self.getParameterValue(lasinfoPro.REPAIR_COUNTERS):
+        if self.parameterAsBool(parameters, lasinfoPro.REPAIR_COUNTERS, context):
             commands.append("-repair_counters")
-        histo = self.getParameterValue(lasinfoPro.HISTO1)
+        histo = self.parameterAsInt(parameters, lasinfoPro.HISTO1, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO1_BIN)))
-        histo = self.getParameterValue(lasinfoPro.HISTO2)
+            commands.append(unicode(self.parameterAsFloat(parameters, lasinfoPro.HISTO1_BIN, context)))
+        histo = self.parameterAsInt(parameters, lasinfoPro.HISTO2, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO2_BIN)))
-        histo = self.getParameterValue(lasinfoPro.HISTO3)
+            commands.append(unicode(self.parameterAsFloat(parameters, lasinfoPro.HISTO2_BIN, context)))
+        histo = self.parameterAsInt(parameters, lasinfoPro.HISTO3, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO3_BIN)))
+            commands.append(unicode(self.parameterAsFloat(parameters, lasinfoPro.HISTO3_BIN, context)))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         commands.append("-otxt")
@@ -110,17 +98,16 @@ class lasinfoPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasinfoPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasinfoPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasinfoPro()

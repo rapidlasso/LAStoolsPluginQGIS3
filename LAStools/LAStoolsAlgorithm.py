@@ -152,8 +152,8 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, "input wildcard(s)", wildcard))
 
     def addParametersGenericInputFolderCommands(self, parameters, context, commands):
-        input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, commands)
-        wildcards = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, commands).split()
+        input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, context)
+        wildcards = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, context).split()
         for wildcard in wildcards:
             commands.append("-i")
             if input is not None:

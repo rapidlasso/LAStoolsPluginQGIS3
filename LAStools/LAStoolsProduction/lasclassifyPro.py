@@ -22,15 +22,13 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
+
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 
 class lasclassifyPro(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasclassifyPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersIgnoreClass2GUI()
@@ -60,10 +58,10 @@ class lasclassifyPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasclassifyPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasclassifyPro'
 
     def group(self):
         return 'folder - conversion'
@@ -72,5 +70,4 @@ class lasclassifyPro(LAStoolsAlgorithm):
         return 'folder - conversion'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasclassifyPro()

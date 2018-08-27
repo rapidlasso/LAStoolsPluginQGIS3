@@ -59,7 +59,7 @@ class txt2lasPro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(txt2lasPro.SP, "state plane code", txt2lasPro.STATE_PLANES, False, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
+        self.addParametersPointOutputFormatGUI() 
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
@@ -70,7 +70,7 @@ class txt2lasPro(LAStoolsAlgorithm):
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
         self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.addParametersGenericInputFolderCommands(parameters, context, commands)
         parse_string = self.parameterAsString(parameters, txt2lasPro.PARSE, context)
         if (parse_string != "xyz"):
             commands.append("-parse")
