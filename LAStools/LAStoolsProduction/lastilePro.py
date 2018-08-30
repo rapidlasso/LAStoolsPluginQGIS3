@@ -22,13 +22,12 @@ __date__ = 'April 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterString
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lastilePro(LAStoolsAlgorithm):
 
@@ -39,24 +38,15 @@ class lastilePro(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lastilePro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
-        self.addParameter(ParameterNumber(lastilePro.TILE_SIZE,
-                                          self.tr("tile size (side length of square tile)"),
-                                          0.0, None, 1000.0))
-        self.addParameter(ParameterNumber(lastilePro.BUFFER,
-                                          self.tr("buffer around each tile (avoids edge artifacts)"),
-                                          0.0, None, 25.0))
-        self.addParameter(ParameterBoolean(lastilePro.FLAG_AS_WITHHELD,
-                                           self.tr("flag buffer points as 'withheld' for easier removal later"), True))
-        self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS,
-                                           self.tr("more than 2000 tiles"), False))
+        self.addParameter(QgsProcessingParameterNumber(lastilePro.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 4.0, 10000.0))
+        self.addParameter(QgsProcessingParameterNumber(lastilePro.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0))
+        self.addParameter(QgsProcessingParameterBoolean(lastilePro.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True))
+        self.addParameter(QgsProcessingParameterBoolean(lastilePro.EXTRA_PASS, "more than 2000 output tiles", False))
         self.addParametersOutputDirectoryGUI()
-        self.addParameter(ParameterString(lastilePro.BASE_NAME,
-                                          self.tr("tile base name (using sydney.laz creates sydney_274000_4714000.laz)")))
+        self.addParameter(QgsProcessingParameterString(lastilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)",""))
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
@@ -67,20 +57,20 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
         self.addParametersApplyFileSourceIdCommands(parameters, context, commands)
-        tile_size = self.getParameterValue(lastilePro.TILE_SIZE)
+        tile_size = self.parameterAsInt(parameters, lastilePro.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
-        buffer = self.getParameterValue(lastilePro.BUFFER)
-        if buffer != 0.0:
+        buffer = self.parameterAsDouble(parameters, lastilePro.BUFFER, context)
+        if (buffer != 0.0):
             commands.append("-buffer")
             commands.append(unicode(buffer))
-        if self.getParameterValue(lastilePro.FLAG_AS_WITHHELD):
+        if (self.parameterAsBool(parameters, lastilePro.FLAG_AS_WITHHELD, context)):
             commands.append("-flag_as_withheld")
-        if self.getParameterValue(lastilePro.EXTRA_PASS):
+        if (self.parameterAsBool(parameters, lastilePro.EXTRA_PASS, context)):
             commands.append("-extra_pass")
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        base_name = self.getParameterValue(lastilePro.BASE_NAME)
-        if base_name is not None:
+        base_name = self.parameterAsString(parameters, lastilePro.BASE_NAME, context)
+        if (base_name != ""):
             commands.append("-o")
             commands.append('"' + base_name + '"')
         self.addParametersPointOutputFormatCommands(parameters, context, commands)
@@ -91,10 +81,10 @@ class lastilePro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lastilePro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lastilePro'
 
     def group(self):
         return 'folder - conversion'
@@ -103,5 +93,4 @@ class lastilePro(LAStoolsAlgorithm):
         return 'folder - conversion'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lastilePro()

@@ -54,7 +54,7 @@ class txt2lasPro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
         self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SCALE_FACTOR_Z, "resolution of z coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
         self.addParameter(QgsProcessingParameterEnum(txt2lasPro.PROJECTION, "projection", txt2lasPro.PROJECTIONS, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(txt2lasPro.EPSG_CODE, "EPSG code", QgsProcessingParameterNumber.Integer, 25832))
+        self.addParameter(QgsProcessingParameterNumber(txt2lasPro.EPSG_CODE, "EPSG code", QgsProcessingParameterNumber.Integer, 25832, False, 1, 65535))
         self.addParameter(QgsProcessingParameterEnum(txt2lasPro.UTM, "utm zone", txt2lasPro.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(txt2lasPro.SP, "state plane code", txt2lasPro.STATE_PLANES, False, 0))
         self.addParametersOutputDirectoryGUI()

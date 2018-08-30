@@ -22,25 +22,22 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lassortPro(LAStoolsAlgorithm):
 
     BY_GPS_TIME = "BY_GPS_TIME"
+    BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lassortPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lassortPro.BY_GPS_TIME,
-                                           self.tr("sort by GPS time"), False))
-        self.addParameter(ParameterBoolean(lassortPro.BY_POINT_SOURCE_ID,
-                                           self.tr("sort by point source ID"), False))
+        self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_GPS_TIME, "sort by GPS time", False))
+        self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_RETURN_NUMBER, "sort by return number", False))
+        self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_POINT_SOURCE_ID, "sort by point source ID", False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -52,9 +49,11 @@ class lassortPro(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassort")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.getParameterValue(lassortPro.BY_GPS_TIME):
+        if (self.parameterAsBool(parameters, lassortPro.BY_GPS_TIME, context)):
             commands.append("-gps_time")
-        if self.getParameterValue(lassortPro.BY_POINT_SOURCE_ID):
+        if (self.parameterAsBool(parameters, lassortPro.BY_RETURN_NUMBER, context)):
+            commands.append("-return_number")
+        if (self.parameterAsBool(parameters, lassortPro.BY_POINT_SOURCE_ID, context)):
             commands.append("-point_source")
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
@@ -67,17 +66,16 @@ class lassortPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lassortPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lassortPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lassortPro()

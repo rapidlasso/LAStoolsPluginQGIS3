@@ -45,8 +45,8 @@ class las2txt(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        parse = self.parameterAsInt(parameters, las2txt.PARSE)
-        if parse != "xyz":
+        parse = self.parameterAsInt(parameters, las2txt.PARSE, context)
+        if (parse != "xyz"):
             commands.append("-parse")
             commands.append(parse)
         self.addParametersGenericOutputCommands(parameters, context, commands, "-o")

@@ -74,10 +74,10 @@ class lastile(LAStoolsAlgorithm):
         return 'lastile'
 
     def group(self):
-        return 'file - processing points'
+        return 'file - conversion'
 
     def groupId(self):
-        return 'file - processing points'
+        return 'file - conversion'
 
     def createInstance(self):
         return lastile()

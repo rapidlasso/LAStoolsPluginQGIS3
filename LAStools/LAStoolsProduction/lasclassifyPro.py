@@ -64,10 +64,10 @@ class lasclassifyPro(LAStoolsAlgorithm):
         return 'lasclassifyPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
         return lasclassifyPro()

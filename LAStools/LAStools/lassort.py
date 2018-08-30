@@ -46,11 +46,11 @@ class lassort(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassort")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        if self.parameterAsBool(parameters, lassort.BY_GPS_TIME, context):
+        if (self.parameterAsBool(parameters, lassort.BY_GPS_TIME, context)):
             commands.append("-gps_time")
-        if self.parameterAsBool(parameters, lassort.BY_RETURN_NUMBER, context):
+        if (self.parameterAsBool(parameters, lassort.BY_RETURN_NUMBER, context)):
             commands.append("-return_number")
-        if self.parameterAsBool(parameters, lassort.BY_POINT_SOURCE_ID, context):
+        if (self.parameterAsBool(parameters, lassort.BY_POINT_SOURCE_ID, context)):
             commands.append("-point_source")
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)

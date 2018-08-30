@@ -35,11 +35,11 @@ from .LAStoolsUtils import LAStoolsUtils
 
 from .LAStools.blast2dem import blast2dem
 from .LAStools.blast2iso import blast2iso
+from .LAStools.las2dem import las2dem
+from .LAStools.las2iso import las2iso
 from .LAStools.las2las_filter import las2las_filter
 from .LAStools.las2las_project import las2las_project
 from .LAStools.las2las_transform import las2las_transform
-from .LAStools.las2dem import las2dem
-from .LAStools.las2iso import las2iso
 from .LAStools.las2shp import las2shp
 from .LAStools.las2tin import las2tin
 from .LAStools.las2txt import las2txt
@@ -74,10 +74,35 @@ from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
 from .LAStools.txt2las import txt2las
 
+from .LAStoolsProduction.blast2demPro import blast2demPro
+from .LAStoolsProduction.blast2isoPro import blast2isoPro
+from .LAStoolsProduction.las2demPro import las2demPro
+from .LAStoolsProduction.las2lasPro_filter import las2lasPro_filter
+from .LAStoolsProduction.las2lasPro_project import las2lasPro_project
+from .LAStoolsProduction.las2lasPro_transform import las2lasPro_transform
+from .LAStoolsProduction.las2txtPro import las2txtPro
 from .LAStoolsProduction.lasboundaryPro import lasboundaryPro
+from .LAStoolsProduction.lascanopyPro import lascanopyPro
 from .LAStoolsProduction.lasclassifyPro import lasclassifyPro
+from .LAStoolsProduction.lasduplicatePro import lasduplicatePro
+from .LAStoolsProduction.lasindexPro import lasindexPro
 from .LAStoolsProduction.lasinfoPro import lasinfoPro
+from .LAStoolsProduction.lasgridPro import lasgridPro
+from .LAStoolsProduction.lasgroundPro import lasgroundPro
+from .LAStoolsProduction.lasgroundPro_new import lasgroundPro_new
+from .LAStoolsProduction.lasheightPro import lasheightPro
+from .LAStoolsProduction.lasheightPro_classify import lasheightPro_classify
+from .LAStoolsProduction.lasmergePro import lasmergePro
+from .LAStoolsProduction.lasnoisePro import lasnoisePro
+from .LAStoolsProduction.lasoveragePro import lasoveragePro
+from .LAStoolsProduction.lasoverlapPro import lasoverlapPro
+from .LAStoolsProduction.laspublishPro import laspublishPro
+from .LAStoolsProduction.lassortPro import lassortPro
+from .LAStoolsProduction.lastilePro import lastilePro
+from .LAStoolsProduction.lasthinPro import lasthinPro
+from .LAStoolsProduction.lasviewPro import lasviewPro
 from .LAStoolsProduction.laszipPro import laszipPro
+from .LAStoolsProduction.lasvalidatePro import lasvalidatePro
 from .LAStoolsProduction.txt2lasPro import txt2lasPro
 
 from .LAStoolsPipelines.hugeFileGroundClassify import hugeFileGroundClassify
@@ -124,14 +149,14 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing single files
 
-        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2las_project(), las2las_transform(), las2dem(), las2iso(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(), lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(), lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasmerge(), lasnoise(), lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lassplit(), lastile(), lasthin(), lasvalidate(), lasview(), laszip(), shp2las(), txt2las()]
+        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2dem(), las2iso(), las2las_project(), las2las_transform(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(), lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(), lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasmerge(), lasnoise(), lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lassplit(), lastile(), lasthin(), lasvalidate(), lasview(), laszip(), shp2las(), txt2las()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )
 
         # LAStools for processing entire folders of files
 
-        self.algs = [lasboundaryPro(), lasclassifyPro(), lasinfoPro(), laszipPro(), txt2lasPro()]
+        self.algs = [blast2demPro(), blast2isoPro(), las2demPro(), las2lasPro_filter(), las2lasPro_project(), las2lasPro_transform(), las2txtPro(), lasboundaryPro(), lascanopyPro(), lasclassifyPro(), lasduplicatePro(), lasgridPro(), lasgroundPro(), lasgroundPro_new(), lasheightPro(), lasheightPro_classify(), lasindexPro(), lasinfoPro(), lasmergePro(), lasnoisePro(), lasoveragePro(), lasoverlapPro(), laspublishPro(), lassortPro(), lastilePro(), lasthinPro(), lasvalidatePro(), laszipPro(), lasviewPro(), txt2lasPro()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )

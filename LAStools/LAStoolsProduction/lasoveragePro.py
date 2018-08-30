@@ -22,12 +22,11 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasoveragePro(LAStoolsAlgorithm):
 
@@ -36,15 +35,11 @@ class lasoveragePro(LAStoolsAlgorithm):
     OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasoveragePro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalFeetGUI()
         self.addParametersFilesAreFlightlinesGUI()
-        self.addParameter(ParameterNumber(lasoveragePro.CHECK_STEP,
-                                          self.tr("size of grid used for scan angle check"), 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasoveragePro.OPERATION,
-                                             self.tr("mode of operation"), lasoveragePro.OPERATIONS, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasoveragePro.CHECK_STEP, "size of grid used for scan angle check", QgsProcessingParameterNumber.Double, 1.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterEnum(lasoveragePro.OPERATION, "mode of operation", lasoveragePro.OPERATIONS, False, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -58,14 +53,14 @@ class lasoveragePro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersHorizontalFeetCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
-        step = self.getParameterValue(lasoveragePro.CHECK_STEP)
-        if step != 1.0:
+        step = self.parameterAsDouble(parameters, lasoveragePro.CHECK_STEP, context)
+        if (step != 1.0):
             commands.append("-step")
             commands.append(unicode(step))
-        operation = self.getParameterValue(lasoveragePro.OPERATION)
-        if operation == 1:
+        operation = self.parameterAsInt(parameters, lasoveragePro.OPERATION, context)
+        if (operation == 1):
             commands.append("-flag_as_withheld")
-        elif operation == 2:
+        elif (operation == 2):
             commands.append("-remove_overage")
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
@@ -78,17 +73,16 @@ class lasoveragePro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasoveragePro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasoveragePro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasoveragePro()

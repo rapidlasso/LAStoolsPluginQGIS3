@@ -57,15 +57,15 @@ class blast2iso(LAStoolsAlgorithm):
         commands.append("-iso_every")
         commands.append(unicode(self.parameterAsDouble(parameters, blast2iso.ISO_EVERY, context)))
         clean = self.parameterAsDouble(parameters, blast2iso.CLEAN, context)
-        if (clean != 0):
+        if (clean != 0.0):
             commands.append("-clean")
             commands.append(unicode(clean))
         simplify_length = self.parameterAsDouble(parameters, blast2iso.SIMPLIFY_LENGTH, context)
-        if (simplify_length != 0):
+        if (simplify_length != 0.0):
             commands.append("-simplify_length")
             commands.append(unicode(simplify_length))
         simplify_area = self.parameterAsDouble(parameters, blast2iso.SIMPLIFY_AREA, context)
-        if (simplify_area != 0):
+        if (simplify_area != 0.0):
             commands.append("-simplify_area")
             commands.append(unicode(simplify_area))
         self.addParametersVectorOutputCommands(parameters, context, commands)

@@ -22,11 +22,10 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasindexPro(LAStoolsAlgorithm):
 
@@ -34,13 +33,9 @@ class lasindexPro(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasindexPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasindexPro.APPEND_LAX,
-                                           self.tr("append *.lax file to *.laz file"), False))
-        self.addParameter(ParameterBoolean(lasindexPro.MOBILE_OR_TERRESTRIAL,
-                                           self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
+        self.addParameter(QgsProcessingParameterBoolean(lasindexPro.APPEND_LAX, "append *.lax file to *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasindexPro.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
@@ -52,9 +47,9 @@ class lasindexPro(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.getParameterValue(lasindexPro.APPEND_LAX):
+        if (self.parameterAsBool(parameters, lasindexPro.APPEND_LAX, context)):
             commands.append("-append")
-        if self.getParameterValue(lasindexPro.MOBILE_OR_TERRESTRIAL):
+        if (self.parameterAsBool(parameters, lasindexPro.MOBILE_OR_TERRESTRIAL, context)):
             commands.append("-tile_size")
             commands.append("10")
             commands.append("-maximum")
@@ -67,17 +62,17 @@ class lasindexPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasindexPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasindexPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasindexPro()
+

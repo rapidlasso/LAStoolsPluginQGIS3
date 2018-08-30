@@ -22,15 +22,13 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
+
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 
 class lasmergePro(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasmergePro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
@@ -55,10 +53,10 @@ class lasmergePro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasmergePro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasmergePro'
 
     def group(self):
         return 'folder - conversion'
@@ -67,5 +65,4 @@ class lasmergePro(LAStoolsAlgorithm):
         return 'folder - conversion'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasmergePro()

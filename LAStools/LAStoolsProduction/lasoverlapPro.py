@@ -22,13 +22,12 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasoverlapPro(LAStoolsAlgorithm):
 
@@ -41,21 +40,14 @@ class lasoverlapPro(LAStoolsAlgorithm):
     CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasoverlapPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParameter(ParameterNumber(lasoverlapPro.CHECK_STEP,
-                                          self.tr("size of grid used for overlap check"), 0, None, 2.0))
-        self.addParameter(ParameterSelection(lasoverlapPro.ATTRIBUTE,
-                                             self.tr("attribute to check"), lasoverlapPro.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(lasoverlapPro.OPERATION,
-                                             self.tr("operation on attribute per cell"), lasoverlapPro.OPERATIONS, 0))
-        self.addParameter(ParameterBoolean(lasoverlapPro.CREATE_OVERLAP_RASTER,
-                                           self.tr("create overlap raster"), True))
-        self.addParameter(ParameterBoolean(lasoverlapPro.CREATE_DIFFERENCE_RASTER,
-                                           self.tr("create difference raster"), True))
+        self.addParameter(QgsProcessingParameterNumber(lasoverlapPro.CHECK_STEP, "size of grid used for overlap check", QgsProcessingParameterNumber.Double, 2.0, False, 0.001, 50.0))
+        self.addParameter(QgsProcessingParameterEnum(lasoverlapPro.ATTRIBUTE, "attribute to check", lasoverlapPro.ATTRIBUTES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasoverlapPro.OPERATION, "operation on attribute per cell", lasoverlapPro.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterBoolean(lasoverlapPro.CREATE_OVERLAP_RASTER, "create overlap raster", True))
+        self.addParameter(QgsProcessingParameterBoolean(lasoverlapPro.CREATE_DIFFERENCE_RASTER, "create difference raster", True))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()
@@ -70,20 +62,20 @@ class lasoverlapPro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
-        step = self.getParameterValue(lasoverlapPro.CHECK_STEP)
-        if step != 0.0:
+        step = self.parameterAsDouble(parameters, lasoverlapPro.CHECK_STEP, context)
+        if (step != 2.0):
             commands.append("-step")
             commands.append(unicode(step))
         commands.append("-values")
-        attribute = self.getParameterValue(lasoverlapPro.ATTRIBUTE)
-        if attribute != 0:
+        attribute = self.parameterAsInt(parameters, lasoverlapPro.ATTRIBUTE, context)
+        if (attribute != 0):
             commands.append("-" + lasoverlapPro.ATTRIBUTES[attribute])
-        operation = self.getParameterValue(lasoverlapPro.OPERATION)
-        if operation != 0:
+        operation = self.parameterAsInt(parameters, lasoverlapPro.OPERATION, context)
+        if (operation != 0):
             commands.append("-" + lasoverlapPro.OPERATIONS[operation])
-        if not self.getParameterValue(lasoverlapPro.CREATE_OVERLAP_RASTER):
+        if (not self.parameterAsBool(parameters, lasoverlapPro.CREATE_OVERLAP_RASTER, context)):
             commands.append("-no_over")
-        if not self.getParameterValue(lasoverlapPro.CREATE_DIFFERENCE_RASTER):
+        if (not self.parameterAsBool(parameters, lasoverlapPro.CREATE_DIFFERENCE_RASTER, context)):
             commands.append("-no_diff")
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
@@ -97,17 +89,16 @@ class lasoverlapPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasoverlapPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasoverlapPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasoverlapPro()

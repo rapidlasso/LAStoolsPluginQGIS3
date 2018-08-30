@@ -51,13 +51,13 @@ class lasoverage(LAStoolsAlgorithm):
         self.addParametersHorizontalFeetCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasoverage.CHECK_STEP, context)
-        if step != 1.0:
+        if (step != 1.0):
             commands.append("-step")
             commands.append(unicode(step))
         operation = self.parameterAsInt(parameters, lasoverage.OPERATION, context)
-        if operation == 1:
+        if (operation == 1):
             commands.append("-flag_as_withheld")
-        elif operation == 2:
+        elif (operation == 2):
             commands.append("-remove_overage")
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)

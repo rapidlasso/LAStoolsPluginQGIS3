@@ -21,13 +21,12 @@ __date__ = 'May 2016'
 __copyright__ = '(C) 2016 by Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasgroundPro_new(LAStoolsAlgorithm):
     TERRAIN = "TERRAIN"
@@ -41,26 +40,17 @@ class lasgroundPro_new(LAStoolsAlgorithm):
     OFFSET = "OFFSET"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasgroundPro_new')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersVerboseGUI()
         self.addParametersPointInputFolderGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterSelection(lasgroundPro_new.TERRAIN,
-                                             self.tr("terrain type"), lasgroundPro_new.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasgroundPro_new.GRANULARITY,
-                                             self.tr("preprocessing"), lasgroundPro_new.GRANULARITIES, 1))
-        self.addParameter(ParameterNumber(lasgroundPro_new.STEP,
-                                          self.tr("step (for 'custom' terrain only)"), 25.0))
-        self.addParameter(ParameterNumber(lasgroundPro_new.BULGE,
-                                          self.tr("bulge (for 'custom' terrain only)"), 2.0))
-        self.addParameter(ParameterNumber(lasgroundPro_new.SPIKE,
-                                          self.tr("spike (for 'custom' terrain only)"), 1.0))
-        self.addParameter(ParameterNumber(lasgroundPro_new.DOWN_SPIKE,
-                                          self.tr("down spike (for 'custom' terrain only)"), 1.0))
-        self.addParameter(ParameterNumber(lasgroundPro_new.OFFSET,
-                                          self.tr("offset (for 'custom' terrain only)"), 0.05))
+        self.addParameter(QgsProcessingParameterEnum(lasgroundPro_new.TERRAIN, "terrain type", lasgroundPro_new.TERRAINS, False, 3))
+        self.addParameter(QgsProcessingParameterEnum(lasgroundPro_new.GRANULARITY, "preprocessing", lasgroundPro_new.GRANULARITIES, False, 2))
+        self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.STEP, "step (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0, 500.0))
+        self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.BULGE, "bulge (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 2.0, False, 0.0, 25.0))
+        self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.SPIKE, "spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
+        self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.DOWN_SPIKE, "down spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
+        self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.OFFSET, "offset (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 0.05, False, 0.0, 1.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -73,21 +63,21 @@ class lasgroundPro_new(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)
-        method = self.getParameterValue(lasgroundPro_new.TERRAIN)
+        method = self.parameterAsInt(parameters, lasgroundPro_new.TERRAIN, context)
         if (method == 5):
             commands.append("-step")
-            commands.append(unicode(self.getParameterValue(lasgroundPro_new.STEP)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasgroundPro_new.STEP, context)))
             commands.append("-bulge")
-            commands.append(unicode(self.getParameterValue(lasgroundPro_new.BULGE)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasgroundPro_new.BULGE, context)))
             commands.append("-spike")
-            commands.append(unicode(self.getParameterValue(lasgroundPro_new.SPIKE)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasgroundPro_new.SPIKE, context)))
             commands.append("-spike_down")
-            commands.append(unicode(self.getParameterValue(lasgroundPro_new.DOWN_SPIKE)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasgroundPro_new.DOWN_SPIKE, context)))
             commands.append("-offset")
-            commands.append(unicode(self.getParameterValue(lasgroundPro_new.OFFSET)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasgroundPro_new.OFFSET, context)))
         else:
             commands.append("-" + lasgroundPro_new.TERRAINS[method])
-        granularity = self.getParameterValue(lasgroundPro_new.GRANULARITY)
+        granularity = self.parameterAsInt(parameters, lasgroundPro_new.GRANULARITY, context)
         if (granularity != 1):
             commands.append("-" + lasgroundPro_new.GRANULARITIES[granularity])
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
@@ -101,17 +91,16 @@ class lasgroundPro_new(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasgroundPro_new'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasgroundPro_new'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasgroundPro_new()

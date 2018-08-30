@@ -22,12 +22,11 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasnoisePro(LAStoolsAlgorithm):
 
@@ -39,21 +38,14 @@ class lasnoisePro(LAStoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasnoisePro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersIgnoreClass2GUI()
-        self.addParameter(ParameterNumber(lasnoisePro.ISOLATED,
-                                          self.tr("isolated if surrounding cells have only"), 0, None, 5))
-        self.addParameter(ParameterNumber(lasnoisePro.STEP_XY,
-                                          self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
-        self.addParameter(ParameterNumber(lasnoisePro.STEP_Z,
-                                          self.tr("resolution of isolation grid in z"), 0, None, 4.0))
-        self.addParameter(ParameterSelection(lasnoisePro.OPERATION,
-                                             self.tr("what to do with isolated points"), lasnoisePro.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lasnoisePro.CLASSIFY_AS,
-                                          self.tr("classify as"), 0, None, 7))
+        self.addParameter(QgsProcessingParameterNumber(lasnoisePro.ISOLATED, "isolated if surrounding cells have only", QgsProcessingParameterNumber.Integer, 5, False, 1))
+        self.addParameter(QgsProcessingParameterNumber(lasnoisePro.STEP_XY, "resolution of isolation grid in xy", QgsProcessingParameterNumber.Double, 4.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterNumber(lasnoisePro.STEP_Z, "resolution of isolation grid in z", QgsProcessingParameterNumber.Double, 4.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterEnum(lasnoisePro.OPERATION, "what to do with isolated points", lasnoisePro.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasnoisePro.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 7, False, 0, 255))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -67,21 +59,21 @@ class lasnoisePro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersIgnoreClass2Commands(parameters, context, commands)
-        isolated = self.getParameterValue(lasnoisePro.ISOLATED)
+        isolated = self.parameterAsInt(parameters, lasnoisePro.ISOLATED, context)
         commands.append("-isolated")
         commands.append(unicode(isolated))
-        step_xy = self.getParameterValue(lasnoisePro.STEP_XY)
+        step_xy = self.parameterAsDouble(parameters, lasnoisePro.STEP_XY, context)
         commands.append("-step_xy")
         commands.append(unicode(step_xy))
-        step_z = self.getParameterValue(lasnoisePro.STEP_Z)
+        step_z = self.parameterAsDouble(parameters, lasnoisePro.STEP_Z, context)
         commands.append("-step_z")
         commands.append(unicode(step_z))
-        operation = self.getParameterValue(lasnoisePro.OPERATION)
-        if operation != 0:
+        operation = self.parameterAsInt(parameters, lasnoisePro.OPERATION, context)
+        if (operation != 0):
             commands.append("-remove_noise")
         else:
             commands.append("-classify_as")
-            classify_as = self.getParameterValue(lasnoisePro.CLASSIFY_AS)
+            classify_as = self.parameterAsInt(parameters, lasnoisePro.CLASSIFY_AS, context)
             commands.append(unicode(classify_as))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
@@ -94,17 +86,16 @@ class lasnoisePro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasnoisePro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasnoisePro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasnoisePro()

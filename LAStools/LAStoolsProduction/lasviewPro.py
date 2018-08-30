@@ -22,12 +22,11 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterNumber
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasviewPro(LAStoolsAlgorithm):
 
@@ -40,16 +39,11 @@ class lasviewPro(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasviewPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
-        self.addParameter(ParameterNumber(lasviewPro.POINTS,
-                                          self.tr("max number of points sampled"), 100000, 20000000, 5000000))
-        self.addParameter(ParameterSelection(lasviewPro.COLORING,
-                                             self.tr("color by"), lasviewPro.COLORINGS, 0))
-        self.addParameter(ParameterSelection(lasviewPro.SIZE,
-                                             self.tr("window size (x y) in pixels"), lasviewPro.SIZES, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasviewPro.POINTS, "max number of points sampled", QgsProcessingParameterNumber.Integer, 5000000, False, 100000, 20000000))
+        self.addParameter(QgsProcessingParameterEnum(lasviewPro.COLORING, "color by", lasviewPro.COLORINGS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasviewPro.SIZE,"window size (x y) in pixels", lasviewPro.SIZES, False, 0))
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
 
@@ -58,32 +52,31 @@ class lasviewPro(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
-        points = self.getParameterValue(lasviewPro.POINTS)
+        points = self.parameterAsInt(parameters, lasviewPro.POINTS, context)
         commands.append("-points " + unicode(points))
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        coloring = self.getParameterValue(lasviewPro.COLORING)
-        if coloring != 0:
+        coloring = self.parameterAsInt(parameters, lasviewPro.COLORING, context)
+        if (coloring != 0):
             commands.append("-color_by_" + lasviewPro.COLORINGS[coloring])
-        size = self.getParameterValue(lasviewPro.SIZE)
-        if size != 0:
+        size = self.parameterAsInt(parameters, lasviewPro.SIZE, context)
+        if (size != 0):
             commands.append("-win " + lasviewPro.SIZES[size])
+        self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasviewPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasviewPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasviewPro()

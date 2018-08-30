@@ -86,15 +86,15 @@ class laspublish(LAStoolsAlgorithm):
         if (self.parameterAsBool(parameters, laspublish.OVERWRITE_EXISTING, context)):
             commands.append("-overwrite")
         portal_html_page = self.parameterAsString(parameters, laspublish.PORTAL_HTML_PAGE, context)
-        if portal_html_page != "":
+        if (portal_html_page != ""):
             commands.append("-o")
             commands.append('"' + portal_html_page + '"')
         title = self.parameterAsString(parameters, laspublish.PORTAL_TITLE, context)
-        if title != "":
+        if (title != ""):
             commands.append("-title")
             commands.append('"' + title + '"')
         description = self.parameterAsInt(parameters, laspublish.PORTAL_DESCRIPTION, context)
-        if description != "":
+        if (description != ""):
             commands.append("-description")
             commands.append('"' + description + '"')
         commands.append("-olaz")

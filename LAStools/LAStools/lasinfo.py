@@ -58,7 +58,7 @@ class lasinfo(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasinfo.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasinfo.HISTO3, "histogram", lasinfo.HISTOGRAM, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasinfo.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
-        self.addParametersGenericOutputGUI("Output ASCII file", "txt", False)
+        self.addParametersGenericOutputGUI("Output ASCII file", "txt", True)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):

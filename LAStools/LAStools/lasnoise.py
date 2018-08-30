@@ -66,7 +66,7 @@ class lasnoise(LAStoolsAlgorithm):
         commands.append("-step_z")
         commands.append(unicode(step_z))
         operation = self.parameterAsInt(parameters, lasnoise.OPERATION, context)
-        if operation != 0:
+        if (operation != 0):
             commands.append("-remove_noise")
         else:
             commands.append("-classify_as")

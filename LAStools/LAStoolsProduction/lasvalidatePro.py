@@ -22,35 +22,27 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
+from qgis.core import QgsProcessingParameterBoolean
+
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
-from qgis.core import QgsProcessingParameterBoolean
-from processing.core.outputs import OutputFile
-
 
 class lasvalidatePro(LAStoolsAlgorithm):
 
     ONE_REPORT_PER_FILE = "ONE_REPORT_PER_FILE"
-    OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasvalidatePro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE,
-                                           self.tr("generate one '*_LVS.xml' report per file"), False))
-        self.addOutput(OutputFile(lasvalidatePro.OUTPUT, self.tr("Output XML file")))
+        self.addParameter(QgsProcessingParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
+        self.addParametersGenericOutputGUI("Output XML file", "xml", True)
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate")]
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        if self.getParameterValue(lasvalidatePro.ONE_REPORT_PER_FILE):
+        if (self.parameterAsBool(parameters, lasvalidatePro.ONE_REPORT_PER_FILE, context)):
             commands.append("-oxml")
-        else:
-            commands.append("-o")
-            commands.append(self.getOutputValue(lasvalidatePro.OUTPUT))
+        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
@@ -58,17 +50,16 @@ class lasvalidatePro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasvalidatePro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasvalidatePro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - checking quality'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasvalidatePro()

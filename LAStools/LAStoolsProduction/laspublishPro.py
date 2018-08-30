@@ -22,14 +22,12 @@ __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterString
-from processing.core.parameters import ParameterFile
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class laspublishPro(LAStoolsAlgorithm):
 
@@ -49,69 +47,54 @@ class laspublishPro(LAStoolsAlgorithm):
     PORTAL_DESCRIPTION = "PORTAL_DESCRIPTION"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('laspublishPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersVerboseGUI()
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterSelection(laspublishPro.MODE,
-                                             self.tr("type of portal"), laspublishPro.MODES, 1))
-        self.addParameter(ParameterBoolean(laspublishPro.USE_EDL,
-                                           self.tr("use Eye Dome Lighting (EDL)"), True))
-        self.addParameter(ParameterBoolean(laspublishPro.SHOW_SKYBOX,
-                                           self.tr("show Skybox"), True))
-        self.addParameter(ParameterSelection(laspublishPro.MATERIAL,
-                                             self.tr("default material colors on start-up"), laspublishPro.MATERIALS, 0))
-        self.addParameter(ParameterFile(laspublishPro.PORTAL_DIRECTORY,
-                                        self.tr("portal output directory"), True, False))
-        self.addParameter(ParameterSelection(laspublishPro.COPY_OR_MOVE,
-                                             self.tr("copy or move source LiDAR files into portal (only for download portals)"), laspublishPro.COPY_OR_MOVE_OPTIONS, 2))
-        self.addParameter(ParameterBoolean(laspublishPro.OVERWRITE_EXISTING,
-                                           self.tr("overwrite existing files"), True))
-        self.addParameter(ParameterString(laspublishPro.PORTAL_HTML_PAGE,
-                                          self.tr("portal HTML page"), "portal.html", False))
-        self.addParameter(ParameterString(laspublishPro.PORTAL_TITLE,
-                                          self.tr("portal title"), "My LiDAR Portal"))
-        self.addParameter(ParameterString(laspublishPro.PORTAL_DESCRIPTION,
-                                          self.tr("portal description")))
+        self.addParameter(QgsProcessingParameterEnum(laspublishPro.MODE, "type of portal", laspublishPro.MODES, False, 1))
+        self.addParameter(QgsProcessingParameterBoolean(laspublishPro.USE_EDL, "use Eye Dome Lighting (EDL)", True))
+        self.addParameter(QgsProcessingParameterBoolean(laspublishPro.SHOW_SKYBOX, "show Skybox", True))
+        self.addParameter(QgsProcessingParameterEnum(laspublishPro.MATERIAL, "default material colors on start-up", laspublishPro.MATERIALS, False, 0))
+        self.addParametersOutputDirectoryGUI()
+        self.addParameter(QgsProcessingParameterEnum(laspublishPro.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)", laspublishPro.COPY_OR_MOVE_OPTIONS, False, 2))
+        self.addParameter(QgsProcessingParameterBoolean(laspublishPro.OVERWRITE_EXISTING, "overwrite existing files", True))
+        self.addParameter(QgsProcessingParameterString(laspublishPro.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"))
+        self.addParameter(QgsProcessingParameterString(laspublishPro.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
+        self.addParameter(QgsProcessingParameterString(laspublishPro.PORTAL_DESCRIPTION, "portal description", ""))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laspublish")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        mode = self.getParameterValue(laspublishPro.MODE)
+        mode = self.parameterAsInt(parameters, laspublishPro.MODE, context)
         if (mode == 0):
             commands.append("-only_3D")
         elif (mode == 2):
             commands.append("-only_2D")
-        material = self.getParameterValue(laspublishPro.MATERIAL)
+        material = self.parameterAsInt(parameters, laspublishPro.MATERIAL, context)
         commands.append("-" + laspublishPro.MATERIALS[material])
-        if not self.getParameterValue(laspublishPro.USE_EDL):
+        if (not self.parameterAsBool(parameters, laspublishPro.USE_EDL, context)):
             commands.append("-no_edl")
-        if not self.getParameterValue(laspublishPro.SHOW_SKYBOX):
+        if (not self.parameterAsBool(parameters, laspublishPro.SHOW_SKYBOX, context)):
             commands.append("-no_skybox")
-        portal_directory = self.getParameterValue(laspublishPro.PORTAL_DIRECTORY)
-        if portal_directory != "":
-            commands.append("-odir")
-            commands.append('"' + portal_directory + '"')
-        copy_or_move = self.getParameterValue(laspublishPro.COPY_OR_MOVE)
+        addParametersOutputDirectoryCommands(parameters, context, commands)
+        copy_or_move = self.parameterAsInt(parameters, laspublishPro.COPY_OR_MOVE, context)
         if (copy_or_move == 0):
             commands.append("-copy_source_files")
         elif (copy_or_move == 1):
             commands.append("-move_source_files")
             commands.append("-really_move")
-        if self.getParameterValue(laspublishPro.OVERWRITE_EXISTING):
+        if (self.parameterAsBool(parameters, laspublishPro.OVERWRITE_EXISTING, context)):
             commands.append("-overwrite")
-        portal_html_page = self.getParameterValue(laspublishPro.PORTAL_HTML_PAGE)
-        if portal_html_page != "":
+        portal_html_page = self.parameterAsString(parameters, laspublishPro.PORTAL_HTML_PAGE, context)
+        if (portal_html_page != ""):
             commands.append("-o")
             commands.append('"' + portal_html_page + '"')
-        title = self.getParameterValue(laspublishPro.PORTAL_TITLE)
-        if title != "":
+        title = self.parameterAsString(parameters, laspublishPro.PORTAL_TITLE, context)
+        if (title != ""):
             commands.append("-title")
             commands.append('"' + title + '"')
-        description = self.getParameterValue(laspublishPro.PORTAL_DESCRIPTION)
-        if description != "":
+        description = self.parameterAsInt(parameters, laspublishPro.PORTAL_DESCRIPTION, context)
+        if (description != ""):
             commands.append("-description")
             commands.append('"' + description + '"')
         commands.append("-olaz")
@@ -122,10 +105,10 @@ class laspublishPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'laspublishPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'laspublishPro'
 
     def group(self):
         return 'folder - conversion'
@@ -134,5 +117,4 @@ class laspublishPro(LAStoolsAlgorithm):
         return 'folder - conversion'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return laspublishPro()

@@ -22,42 +22,33 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasthinPro(LAStoolsAlgorithm):
 
     THIN_STEP = "THIN_STEP"
     OPERATION = "OPERATION"
-    OPERATIONS = ["lowest", "random", "highest", "central", "adaptive", "contours"]
-    THRESHOLD_OR_INTERVAL = "THRESHOLD_OR_INTERVAL"
+    OPERATIONS = ["lowest", "random", "highest", "central", "adaptive", "contours", "percentile"]
+    THRESHOLD_OR_INTERVAL_OR_PERCENTILE = "THRESHOLD_OR_INTERVAL_OR_PERCENTILE"
     WITHHELD = "WITHHELD"
     CLASSIFY_AS = "CLASSIFY_AS"
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasthinPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersIgnoreClass2GUI()
-        self.addParameter(ParameterNumber(lasthinPro.THIN_STEP,
-                                          self.tr("size of grid used for thinning"), 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasthinPro.OPERATION,
-                                             self.tr("keep particular point per cell"), lasthinPro.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lasthinPro.THRESHOLD_OR_INTERVAL,
-                                          self.tr("vertical threshold or contour intervals (only for 'adaptive' or 'contours' thinning)"), 0, None, 0.1))
-        self.addParameter(ParameterBoolean(lasthinPro.WITHHELD,
-                                           self.tr("mark thinned-away points as withheld"), False))
-        self.addParameter(ParameterBoolean(lasthinPro.CLASSIFY_AS,
-                                           self.tr("classify surviving points as class"), False))
-        self.addParameter(ParameterNumber(lasthinPro.CLASSIFY_AS_CLASS,
-                                          self.tr("class"), 0, None, 8))
+        self.addParameter(QgsProcessingParameterNumber(lasthinPro.THIN_STEP, "size of grid used for thinning", QgsProcessingParameterNumber.Double, 1.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterEnum(lasthinPro.OPERATION, "keep particular point per cell", lasthinPro.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(lasthinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, "adaptive threshold, contour intervals, or percentile", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 100.0))
+        self.addParameter(QgsProcessingParameterBoolean(lasthinPro.WITHHELD, "mark thinned-away points as withheld", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasthinPro.CLASSIFY_AS, "classify surviving points as", False))
+        self.addParameter(QgsProcessingParameterNumber(lasthinPro.CLASSIFY_AS_CLASS, "classification code", QgsProcessingParameterNumber.Integer, 8, False, 0, 255))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -71,20 +62,20 @@ class lasthinPro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersIgnoreClass2Commands(parameters, context, commands)
-        step = self.getParameterValue(lasthinPro.THIN_STEP)
-        if step != 0.0:
+        step = self.parameterAsFloat(parameters, lasthinPro.THIN_STEP, context)
+        if (step != 1.0):
             commands.append("-step")
             commands.append(unicode(step))
-        operation = self.getParameterValue(lasthinPro.OPERATION)
+        operation = self.parameterAsInt(parameters, lasthinPro.OPERATION, context)
         if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
         if (operation >= 4):
-            commands.append(unicode(self.getParameterValue(lasthinPro.THRESHOLD_OR_INTERVAL)))
-        if self.getParameterValue(lasthinPro.WITHHELD):
+            commands.append(unicode(self.parameterAsFloat(parameters, lasthinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context)))
+        if (self.parameterAsBool(parameters, lasthinPro.WITHHELD, context)):
             commands.append("-withheld")
-        if self.getParameterValue(lasthinPro.CLASSIFY_AS):
+        if (self.parameterAsBool(parameters, lasthinPro.CLASSIFY_AS, context)):
             commands.append("-classify_as")
-            commands.append(unicode(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
+            commands.append(unicode(self.parameterAsInt(parameters, lasthinPro.CLASSIFY_AS_CLASS, context)))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)
@@ -96,17 +87,16 @@ class lasthinPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasthinPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasthinPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasthinPro()

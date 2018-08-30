@@ -22,12 +22,12 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class las2lasPro_transform(LAStoolsAlgorithm):
 
@@ -36,18 +36,13 @@ class las2lasPro_transform(LAStoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('las2lasPro_transform')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersTransform1CoordinateGUI()
         self.addParametersTransform2CoordinateGUI()
         self.addParametersTransform1OtherGUI()
         self.addParametersTransform2OtherGUI()
-        self.addParameter(ParameterSelection(las2lasPro_transform.OPERATION,
-                                             self.tr("operations (first 8 need an argument)"),
-                                             las2lasPro_transform.OPERATIONS, 0))
-        self.addParameter(ParameterString(las2lasPro_transform.OPERATIONARG,
-                                          self.tr("argument for operation")))
+        self.addParameter(QgsProcessingParameterEnum(las2lasPro_transform.OPERATION, "operations (first 8 need an argument)", las2lasPro_transform.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterString(las2lasPro_transform.OPERATIONARG, "argument for operation"))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -66,11 +61,11 @@ class las2lasPro_transform(LAStoolsAlgorithm):
         self.addParametersTransform2CoordinateCommands(parameters, context, commands)
         self.addParametersTransform1OtherCommands(parameters, context, commands)
         self.addParametersTransform2OtherCommands(parameters, context, commands)
-        operation = self.getParameterValue(las2lasPro_transform.OPERATION)
-        if operation != 0:
+        operation = self.parameterAsInt(parameters, las2lasPro_transform.OPERATION, context)
+        if (operation != 0):
             commands.append("-" + las2lasPro_transform.OPERATIONS[operation])
-            if operation > 8:
-                commands.append(self.getParameterValue(las2lasPro_transform.OPERATIONARG))
+            if (operation > 8):
+                commands.append(self.parameterAsString(parameters, las2lasPro_transform.OPERATIONARG, context))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)
@@ -82,17 +77,16 @@ class las2lasPro_transform(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'las2lasPro_transform'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'las2lasPro_transform'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return las2lasPro_transform()

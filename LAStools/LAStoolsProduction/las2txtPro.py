@@ -33,11 +33,8 @@ class las2txtPro(LAStoolsAlgorithm):
     PARSE = "PARSE"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('las2txtPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterString(las2txtPro.PARSE,
-                                          self.tr("parse string"), "xyz"))
+        self.addParameter(QgsProcessingParameterString(las2txtPro.PARSE, "parse string", "xyz"))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()
@@ -51,8 +48,8 @@ class las2txtPro(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
-        parse = self.getParameterValue(las2txtPro.PARSE)
-        if parse != "xyz":
+        parse = self.parameterAsInt(parameters, las2txtPro.PARSE, context)
+        if (parse != "xyz"):
             commands.append("-parse")
             commands.append(parse)
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
@@ -66,10 +63,10 @@ class las2txtPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'las2txtPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'las2txtPro'
 
     def group(self):
         return 'folder - conversion'
@@ -78,5 +75,4 @@ class las2txtPro(LAStoolsAlgorithm):
         return 'folder - conversion'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return las2txtPro()

@@ -57,10 +57,10 @@ class lasview(LAStoolsAlgorithm):
         points = self.parameterAsInt(parameters, lasview.POINTS, context)
         commands.append("-points " + unicode(points))
         coloring = self.parameterAsInt(parameters, lasview.COLORING, context)
-        if coloring != 0:
+        if (coloring != 0):
             commands.append("-color_by_" + lasview.COLORINGS[coloring])
         size = self.parameterAsInt(parameters, lasview.SIZE, context)
-        if size != 0:
+        if (size != 0):
             commands.append("-win " + lasview.SIZES[size])
         self.addParametersAdditionalCommands(parameters, context, commands)
 

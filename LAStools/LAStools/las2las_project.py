@@ -63,35 +63,35 @@ class las2las_project(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, las2las_project.SOURCE_PROJECTION, context)
-        if source_projection != 0:
-            if source_projection == 1:
+        if (source_projection != 0):
+            if (source_projection == 1):
                 source_utm_zone = self.parameterAsInt(parameters, las2las_project.SOURCE_UTM, context)
-                if source_utm_zone != 0:
+                if (source_utm_zone != 0):
                     commands.append("-" + las2las_project.PROJECTIONS[source_projection])
-                    if source_utm_zone > 60:
+                    if (source_utm_zone > 60):
                         commands.append(unicode(source_utm_zone - 60) + "south")
                     else:
                         commands.append(unicode(source_utm_zone) + "north")
-            elif source_projection < 4:
+            elif (source_projection < 4):
                 source_sp_code = self.parameterAsInt(parameters, las2las_project.SOURCE_SP, context)
-                if source_sp_code != 0:
+                if (source_sp_code != 0):
                     commands.append("-" + las2las_project.PROJECTIONS[source_projection])
                     commands.append(las2las_project.STATE_PLANES[source_sp_code])
             else:
                 commands.append("-" + las2las_project.PROJECTIONS[source_projection])
         target_projection = self.parameterAsInt(parameters, las2las_project.TARGET_PROJECTION, context)
-        if target_projection != 0:
-            if target_projection == 1:
+        if (target_projection != 0):
+            if (target_projection == 1):
                 target_utm_zone = self.parameterAsInt(parameters, las2las_project.TARGET_UTM, context)
-                if target_utm_zone != 0:
+                if (target_utm_zone != 0):
                     commands.append("-target_" + las2las_project.PROJECTIONS[target_projection])
-                    if target_utm_zone > 60:
+                    if (target_utm_zone > 60):
                         commands.append(unicode(target_utm_zone - 60) + "south")
                     else:
                         commands.append(unicode(target_utm_zone) + "north")
-            elif target_projection < 4:
+            elif (target_projection < 4):
                 target_sp_code = self.parameterAsInt(parameters, las2las_project.TARGET_SP, context)
-                if target_sp_code != 0:
+                if (target_sp_code != 0):
                     commands.append("-target_" + las2las_project.PROJECTIONS[target_projection])
                     commands.append(las2las_project.STATE_PLANES[target_sp_code])
             else:

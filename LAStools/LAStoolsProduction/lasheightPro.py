@@ -23,12 +23,11 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class lasheightPro(LAStoolsAlgorithm):
 
@@ -39,21 +38,14 @@ class lasheightPro(LAStoolsAlgorithm):
     DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('lasheightPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersIgnoreClass2GUI()
-        self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z,
-                                           self.tr("replace z"), False))
-        self.addParameter(ParameterBoolean(lasheightPro.DROP_ABOVE,
-                                           self.tr("drop above"), False))
-        self.addParameter(ParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT,
-                                          self.tr("drop above height"), None, None, 100.0))
-        self.addParameter(ParameterBoolean(lasheightPro.DROP_BELOW,
-                                           self.tr("drop below"), False))
-        self.addParameter(ParameterNumber(lasheightPro.DROP_BELOW_HEIGHT,
-                                          self.tr("drop below height"), None, None, -2.0))
+        self.addParameter(QgsProcessingParameterBoolean(lasheightPro.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(lasheightPro.DROP_ABOVE, "drop above", False))
+        self.addParameter(QgsProcessingParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0))
+        self.addParameter(QgsProcessingParameterBoolean(lasheightPro.DROP_BELOW, "drop below", False))
+        self.addParameter(QgsProcessingParameterNumber(lasheightPro.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
@@ -67,14 +59,14 @@ class lasheightPro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersIgnoreClass2Commands(parameters, context, commands)
-        if self.getParameterValue(lasheightPro.REPLACE_Z):
+        if (self.parameterAsBool(parameters, lasheightPro.REPLACE_Z, context)):
             commands.append("-replace_z")
-        if self.getParameterValue(lasheightPro.DROP_ABOVE):
+        if (self.parameterAsBool(parameters, lasheightPro.DROP_ABOVE, context)):
             commands.append("-drop_above")
-            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_ABOVE_HEIGHT)))
-        if self.getParameterValue(lasheightPro.DROP_BELOW):
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheightPro.DROP_ABOVE_HEIGHT, context)))
+        if (self.parameterAsBool(parameters, lasheightPro.DROP_BELOW, context)):
             commands.append("-drop_below")
-            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_BELOW_HEIGHT)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasheightPro.DROP_BELOW_HEIGHT, context)))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         self.addParametersPointOutputFormatCommands(parameters, context, commands)
@@ -86,17 +78,16 @@ class lasheightPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'lasheightPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'lasheightPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - processing points'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return lasheightPro()

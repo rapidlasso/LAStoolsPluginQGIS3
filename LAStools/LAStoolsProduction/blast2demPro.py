@@ -22,12 +22,11 @@ __date__ = 'October 2014'
 __copyright__ = '(C) 2014, Martin Isenburg'
 
 import os
-from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
-
 from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 
+from ..LAStoolsUtils import LAStoolsUtils
+from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
 class blast2demPro(LAStoolsAlgorithm):
 
@@ -38,18 +37,13 @@ class blast2demPro(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.name, self.i18n_name = self.trAlgorithm('blast2demPro')
-        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(blast2demPro.ATTRIBUTE,
-                                             self.tr("Attribute"), blast2demPro.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(blast2demPro.PRODUCT,
-                                             self.tr("Product"), blast2demPro.PRODUCTS, 0))
-        self.addParameter(ParameterBoolean(blast2demPro.USE_TILE_BB,
-                                           self.tr("Use tile bounding box (after tiling with buffer)"), False))
+        self.addParameter(QgsProcessingParameterEnum(blast2demPro.ATTRIBUTE, "Attribute", blast2demPro.ATTRIBUTES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(blast2demPro.PRODUCT, "Product", blast2demPro.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterBoolean(blast2demPro.USE_TILE_BB, "Use tile bounding box (after tiling with buffer)", False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()
@@ -65,13 +59,13 @@ class blast2demPro(LAStoolsAlgorithm):
         self.addParametersPointInputMergedCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersStepCommands(parameters, context, commands)
-        attribute = self.getParameterValue(blast2demPro.ATTRIBUTE)
-        if attribute != 0:
+        attribute = self.parameterAsInt(parameters, blast2demPro.ATTRIBUTE, context)
+        if (attribute != 0):
             commands.append("-" + blast2demPro.ATTRIBUTES[attribute])
-        product = self.getParameterValue(blast2demPro.PRODUCT)
-        if product != 0:
+        product = self.parameterAsInt(parameters, blast2demPro.PRODUCT, context)
+        if (product != 0):
             commands.append("-" + blast2demPro.PRODUCTS[product])
-        if (self.getParameterValue(blast2demPro.USE_TILE_BB)):
+        if (self.parameterAsBool(parameters, blast2demPro.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
@@ -85,17 +79,16 @@ class blast2demPro(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'laszipPro'
+        return 'blast2demPro'
 
     def displayName(self):
-        return 'laszipPro'
+        return 'blast2demPro'
 
     def group(self):
-        return 'folder - conversion'
+        return 'folder - raster derivatives'
 
     def groupId(self):
-        return 'folder - conversion'
+        return 'folder - raster derivatives'
 
     def createInstance(self):
-        return laszipPro()
-	
+        return blast2demPro()

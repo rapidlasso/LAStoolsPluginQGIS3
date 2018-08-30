@@ -57,7 +57,7 @@ class lasoverlap(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasoverlap.CHECK_STEP, context)
-        if (step != 0.0):
+        if (step != 2.0):
             commands.append("-step")
             commands.append(unicode(step))
         commands.append("-values")

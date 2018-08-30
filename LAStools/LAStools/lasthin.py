@@ -45,7 +45,7 @@ class lasthin(LAStoolsAlgorithm):
         self.addParametersIgnoreClass1GUI()
         self.addParametersIgnoreClass2GUI()
         self.addParameter(QgsProcessingParameterNumber(lasthin.THIN_STEP, "size of grid used for thinning", QgsProcessingParameterNumber.Double, 1.0, False, 0.0))
-        self.addParameter(QgsProcessingParameterEnum(lasthin.OPERATION, "keep particular point per cell", lasthin.OPERATIONS, 0))
+        self.addParameter(QgsProcessingParameterEnum(lasthin.OPERATION, "keep particular point per cell", lasthin.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasthin.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, "adaptive threshold, contour intervals, or percentile", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lasthin.WITHHELD, "mark thinned-away points as withheld", False))
         self.addParameter(QgsProcessingParameterBoolean(lasthin.CLASSIFY_AS, "classify surviving points as", False))
@@ -60,11 +60,11 @@ class lasthin(LAStoolsAlgorithm):
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersIgnoreClass2Commands(parameters, context, commands)
         step = self.parameterAsFloat(parameters, lasthin.THIN_STEP, context)
-        if step != 0.0:
+        if (step != 1.0):
             commands.append("-step")
             commands.append(unicode(step))
         operation = self.parameterAsInt(parameters, lasthin.OPERATION, context)
-        if operation != 0:
+        if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
         if (operation >= 4):
             commands.append(unicode(self.parameterAsFloat(parameters, lasthin.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context)))

@@ -58,9 +58,9 @@ class las2las_transform(LAStoolsAlgorithm):
         self.addParametersTransform1OtherCommands(parameters, context, commands)
         self.addParametersTransform2OtherCommands(parameters, context, commands)
         operation = self.parameterAsInt(parameters, las2las_transform.OPERATION, context)
-        if operation != 0:
+        if (operation != 0):
             commands.append("-" + las2las_transform.OPERATIONS[operation])
-            if operation > 8:
+            if (operation > 8):
                 commands.append(self.parameterAsString(parameters, las2las_transform.OPERATIONARG, context))
         self.addParametersPointOutputCommands(parameters, context, commands)
         self.addParametersAdditionalCommands(parameters, context, commands)
