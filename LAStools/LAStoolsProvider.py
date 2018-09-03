@@ -105,7 +105,19 @@ from .LAStoolsProduction.laszipPro import laszipPro
 from .LAStoolsProduction.lasvalidatePro import lasvalidatePro
 from .LAStoolsProduction.txt2lasPro import txt2lasPro
 
+from .LAStoolsPipelines.hugeFileClassify import hugeFileClassify
 from .LAStoolsPipelines.hugeFileGroundClassify import hugeFileGroundClassify
+from .LAStoolsPipelines.hugeFileNormalize import hugeFileNormalize
+from .LAStoolsPipelines.flightlinesToCHM_FirstReturn import flightlinesToCHM_FirstReturn
+from .LAStoolsPipelines.flightlinesToCHM_HighestReturn import flightlinesToCHM_HighestReturn
+from .LAStoolsPipelines.flightlinesToCHM_SpikeFree import flightlinesToCHM_SpikeFree
+from .LAStoolsPipelines.flightlinesToDTMandDSM_FirstReturn import flightlinesToDTMandDSM_FirstReturn
+from .LAStoolsPipelines.flightlinesToDTMandDSM_SpikeFree import flightlinesToDTMandDSM_SpikeFree
+from .LAStoolsPipelines.flightlinesToMergedCHM_FirstReturn import flightlinesToMergedCHM_FirstReturn
+from .LAStoolsPipelines.flightlinesToMergedCHM_HighestReturn import flightlinesToMergedCHM_HighestReturn
+from .LAStoolsPipelines.flightlinesToMergedCHM_PitFree import flightlinesToMergedCHM_PitFree
+from .LAStoolsPipelines.flightlinesToMergedCHM_SpikeFree import flightlinesToMergedCHM_SpikeFree
+
 from . import resources
 
 class LAStoolsProvider(QgsProcessingProvider):
@@ -163,7 +175,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools pipelines
 
-        self.algs = [hugeFileGroundClassify()]
+        self.algs = [hugeFileClassify(), hugeFileGroundClassify(), hugeFileNormalize(), flightlinesToCHM_FirstReturn(), flightlinesToCHM_HighestReturn(), flightlinesToCHM_SpikeFree(), flightlinesToDTMandDSM_FirstReturn(), flightlinesToDTMandDSM_SpikeFree(), flightlinesToMergedCHM_FirstReturn(), flightlinesToMergedCHM_HighestReturn(), flightlinesToMergedCHM_PitFree(), flightlinesToMergedCHM_SpikeFree()]
 
         for alg in self.algs:
             self.addAlgorithm( alg )

@@ -162,7 +162,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
                 commands.append('"' + wildcard + '"')
 
     def addParametersPointInputGUI(self):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file", QgsProcessingParameterFile.File, "laz"))
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file", QgsProcessingParameterFile.File))
 
     def addParametersPointInputCommands(self, parameters, context, commands):
         input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_LASLAZ, context)
@@ -236,7 +236,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append("-step")
             commands.append(unicode(step))
 
-    def getParametersStepValue(self):
+    def getParametersStepValue(self, parameters, context):
         step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
         return step
 
@@ -316,7 +316,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + odix + '"')
 
     def addParametersTemporaryDirectoryGUI(self):
-        self.addParameter(QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.TEMPORARY_DIRECTORY, "empty temporary directory", None, False))
+        self.addParameter(QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.TEMPORARY_DIRECTORY, "temporary directory (must be empty!!!)", None, False))
 
     def addParametersTemporaryDirectoryAsOutputDirectoryCommands(self, parameters, context, commands):
         odir = self.parameterAsString(parameters, LAStoolsAlgorithm.TEMPORARY_DIRECTORY, context)

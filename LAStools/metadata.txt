@@ -2,10 +2,10 @@
 name=LAStools
 qgisMinimumVersion=3.2
 description=tools for processing point clouds in LAS, LAZ, and ASCII formats
-experimental=True
+experimental=False
 deprecated=False
 category=Plugins
-version=0.4
+version=1.0
 author=Victor Olaya, Martin Isenburg
 email=volayaf@gmail.com,martin.isenburg@gmail.com
 icon=LAStools.png
@@ -16,6 +16,7 @@ tags=LAS,LAZ,LiDAR,PhoDAR,pointclouds,points,pointcloud,DEM,DTM,DSM,CHM,contours
 about=
     The LAStools plugin exposes the capabilities of the LAStools point processing software within QGIS 3.2 using the Processing framework.
 changelog=
+    1.0 - first non-experimental release, complete set of pipeline tools, few bug fixes
     0.4 - complete set of folder tools and few bug fixes
     0.3 - post hackfest version with completed file tools and first folder tools
     0.2 - adapted for QGIS 3.2 during hackfest in Zanzibar by Martin Isenburg

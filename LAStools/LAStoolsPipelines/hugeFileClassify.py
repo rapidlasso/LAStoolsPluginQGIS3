@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    hugeFileGroundClassify.py
+    hugeFileClassify.py
     ---------------------
     Date                 : May 2014 and August 2018
     Copyright            : (C) 2014 by Martin Isenburg
@@ -25,11 +25,11 @@ import os
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
-					   
+
 from ..LAStoolsUtils import LAStoolsUtils
 from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 
-class hugeFileGroundClassify(LAStoolsAlgorithm):
+class hugeFileClassify(LAStoolsAlgorithm):
 
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
@@ -41,11 +41,11 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
         self.addParametersPointInputGUI()
-        self.addParameter(QgsProcessingParameterNumber(hugeFileGroundClassify.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 0.0))
-        self.addParameter(QgsProcessingParameterNumber(hugeFileGroundClassify.BUFFER, "buffer around tiles (avoids edge artifacts)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0))
-        self.addParameter(QgsProcessingParameterBoolean(hugeFileGroundClassify.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(QgsProcessingParameterEnum(hugeFileGroundClassify.TERRAIN, "terrain type", hugeFileGroundClassify.TERRAINS, False, 2))
-        self.addParameter(QgsProcessingParameterEnum(hugeFileGroundClassify.GRANULARITY, "preprocessing", hugeFileGroundClassify.GRANULARITIES, False, 1))
+        self.addParameter(QgsProcessingParameterNumber(hugeFileClassify.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterNumber(hugeFileClassify.BUFFER, "buffer around tiles (avoids edge artifacts)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0))
+        self.addParameter(QgsProcessingParameterBoolean(hugeFileClassify.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(QgsProcessingParameterEnum(hugeFileClassify.TERRAIN, "terrain type", hugeFileClassify.TERRAINS, False, 2))
+        self.addParameter(QgsProcessingParameterEnum(hugeFileClassify.GRANULARITY, "preprocessing", hugeFileClassify.GRANULARITIES, False, 1))
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersPointOutputGUI()
         self.addParametersCoresGUI()
@@ -58,17 +58,17 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
-        tile_size = self.parameterAsDouble(parameters, hugeFileGroundClassify.TILE_SIZE, context)
+        tile_size = self.parameterAsDouble(parameters, hugeFileClassify.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
-        buffer = self.parameterAsDouble(parameters, hugeFileGroundClassify.BUFFER, context)
+        buffer = self.parameterAsDouble(parameters, hugeFileClassify.BUFFER, context)
         if (buffer != 0.0):
             commands.append("-buffer")
             commands.append(unicode(buffer))
         commands.append("-reversible")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
         commands.append("-o")
-        commands.append("hugeFileGroundClassify.laz")
+        commands.append("hugeFileClassify.laz")
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
@@ -76,19 +76,45 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileGroundClassify*.laz")
-        airborne = self.parameterAsBool(parameters, hugeFileGroundClassify.AIRBORNE, context)
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileClassify*.laz")
+        airborne = self.parameterAsBool(parameters, hugeFileClassify.AIRBORNE, context)
         if (not airborne):
             commands.append("-not_airborne")
-        method = self.parameterAsInt(parameters, hugeFileGroundClassify.TERRAIN, context)
+        method = self.parameterAsInt(parameters, hugeFileClassify.TERRAIN, context)
         if (method != 2):
-            commands.append("-" + hugeFileGroundClassify.TERRAINS[method])
-        granularity = self.parameterAsInt(parameters, hugeFileGroundClassify.GRANULARITY, context)
+            commands.append("-" + hugeFileClassify.TERRAINS[method])
+        granularity = self.parameterAsInt(parameters, hugeFileClassify.GRANULARITY, context)
         if (granularity != 1):
-            commands.append("-" + hugeFileGroundClassify.GRANULARITIES[granularity])
+            commands.append("-" + hugeFileClassify.GRANULARITIES[granularity])
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
         commands.append("-odix")
         commands.append("_g")
+        commands.append("-olaz")
+        self.addParametersCoresCommands(parameters, context, commands)
+
+        LAStoolsUtils.runLAStools(commands, feedback)
+
+        # then we compute the height for each points in the reversible tiles
+
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
+        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileClassify*_g.laz")
+        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        commands.append("-odix")
+        commands.append("h")
+        commands.append("-olaz")
+        self.addParametersCoresCommands(parameters, context, commands)
+
+        LAStoolsUtils.runLAStools(commands, feedback)
+
+        # then we classify buildings and trees in the reversible tiles
+
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
+        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileClassify*_gh.laz")
+        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        commands.append("-odix")
+        commands.append("c")
         commands.append("-olaz")
         self.addParametersCoresCommands(parameters, context, commands)
 
@@ -98,7 +124,7 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileGroundClassify*_g.laz")
+        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileClassify*_ghc.laz")
         commands.append("-reverse_tiling")
         self.addParametersPointOutputCommands(parameters, context, commands)
 
@@ -107,10 +133,10 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'hugeFileGroundClassify'
+        return 'hugeFileClassify'
 
     def displayName(self):
-        return 'hugeFileGroundClassify'
+        return 'hugeFileClassify'
 
     def group(self):
         return 'pipeline - file'
@@ -119,4 +145,4 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         return 'pipeline - file'
 
     def createInstance(self):
-        return hugeFileGroundClassify()
+        return hugeFileClassify()
