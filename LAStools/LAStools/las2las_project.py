@@ -44,7 +44,7 @@ class las2las_project(LAStoolsAlgorithm):
     TARGET_SP = "TARGET_SP"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterEnum(las2las_project.SOURCE_PROJECTION, "source projection", las2las_project.PROJECTIONS, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2las_project.SOURCE_UTM, "source utm zone", las2las_project.UTM_ZONES, False, 0))
@@ -60,7 +60,7 @@ class las2las_project(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, las2las_project.SOURCE_PROJECTION, context)
         if (source_projection != 0):

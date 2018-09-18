@@ -43,7 +43,7 @@ class lasboundary(LAStoolsAlgorithm):
     LABELS = "LABELS"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(QgsProcessingParameterEnum(lasboundary.MODE, "compute boundary based on", lasboundary.MODES, False, 0))
@@ -56,7 +56,7 @@ class lasboundary(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasboundary")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, lasboundary.MODE, context)

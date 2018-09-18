@@ -37,7 +37,7 @@ class lascontrol(LAStoolsAlgorithm):
     ADJUST_Z = "ADJUST_Z"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersGenericInputGUI("ASCII text file of control points", "csv", False)
         self.addParameter(QgsProcessingParameterString(lascontrol.PARSE_STRING, "parse string marking which columns are xyz (use 's' for skip)", "sxyz"))
@@ -47,7 +47,7 @@ class lascontrol(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersGenericInputCommandsfile(parameters, context, commands, "-cp")
         parse = self.parameterAsString(parameters, lascontrol.PARSE_STRING, context)

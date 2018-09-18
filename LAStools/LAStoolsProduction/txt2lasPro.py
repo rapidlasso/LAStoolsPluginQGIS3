@@ -62,14 +62,14 @@ class txt2lasPro(LAStoolsAlgorithm):
         self.addParametersPointOutputFormatGUI() 
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersGenericInputFolderCommands(parameters, context, commands)
         parse_string = self.parameterAsString(parameters, txt2lasPro.PARSE, context)
         if (parse_string != "xyz"):

@@ -36,7 +36,7 @@ class lassplit(LAStoolsAlgorithm):
     INTERVAL = "INTERVAL"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterNumber(lassplit.DIGITS, "number of digits for file names", QgsProcessingParameterNumber.Integer, 5, False, 2, 10))
         self.addParameter(QgsProcessingParameterEnum(lassplit.OPERATION, "how to split", lassplit.OPERATIONS, False, 0))
@@ -46,7 +46,7 @@ class lassplit(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassplit")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         digits = self.parameterAsInt(parameters, lassplit.DIGITS, context)
         if (digits != 5):

@@ -49,11 +49,11 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(lastilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)",""))
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
         self.addParametersApplyFileSourceIdCommands(parameters, context, commands)

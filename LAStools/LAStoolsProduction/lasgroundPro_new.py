@@ -40,7 +40,7 @@ class lasgroundPro_new(LAStoolsAlgorithm):
     OFFSET = "OFFSET"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputFolderGUI()
         self.addParametersIgnoreClass1GUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
@@ -59,7 +59,7 @@ class lasgroundPro_new(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground_new")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)

@@ -32,7 +32,7 @@ from ..LAStoolsAlgorithm import LAStoolsAlgorithm
 class las2tin(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersVectorOutputGUI()
@@ -40,7 +40,7 @@ class las2tin(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2tin")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersVectorOutputCommands(parameters, context, commands)

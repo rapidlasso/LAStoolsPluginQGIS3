@@ -32,7 +32,7 @@ class las2txt(LAStoolsAlgorithm):
     PARSE = "PARSE"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterString(las2txt.PARSE, "parse string", "xyz"))
         self.addParametersGenericOutputGUI("Output ASCII file", "txt", False)
@@ -43,7 +43,7 @@ class las2txt(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         parse = self.parameterAsInt(parameters, las2txt.PARSE, context)
         if (parse != "xyz"):

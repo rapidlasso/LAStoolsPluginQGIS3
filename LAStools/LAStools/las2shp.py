@@ -51,7 +51,7 @@ class las2shp(LAStoolsAlgorithm):
         if (record_size != 1024):
             commands.append("-record_size")
             commands.append(unicode(record_size))
-        self.addParametersGenericOutputCommands(parameters, context, commands)
+        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
         LAStoolsUtils.runLAStools(commands, feedback)
 

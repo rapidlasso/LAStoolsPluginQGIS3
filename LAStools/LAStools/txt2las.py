@@ -48,7 +48,7 @@ class txt2las(LAStoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersGenericInputGUI("Input ASCII file", "txt", False)
         self.addParameter(QgsProcessingParameterString(txt2las.PARSE, "parse lines as", "xyz"))
         self.addParameter(QgsProcessingParameterNumber(txt2las.SKIP, "skip the first n lines", QgsProcessingParameterNumber.Integer, 0))
@@ -66,7 +66,7 @@ class txt2las(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersGenericInputCommands(parameters, context, commands, "-i")
         parse_string = self.parameterAsString(parameters, txt2las.PARSE, context)
         if (parse_string != "xyz"):

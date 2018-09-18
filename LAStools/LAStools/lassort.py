@@ -34,7 +34,7 @@ class lassort(LAStoolsAlgorithm):
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterBoolean(lassort.BY_GPS_TIME, "sort by GPS time", False))
         self.addParameter(QgsProcessingParameterBoolean(lassort.BY_RETURN_NUMBER, "sort by return number", False))
@@ -44,7 +44,7 @@ class lassort(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassort")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lassort.BY_GPS_TIME, context)):
             commands.append("-gps_time")

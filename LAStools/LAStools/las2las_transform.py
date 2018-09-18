@@ -35,7 +35,7 @@ class las2las_transform(LAStoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersTransform1CoordinateGUI()
         self.addParametersTransform2CoordinateGUI()
@@ -51,7 +51,7 @@ class las2las_transform(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersTransform1CoordinateCommands(parameters, context, commands)
         self.addParametersTransform2CoordinateCommands(parameters, context, commands)

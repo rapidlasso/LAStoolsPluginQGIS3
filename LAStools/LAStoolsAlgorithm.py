@@ -36,13 +36,14 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFileDestination,
-					   QgsProcessingParameterFolderDestination)
+                       QgsProcessingParameterFolderDestination)
 
 from .LAStoolsUtils import LAStoolsUtils
 
 class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
     VERBOSE = "VERBOSE"
+    CPU64 = "CPU64"
     GUI = "GUI"
     CORES = "CORES"
     INPUT_GENERIC = "INPUT_GENERIC"
@@ -79,7 +80,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
                                   "keep_double", "keep_class 2", "keep_class 2 8", "keep_class 8", "keep_class 6",
                                   "keep_class 9", "keep_class 3 4 5", "keep_class 3", "keep_class 4", "keep_class 5",
                                   "keep_class 2 6", "drop_class 7", "drop_withheld", "drop_synthetic", "drop_overlap",
-								  "keep_withheld", "keep_synthetic", "keep_keypoint", "keep_overlap"]
+                                  "keep_withheld", "keep_synthetic", "keep_keypoint", "keep_overlap"]
     FILTER_COORDS_INTENSITY1 = "FILTER_COORDS_INTENSITY1"
     FILTER_COORDS_INTENSITY2 = "FILTER_COORDS_INTENSITY2"
     FILTER_COORDS_INTENSITY3 = "FILTER_COORDS_INTENSITY3"
@@ -126,6 +127,19 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
     def addParametersVerboseCommands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LAStoolsAlgorithm.VERBOSE, context):
             commands.append("-v")
+        if self.parameterAsBool(parameters, LAStoolsAlgorithm.GUI, context):
+            commands.append("-gui")
+
+    def addParametersVerboseGUI64(self):
+        self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.VERBOSE, "verbose", False))
+        self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.CPU64, "run new 64 bit executable", False))
+        self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.GUI, "open LAStools GUI", False))
+
+    def addParametersVerboseCommands64(self, parameters, context, commands):
+        if self.parameterAsBool(parameters, LAStoolsAlgorithm.VERBOSE, context):
+            commands.append("-v")
+        if self.parameterAsBool(parameters, LAStoolsAlgorithm.CPU64, context):
+            commands.append("-cpu64")
         if self.parameterAsBool(parameters, LAStoolsAlgorithm.GUI, context):
             commands.append("-gui")
 
@@ -328,7 +342,7 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         idir = self.parameterAsString(parameters, LAStoolsAlgorithm.TEMPORARY_DIRECTORY, context)
         if idir != "":
             commands.append("-i")
-            commands.append(idir + '\\' + files)	
+            commands.append(idir + '\\' + files)    
 
     def addParametersAdditionalGUI(self):
         self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, "additional command line parameter(s)", None, False, True))

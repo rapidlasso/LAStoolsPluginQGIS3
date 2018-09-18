@@ -34,7 +34,7 @@ class laszip(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
         self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
@@ -47,7 +47,7 @@ class laszip(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
             commands.append("-size")
