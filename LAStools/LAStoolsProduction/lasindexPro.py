@@ -38,14 +38,14 @@ class lasindexPro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(lasindexPro.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasindexPro.APPEND_LAX, context)):
             commands.append("-append")

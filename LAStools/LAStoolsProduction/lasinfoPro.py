@@ -57,14 +57,14 @@ class lasinfoPro(LAStoolsAlgorithm):
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         if self.parameterAsBool(parameters, lasinfoPro.COMPUTE_DENSITY, context):
             commands.append("-cd")
@@ -76,17 +76,17 @@ class lasinfoPro(LAStoolsAlgorithm):
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.parameterAsFloat(parameters, lasinfoPro.HISTO1_BIN, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasinfoPro.HISTO1_BIN, context)))
         histo = self.parameterAsInt(parameters, lasinfoPro.HISTO2, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.parameterAsFloat(parameters, lasinfoPro.HISTO2_BIN, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasinfoPro.HISTO2_BIN, context)))
         histo = self.parameterAsInt(parameters, lasinfoPro.HISTO3, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(unicode(self.parameterAsFloat(parameters, lasinfoPro.HISTO3_BIN, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasinfoPro.HISTO3_BIN, context)))
         self.addParametersOutputDirectoryCommands(parameters, context, commands)
         self.addParametersOutputAppendixCommands(parameters, context, commands)
         commands.append("-otxt")

@@ -41,7 +41,7 @@ class lasgrid(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
@@ -53,7 +53,7 @@ class lasgrid(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersStepCommands(parameters, context, commands)

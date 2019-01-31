@@ -35,7 +35,7 @@ class lasdiff(LAStoolsAlgorithm):
     SHUTUP_AFTER = ["5", "10", "50", "100", "1000", "10000", "50000"]
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersGenericInputGUI("other input LAS/LAZ file", "laz", False)
         self.addParameter(QgsProcessingParameterEnum(lasdiff.SHUTUP, "stop reporting difference after this many points", lasdiff.SHUTUP_AFTER, False, 0))
@@ -48,7 +48,7 @@ class lasdiff(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasdiff.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasdiff")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersGenericInputCommands(parameters, context, commands, "-i")
         shutup = self.parameterAsInt(parameters, lasdiff.SHUTUP, context)

@@ -53,7 +53,7 @@ class lascanopy(LAStoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterNumber(lascanopy.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(lascanopy.HEIGHT_CUTOFF, "height cutoff / breast height", QgsProcessingParameterNumber.Double, 1.37, False))
@@ -75,7 +75,7 @@ class lascanopy(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascanopy")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         plot_size = self.parameterAsDouble(parameters, lascanopy.PLOT_SIZE, context)
         if (plot_size != 20.0):

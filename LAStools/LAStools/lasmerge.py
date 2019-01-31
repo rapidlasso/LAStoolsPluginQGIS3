@@ -37,7 +37,7 @@ class lasmerge(LAStoolsAlgorithm):
     FILE7 = "FILE7"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
         self.addParametersPointInputGUI()
@@ -55,7 +55,7 @@ class lasmerge(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         file2 = self.parameterAsString(parameters, lasmerge.FILE2, context)
         if file2 is not None:

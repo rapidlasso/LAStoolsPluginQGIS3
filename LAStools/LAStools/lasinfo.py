@@ -47,7 +47,7 @@ class lasinfo(LAStoolsAlgorithm):
     HISTO3_BIN = "HISTO3_BIN"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterBoolean(lasinfo.COMPUTE_DENSITY, "compute density", False))
         self.addParameter(QgsProcessingParameterBoolean(lasinfo.REPAIR_BB, "repair bounding box", False))
@@ -66,7 +66,7 @@ class lasinfo(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         if self.parameterAsBool(parameters, lasinfo.COMPUTE_DENSITY, context):
             commands.append("-cd")
@@ -78,17 +78,17 @@ class lasinfo(LAStoolsAlgorithm):
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(unicode(self.parameterAsFloat(parameters, lasinfo.HISTO1_BIN, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasinfo.HISTO1_BIN, context)))
         histo = self.parameterAsInt(parameters, lasinfo.HISTO2, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(unicode(self.parameterAsFloat(parameters, lasinfo.HISTO2_BIN, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasinfo.HISTO2_BIN, context)))
         histo = self.parameterAsInt(parameters, lasinfo.HISTO3, context)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(unicode(self.parameterAsFloat(parameters, lasinfo.HISTO3_BIN, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasinfo.HISTO3_BIN, context)))
         self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
         self.addParametersAdditionalCommands(parameters, context, commands)
 

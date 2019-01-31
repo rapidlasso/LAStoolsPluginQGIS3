@@ -34,14 +34,14 @@ class lasmergePro(LAStoolsAlgorithm):
         self.addParametersApplyFileSourceIdGUI()
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
         self.addParametersApplyFileSourceIdCommands(parameters, context, commands)

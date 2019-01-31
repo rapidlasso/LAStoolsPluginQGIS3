@@ -34,7 +34,7 @@ class lascolor(LAStoolsAlgorithm):
     ORTHO = "ORTHO"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersGenericInputGUI("Input ortho", "tif", False)
         self.addParametersPointOutputGUI()
@@ -42,7 +42,7 @@ class lascolor(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascolor")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersGenericInputCommands(parameters, context, commands, "-image")
         self.addParametersPointOutputCommands(parameters, context, commands)

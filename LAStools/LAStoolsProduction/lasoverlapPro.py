@@ -54,11 +54,11 @@ class lasoverlapPro(LAStoolsAlgorithm):
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)

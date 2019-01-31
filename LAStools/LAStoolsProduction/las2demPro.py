@@ -52,11 +52,11 @@ class las2demPro(LAStoolsAlgorithm):
         self.addParametersRasterOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         self.addParametersStepCommands(parameters, context, commands)

@@ -40,7 +40,7 @@ class lasoverlap(LAStoolsAlgorithm):
     CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(QgsProcessingParameterNumber(lasoverlap.CHECK_STEP, "size of grid used for overlap check", QgsProcessingParameterNumber.Double, 2.0, False, 0.001, 50.0))
@@ -53,7 +53,7 @@ class lasoverlap(LAStoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasoverlap.CHECK_STEP, context)

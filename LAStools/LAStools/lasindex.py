@@ -33,7 +33,7 @@ class lasindex(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
+        self.addParametersVerboseGUI64()
         self.addParametersPointInputGUI()
         self.addParameter(QgsProcessingParameterBoolean(lasindex.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(QgsProcessingParameterBoolean(lasindex.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
@@ -44,7 +44,7 @@ class lasindex(LAStoolsAlgorithm):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.addParametersVerboseCommands64(parameters, context, commands)
         self.addParametersPointInputCommands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasindex.APPEND_LAX, context)):
             commands.append("-append")

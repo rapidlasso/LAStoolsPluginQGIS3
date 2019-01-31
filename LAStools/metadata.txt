@@ -5,7 +5,7 @@ description=tools for processing point clouds in LAS, LAZ, and ASCII formats
 experimental=False
 deprecated=False
 category=Plugins
-version=1.1
+version=1.2
 author=Victor Olaya, Martin Isenburg
 email=volayaf@gmail.com,martin.isenburg@gmail.com
 icon=LAStools.png
@@ -16,6 +16,7 @@ tags=LAS,LAZ,LiDAR,PhoDAR,pointclouds,points,pointcloud,DEM,DTM,DSM,CHM,contours
 about=
     The LAStools plugin exposes the capabilities of the LAStools software within QGIS 3.2 using the Processing framework. You also need to download the LAStools software from http://rapidlasso.com/LAStools/
 changelog=
+    1.2 - bug fix in lasinfo and lasthin. more tools offer 64 bit option.
     1.1 - option to start new 64 executables instead. bug fix in las2shp.
     1.0 - first non-experimental release, complete set of pipeline tools, few bug fixes
     0.4 - complete set of folder tools and few bug fixes

@@ -62,7 +62,7 @@ class lasthinPro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(parameters, context, commands)
         self.addParametersIgnoreClass1Commands(parameters, context, commands)
         self.addParametersIgnoreClass2Commands(parameters, context, commands)
-        step = self.parameterAsFloat(parameters, lasthinPro.THIN_STEP, context)
+        step = self.parameterAsDouble(parameters, lasthinPro.THIN_STEP, context)
         if (step != 1.0):
             commands.append("-step")
             commands.append(unicode(step))
@@ -70,7 +70,7 @@ class lasthinPro(LAStoolsAlgorithm):
         if (operation != 0):
             commands.append("-" + self.OPERATIONS[operation])
         if (operation >= 4):
-            commands.append(unicode(self.parameterAsFloat(parameters, lasthinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context)))
+            commands.append(unicode(self.parameterAsDouble(parameters, lasthinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context)))
         if (self.parameterAsBool(parameters, lasthinPro.WITHHELD, context)):
             commands.append("-withheld")
         if (self.parameterAsBool(parameters, lasthinPro.CLASSIFY_AS, context)):
