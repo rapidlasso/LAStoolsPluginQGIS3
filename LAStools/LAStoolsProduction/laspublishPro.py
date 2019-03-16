@@ -76,7 +76,7 @@ class laspublishPro(LAStoolsAlgorithm):
             commands.append("-no_edl")
         if (not self.parameterAsBool(parameters, laspublishPro.SHOW_SKYBOX, context)):
             commands.append("-no_skybox")
-        addParametersOutputDirectoryCommands(parameters, context, commands)
+        self.addParametersOutputDirectoryCommands(parameters, context, commands)
         copy_or_move = self.parameterAsInt(parameters, laspublishPro.COPY_OR_MOVE, context)
         if (copy_or_move == 0):
             commands.append("-copy_source_files")
@@ -93,7 +93,7 @@ class laspublishPro(LAStoolsAlgorithm):
         if (title != ""):
             commands.append("-title")
             commands.append('"' + title + '"')
-        description = self.parameterAsInt(parameters, laspublishPro.PORTAL_DESCRIPTION, context)
+        description = self.parameterAsString(parameters, laspublishPro.PORTAL_DESCRIPTION, context)
         if (description != ""):
             commands.append("-description")
             commands.append('"' + description + '"')
