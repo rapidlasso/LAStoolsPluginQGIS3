@@ -5,8 +5,8 @@
     laspublishPro.py
     ---------------------
     Date                 : May 2016 and August 2018
-    Copyright            : (C) 2016 by Martin Isenburg
-    Email                : martin near rapidlasso point com
+    Copyright            : (C) 2016 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -19,7 +19,7 @@
 
 __author__ = 'Martin Isenburg'
 __date__ = 'May 2016'
-__copyright__ = '(C) 2016, Martin Isenburg'
+__copyright__ = '(C) 2016, rapidlasso GmbH'
 
 import os
 from qgis.core import QgsProcessingParameterEnum

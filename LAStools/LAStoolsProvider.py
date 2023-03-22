@@ -7,8 +7,8 @@
     This script initializes the valid providers, depending on Wine and OS.
     ---------------------    
     Date                 : January 2017, August 2018
-    Copyright            : (C) 2017 Boundless, http://boundlessgeo.com
-                           (C) 2018 rapidlasso GmbH, http://rapidlasso.com
+    Copyright            : (C) 2017 Boundless
+                           (C) 2018 rapidlasso GmbH, https://rapidlasso.de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -21,11 +21,11 @@
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2017'
-__copyright__ = '(C) 2017, Boundless, http://boundlessgeo.com'
+__copyright__ = '(C) 2017, Boundless'
 
 __author__ = 'Martin Isenburg'
 __date__ = 'August 2018'
-__copyright__ = '(C) 2018, rapidlasso GmbH, http://rapidlasso.com'
+__copyright__ = '(C) 2018, rapidlasso GmbH, https://rapidlasso.de'
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider

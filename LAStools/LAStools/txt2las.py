@@ -5,8 +5,8 @@
     txt2las.py
     ---------------------
     Date                 : September 2013, May 2016 and August 2018
-    Copyright            : (C) 2013 by Martin Isenburg
-    Email                : martin near rapidlasso point com
+    Copyright            : (C) 2013 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -19,7 +19,7 @@
 
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
-__copyright__ = '(C) 2013, Martin Isenburg'
+__copyright__ = '(C) 2013, rapidlasso GmbH'
 
 import os
 from qgis.core import QgsProcessingParameterNumber

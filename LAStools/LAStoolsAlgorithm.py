@@ -9,8 +9,8 @@
     Email                : volayaf at gmail dot com
     ---------------------
     Date                 : April 2014, May 2016, and August 2018
-    Copyright            : (C) 2014 - 2018 by Martin Isenburg
-    Email                : martin near rapidlasso point com
+    Copyright            : (C) 2014 - 2018 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *

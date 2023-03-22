@@ -9,8 +9,8 @@
     Email                : volayaf at gmail dot com
     ---------------------
     Date                 : March 2014 and August 2018
-    Copyright            : (C) 2014 by Martin Isenburg
-    Email                : martin near rapidlasso point com
+    Copyright            : (C) 2023 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +23,7 @@
 
 __author__ = 'Martin Isenburg'
 __date__ = 'March 2014'
-__copyright__ = '(C) 2014, Martin Isenburg'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 
 
 import os
