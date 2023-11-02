@@ -37,11 +37,11 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination)
-
+from qgis.PyQt.QtCore import QCoreApplication
 from .LAStoolsUtils import LAStoolsUtils
 
-class LAStoolsAlgorithm(QgsProcessingAlgorithm):
 
+class LAStoolsAlgorithm(QgsProcessingAlgorithm):
     VERBOSE = "VERBOSE"
     CPU64 = "CPU64"
     GUI = "GUI"
@@ -89,8 +89,10 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
     FILTER_COORDS_INTENSITY3_ARG = "FILTER_COORDS_INTENSITY3_ARG"
     FILTERS_COORDS_INTENSITY = ["---", "drop_x_above", "drop_x_below", "drop_y_above", "drop_y_below", "drop_z_above",
                                 "drop_z_below", "drop_intensity_above", "drop_intensity_below", "drop_gps_time_above",
-                                "drop_gps_time_below", "drop_scan_angle_above", "drop_scan_angle_below", "keep_point_source",
-                                "drop_point_source", "drop_point_source_above", "drop_point_source_below", "keep_user_data",
+                                "drop_gps_time_below", "drop_scan_angle_above", "drop_scan_angle_below",
+                                "keep_point_source",
+                                "drop_point_source", "drop_point_source_above", "drop_point_source_below",
+                                "keep_user_data",
                                 "drop_user_data", "drop_user_data_above", "drop_user_data_below", "keep_every_nth",
                                 "keep_random_fraction", "thin_with_grid"]
 
@@ -98,19 +100,31 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
     TRANSFORM_COORDINATE2 = "TRANSFORM_COORDINATE2"
     TRANSFORM_COORDINATE1_ARG = "TRANSFORM_COORDINATE1_ARG"
     TRANSFORM_COORDINATE2_ARG = "TRANSFORM_COORDINATE2_ARG"
-    TRANSFORM_COORDINATES = ["---", "translate_x", "translate_y", "translate_z", "scale_x", "scale_y", "scale_z", "clamp_z_above", "clamp_z_below"]
+    TRANSFORM_COORDINATES = ["---", "translate_x", "translate_y", "translate_z", "scale_x", "scale_y", "scale_z",
+                             "clamp_z_above", "clamp_z_below"]
 
     TRANSFORM_OTHER1 = "TRANSFORM_OTHER1"
     TRANSFORM_OTHER2 = "TRANSFORM_OTHER2"
     TRANSFORM_OTHER1_ARG = "TRANSFORM_OTHER1_ARG"
     TRANSFORM_OTHER2_ARG = "TRANSFORM_OTHER2_ARG"
-    TRANSFORM_OTHERS = ["---", "scale_intensity", "translate_intensity", "clamp_intensity_above", "clamp_intensity_below",
-                        "scale_scan_angle", "translate_scan_angle", "translate_gps_time", "set_classification", "set_user_data",
+    TRANSFORM_OTHERS = ["---", "scale_intensity", "translate_intensity", "clamp_intensity_above",
+                        "clamp_intensity_below",
+                        "scale_scan_angle", "translate_scan_angle", "translate_gps_time", "set_classification",
+                        "set_user_data",
                         "set_point_source", "scale_rgb_up", "scale_rgb_down", "repair_zero_returns"]
 
     IGNORE_CLASS1 = "IGNORE_CLASS1"
     IGNORE_CLASS2 = "IGNORE_CLASS2"
-    IGNORE_CLASSES = ["---", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)", "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "rail (10)", "road surface (11)", "overlap (12)"]
+    IGNORE_CLASSES = ["---", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)",
+                      "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "rail (10)",
+                      "road surface (11)", "overlap (12)"]
+
+    @staticmethod
+    def translatable_string(string):
+        """
+        Returns a translatable string with the self.tr() function.
+        """
+        return QCoreApplication.translate('Processing', string)
 
     def icon(self):
         return QIcon(":/plugins/LAStools/LAStools.png")
@@ -144,7 +158,8 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append("-gui")
 
     def addParametersCoresGUI(self):
-        self.addParameter(QgsProcessingParameterNumber(LAStoolsAlgorithm.CORES, "number of cores", QgsProcessingParameterNumber.Integer, 4, False, 1, 32))
+        self.addParameter(QgsProcessingParameterNumber(LAStoolsAlgorithm.CORES, "number of cores",
+                                                       QgsProcessingParameterNumber.Integer, 4, False, 1, 32))
 
     def addParametersCoresCommands(self, parameters, context, commands):
         cores = self.parameterAsInt(parameters, LAStoolsAlgorithm.CORES, context)
@@ -153,7 +168,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(unicode(cores))
 
     def addParametersGenericInputGUI(self, description, extension, optional):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_GENERIC, description, QgsProcessingParameterFile.File, extension, None, optional))
+        self.addParameter(
+            QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_GENERIC, description,
+                                       QgsProcessingParameterFile.File,
+                                       extension, None, optional)
+        )
 
     def addParametersGenericInputCommands(self, parameters, context, commands, switch):
         input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC, context)
@@ -162,8 +181,10 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + input + '"')
 
     def addParametersGenericInputFolderGUI(self, wildcard):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, "input directory", QgsProcessingParameterFile.Folder))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, "input wildcard(s)", wildcard))
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, "input directory",
+                                                     QgsProcessingParameterFile.Folder))
+        self.addParameter(
+            QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_GENERIC_WILDCARDS, "input wildcard(s)", wildcard))
 
     def addParametersGenericInputFolderCommands(self, parameters, context, commands):
         input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_GENERIC_DIRECTORY, context)
@@ -176,7 +197,8 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
                 commands.append('"' + wildcard + '"')
 
     def addParametersPointInputGUI(self):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file", QgsProcessingParameterFile.File))
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file",
+                                                     QgsProcessingParameterFile.File))
 
     def addParametersPointInputCommands(self, parameters, context, commands):
         input = self.parameterAsString(parameters, LAStoolsAlgorithm.INPUT_LASLAZ, context)
@@ -185,7 +207,8 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + input + '"')
 
     def addParametersPointInputFolderGUI(self):
-        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", QgsProcessingParameterFile.Folder))
+        self.addParameter(QgsProcessingParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory",
+                                                     QgsProcessingParameterFile.Folder))
         self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", "*.laz"))
 
     def addParametersPointInputFolderCommands(self, parameters, context, commands):
@@ -199,7 +222,8 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
                 commands.append('"' + wildcard + '"')
 
     def addParametersPointInputMergedGUI(self):
-        self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.MERGED, "merge all input files on-the-fly into one", False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(LAStoolsAlgorithm.MERGED, "merge all input files on-the-fly into one", False))
 
     def addParametersPointInputMergedCommands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LAStoolsAlgorithm.MERGED, context):
@@ -228,34 +252,39 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         self.addParametersVerticalFeetCommands(parameters, context, commands)
 
     def addParametersFilesAreFlightlinesGUI(self):
-        self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES, "files are flightlines", False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES, "files are flightlines", False))
 
     def addParametersFilesAreFlightlinesCommands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES, context):
             commands.append("-files_are_flightlines")
 
     def addParametersApplyFileSourceIdGUI(self):
-        self.addParameter(QgsProcessingParameterBoolean(LAStoolsAlgorithm.APPLY_FILE_SOURCE_ID, "apply file source ID", False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(LAStoolsAlgorithm.APPLY_FILE_SOURCE_ID, "apply file source ID", False))
 
     def addParametersApplyFileSourceIdCommands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LAStoolsAlgorithm.APPLY_FILE_SOURCE_ID, context):
             commands.append("-apply_file_source_ID")
 
     def addParametersStepGUI(self):
-        self.addParameter(QgsProcessingParameterNumber(LAStoolsAlgorithm.STEP, "step size / pixel size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(LAStoolsAlgorithm.STEP, "step size / pixel size",
+                                                       QgsProcessingParameterNumber.Double, 1.0, False, 0))
 
     def addParametersStepCommands(self, parameters, context, commands):
-        step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
+        step = self.parameterAsDouble(parameters, LAStoolsAlgorithm.STEP, context)
         if (step != 0.0):
             commands.append("-step")
             commands.append(unicode(step))
 
     def getParametersStepValue(self, parameters, context):
-        step = self.parameterAsDouble(parameters,LAStoolsAlgorithm.STEP, context)
+        step = self.parameterAsDouble(parameters, LAStoolsAlgorithm.STEP, context)
         return step
 
     def addParametersGenericOutputGUI(self, description, extension, optional):
-        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_GENERIC, description, extension, "", optional, False))
+        self.addParameter(
+            QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_GENERIC, description, extension, "",
+                                                  optional, False))
 
     def addParametersGenericOutputCommands(self, parameters, context, commands, switch):
         output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_GENERIC, context)
@@ -264,7 +293,9 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + output + '"')
 
     def addParametersPointOutputGUI(self):
-        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_LASLAZ, "Output LAS/LAZ file", "laz", "", True, False))
+        self.addParameter(
+            QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_LASLAZ, "Output LAS/LAZ file", "laz", "",
+                                                  True, False))
 
     def addParametersPointOutputCommands(self, parameters, context, commands):
         output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_LASLAZ, context)
@@ -273,14 +304,17 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + output + '"')
 
     def addParametersPointOutputFormatGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_POINT_FORMAT, "output format", LAStoolsAlgorithm.OUTPUT_POINT_FORMATS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_POINT_FORMAT, "output format",
+                                                     LAStoolsAlgorithm.OUTPUT_POINT_FORMATS, False, 0))
 
     def addParametersPointOutputFormatCommands(self, parameters, context, commands):
         format = self.parameterAsInt(parameters, LAStoolsAlgorithm.OUTPUT_POINT_FORMAT, context)
         commands.append("-o" + LAStoolsAlgorithm.OUTPUT_POINT_FORMATS[format])
 
     def addParametersRasterOutputGUI(self):
-        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_RASTER, "Output raster file", "tif", "", True, False))
+        self.addParameter(
+            QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_RASTER, "Output raster file", "tif", "",
+                                                  True, False))
 
     def addParametersRasterOutputCommands(self, parameters, context, commands):
         output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_RASTER, context)
@@ -289,14 +323,17 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + output + '"')
 
     def addParametersRasterOutputFormatGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_RASTER_FORMAT, "output format", LAStoolsAlgorithm.OUTPUT_RASTER_FORMATS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_RASTER_FORMAT, "output format",
+                                                     LAStoolsAlgorithm.OUTPUT_RASTER_FORMATS, False, 0))
 
     def addParametersRasterOutputFormatCommands(self, parameters, context, commands):
         format = self.parameterAsInt(parameters, LAStoolsAlgorithm.OUTPUT_RASTER_FORMAT, context)
         commands.append("-o" + LAStoolsAlgorithm.OUTPUT_RASTER_FORMATS[format])
 
     def addParametersVectorOutputGUI(self):
-        self.addParameter(QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_VECTOR, "Output vector file", "shp", "", True, False))
+        self.addParameter(
+            QgsProcessingParameterFileDestination(LAStoolsAlgorithm.OUTPUT_VECTOR, "Output vector file", "shp", "",
+                                                  True, False))
 
     def addParametersVectorOutputCommands(self, parameters, context, commands):
         output = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_VECTOR, context)
@@ -305,14 +342,16 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + output + '"')
 
     def addParametersVectorOutputFormatGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_VECTOR_FORMAT, "output format", LAStoolsAlgorithm.OUTPUT_VECTOR_FORMATS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.OUTPUT_VECTOR_FORMAT, "output format",
+                                                     LAStoolsAlgorithm.OUTPUT_VECTOR_FORMATS, False, 0))
 
     def addParametersVectorOutputFormatCommands(self, parameters, context, commands):
         format = self.parameterAsInt(parameters, LAStoolsAlgorithm.OUTPUT_VECTOR_FORMAT, context)
         commands.append("-o" + LAStoolsAlgorithm.OUTPUT_VECTOR_FORMATS[format])
 
     def addParametersOutputDirectoryGUI(self):
-        self.addParameter(QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.OUTPUT_DIRECTORY, "output directory", None, True))
+        self.addParameter(
+            QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.OUTPUT_DIRECTORY, "output directory", None, True))
 
     def addParametersOutputDirectoryCommands(self, parameters, context, commands):
         odir = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_DIRECTORY, context)
@@ -321,7 +360,8 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + odir + '"')
 
     def addParametersOutputAppendixGUI(self):
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.OUTPUT_APPENDIX, "output appendix", None, False, True))
+        self.addParameter(
+            QgsProcessingParameterString(LAStoolsAlgorithm.OUTPUT_APPENDIX, "output appendix", None, False, True))
 
     def addParametersOutputAppendixCommands(self, parameters, context, commands):
         odix = self.parameterAsString(parameters, LAStoolsAlgorithm.OUTPUT_APPENDIX, context)
@@ -330,7 +370,9 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + odix + '"')
 
     def addParametersTemporaryDirectoryGUI(self):
-        self.addParameter(QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.TEMPORARY_DIRECTORY, "temporary directory (must be empty!!!)", None, False))
+        self.addParameter(QgsProcessingParameterFolderDestination(LAStoolsAlgorithm.TEMPORARY_DIRECTORY,
+                                                                  "temporary directory (must be empty!!!)", None,
+                                                                  False))
 
     def addParametersTemporaryDirectoryAsOutputDirectoryCommands(self, parameters, context, commands):
         odir = self.parameterAsString(parameters, LAStoolsAlgorithm.TEMPORARY_DIRECTORY, context)
@@ -342,10 +384,12 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
         idir = self.parameterAsString(parameters, LAStoolsAlgorithm.TEMPORARY_DIRECTORY, context)
         if idir != "":
             commands.append("-i")
-            commands.append(idir + '\\' + files)    
+            commands.append(idir + '\\' + files)
 
     def addParametersAdditionalGUI(self):
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, "additional command line parameter(s)", None, False, True))
+        self.addParameter(
+            QgsProcessingParameterString(LAStoolsAlgorithm.ADDITIONAL_OPTIONS, "additional command line parameter(s)",
+                                         None, False, True))
 
     def addParametersAdditionalCommands(self, parameters, context, commands):
         additional_options = self.parameterAsString(parameters, LAStoolsAlgorithm.ADDITIONAL_OPTIONS, context).split()
@@ -353,7 +397,9 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(option)
 
     def addParametersFilter1ReturnClassFlagsGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS1, "filter (by return, classification, flags)", LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS1,
+                                                     "filter (by return, classification, flags)",
+                                                     LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, False, 0))
 
     def addParametersFilter1ReturnClassFlagsCommands(self, parameters, context, commands):
         filter1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS1, context)
@@ -361,7 +407,9 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS[filter1])
 
     def addParametersFilter2ReturnClassFlagsGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS2, "second filter (by return, classification, flags)", LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS2,
+                                                     "second filter (by return, classification, flags)",
+                                                     LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, False, 0))
 
     def addParametersFilter2ReturnClassFlagsCommands(self, parameters, context, commands):
         filter2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS2, context)
@@ -369,7 +417,9 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS[filter2])
 
     def addParametersFilter3ReturnClassFlagsGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS3, "third filter (by return, classification, flags)", LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS3,
+                                                     "third filter (by return, classification, flags)",
+                                                     LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS, False, 0))
 
     def addParametersFilter3ReturnClassFlagsCommands(self, parameters, context, commands):
         filter3 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_RETURN_CLASS_FLAGS3, context)
@@ -377,8 +427,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append("-" + LAStoolsAlgorithm.FILTERS_RETURN_CLASS_FLAGS[filter3])
 
     def addParametersFilter1CoordsIntensityGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, "filter (by coordinate, intensity, GPS time, ...)", LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, False, 0))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG, "value for filter (by coordinate, intensity, GPS time, ...)"))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1,
+                                                     "filter (by coordinate, intensity, GPS time, ...)",
+                                                     LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, False, 0))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG,
+                                                       "value for filter (by coordinate, intensity, GPS time, ...)"))
 
     def addParametersFilter1CoordsIntensityCommands(self, parameters, context, commands):
         filter1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1, context)
@@ -388,8 +441,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(unicode(filter1_arg))
 
     def addParametersFilter2CoordsIntensityGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2, "second filter (by coordinate, intensity, GPS time, ...)", LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, False, 0))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG, "value for second filter (by coordinate, intensity, GPS time, ...)"))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2,
+                                                     "second filter (by coordinate, intensity, GPS time, ...)",
+                                                     LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY, False, 0))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG,
+                                                       "value for second filter (by coordinate, intensity, GPS time, ...)"))
 
     def addParametersFilter2CoordsIntensityCommands(self, parameters, context, commands):
         filter2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2, context)
@@ -399,8 +455,10 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(unicode(filter2_arg))
 
     def addParametersTransform1CoordinateGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_COORDINATE1, "transform (coordinates)", LAStoolsAlgorithm.TRANSFORM_COORDINATES, False, 0))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG, "value for transform (coordinates)"))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_COORDINATE1, "transform (coordinates)",
+                                                     LAStoolsAlgorithm.TRANSFORM_COORDINATES, False, 0))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG,
+                                                       "value for transform (coordinates)"))
 
     def addParametersTransform1CoordinateCommands(self, parameters, context, commands):
         transform1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE1, context)
@@ -410,8 +468,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(unicode(transform1_arg))
 
     def addParametersTransform2CoordinateGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_COORDINATE2, "second transform (coordinates)", LAStoolsAlgorithm.TRANSFORM_COORDINATES, False, 0))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG, "value for second transform (coordinates)"))
+        self.addParameter(
+            QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_COORDINATE2, "second transform (coordinates)",
+                                       LAStoolsAlgorithm.TRANSFORM_COORDINATES, False, 0))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG,
+                                                       "value for second transform (coordinates)"))
 
     def addParametersTransform2CoordinateCommands(self, parameters, context, commands):
         transform2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_COORDINATE2, context)
@@ -421,8 +482,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(unicode(transform2_arg))
 
     def addParametersTransform1OtherGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_OTHER1, "transform (intensities, scan angles, GPS times, ...)", LAStoolsAlgorithm.TRANSFORM_OTHERS, False, 0))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG, "value for transform (intensities, scan angles, GPS times, ...)"))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_OTHER1,
+                                                     "transform (intensities, scan angles, GPS times, ...)",
+                                                     LAStoolsAlgorithm.TRANSFORM_OTHERS, False, 0))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG,
+                                                       "value for transform (intensities, scan angles, GPS times, ...)"))
 
     def addParametersTransform1OtherCommands(self, parameters, context, commands):
         transform1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER1, context)
@@ -433,8 +497,11 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
                 commands.append(unicode(transform1_arg))
 
     def addParametersTransform2OtherGUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_OTHER2, "second transform (intensities, scan angles, GPS times, ...)", LAStoolsAlgorithm.TRANSFORM_OTHERS, False, 0))
-        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG, "value for second transform (intensities, scan angles, GPS times, ...)"))
+        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.TRANSFORM_OTHER2,
+                                                     "second transform (intensities, scan angles, GPS times, ...)",
+                                                     LAStoolsAlgorithm.TRANSFORM_OTHERS, False, 0))
+        self.addParameter(QgsProcessingParameterString(LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG,
+                                                       "value for second transform (intensities, scan angles, GPS times, ...)"))
 
     def addParametersTransform2OtherCommands(self, parameters, context, commands):
         transform2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.TRANSFORM_OTHER2, context)
@@ -445,19 +512,23 @@ class LAStoolsAlgorithm(QgsProcessingAlgorithm):
                 commands.append(unicode(transform2_arg))
 
     def addParametersIgnoreClass1GUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.IGNORE_CLASS1, "ignore points with this classification", LAStoolsAlgorithm.IGNORE_CLASSES, False, 0))
+        self.addParameter(
+            QgsProcessingParameterEnum(LAStoolsAlgorithm.IGNORE_CLASS1, "ignore points with this classification",
+                                       LAStoolsAlgorithm.IGNORE_CLASSES, False, 0))
 
     def addParametersIgnoreClass1Commands(self, parameters, context, commands):
         ignore1 = self.parameterAsInt(parameters, LAStoolsAlgorithm.IGNORE_CLASS1, context)
         if ignore1 != 0:
             commands.append("-ignore_class")
-            commands.append(unicode(ignore1-1))
+            commands.append(unicode(ignore1 - 1))
 
     def addParametersIgnoreClass2GUI(self):
-        self.addParameter(QgsProcessingParameterEnum(LAStoolsAlgorithm.IGNORE_CLASS2, "also ignore points with this classification", LAStoolsAlgorithm.IGNORE_CLASSES, False, 0))
+        self.addParameter(
+            QgsProcessingParameterEnum(LAStoolsAlgorithm.IGNORE_CLASS2, "also ignore points with this classification",
+                                       LAStoolsAlgorithm.IGNORE_CLASSES, False, 0))
 
     def addParametersIgnoreClass2Commands(self, parameters, context, commands):
         ignore2 = self.parameterAsInt(parameters, LAStoolsAlgorithm.IGNORE_CLASS2, context)
         if ignore2 != 0:
             commands.append("-ignore_class")
-            commands.append(unicode(ignore2-1))
+            commands.append(unicode(ignore2 - 1))
