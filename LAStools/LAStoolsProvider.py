@@ -70,6 +70,7 @@ from .LAStools.lastile import lastile
 from .LAStools.lasthin import lasthin
 from .LAStools.lasvalidate import lasvalidate
 from .LAStools.lasview import lasview
+from .LAStools.las3poly import Las3PolyRadialDistance, Las3PolyHorizontalVerticalDistance
 from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
 from .LAStools.txt2las import txt2las
@@ -120,6 +121,7 @@ from .LAStoolsPipelines.flightlinesToMergedCHM_SpikeFree import flightlinesToMer
 
 from . import resources
 
+
 class LAStoolsProvider(QgsProcessingProvider):
 
     def __init__(self):
@@ -131,7 +133,8 @@ class LAStoolsProvider(QgsProcessingProvider):
         """
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(), 'LASTOOLS_ACTIVATED', 'Activate', True))
-        ProcessingConfig.addSetting(Setting(self.name(), 'LASTOOLS_FOLDER', 'LAStools folder', "C:\LAStools", valuetype=Setting.FOLDER))
+        ProcessingConfig.addSetting(
+            Setting(self.name(), 'LASTOOLS_FOLDER', 'LAStools folder', "C:\LAStools", valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.name(), 'WINE_FOLDER', 'Wine folder', "", valuetype=Setting.FOLDER))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
@@ -152,8 +155,8 @@ class LAStoolsProvider(QgsProcessingProvider):
         return ProcessingConfig.getSetting('LASTOOLS_ACTIVATED')
 
     def setActive(self, active):
-        ProcessingConfig.setSettingValue('LASTOOLS_ACTIVATED', active)        
-        
+        ProcessingConfig.setSettingValue('LASTOOLS_ACTIVATED', active)
+
     def loadAlgorithms(self):
         """
         Loads all algorithms belonging to this provider.
@@ -161,24 +164,40 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing single files
 
-        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2dem(), las2iso(), las2las_project(), las2las_transform(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(), lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(), lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasmerge(), lasnoise(), lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lassplit(), lastile(), lasthin(), lasvalidate(), lasview(), laszip(), shp2las(), txt2las()]
+        self.algs = [blast2dem(), blast2iso(), las2las_filter(), las2dem(), las2iso(), las2las_project(),
+                     las2las_transform(), las2shp(), las2tin(), las2txt(), lasboundary(), lasclassify(), lascanopy(),
+                     lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(),
+                     lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasmerge(), lasnoise(),
+                     lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lassplit(), lastile(),
+                     lasthin(), lasvalidate(), lasview(), Las3PolyRadialDistance(),
+                     Las3PolyHorizontalVerticalDistance(),
+                     laszip(), shp2las(), txt2las()]
 
         for alg in self.algs:
-            self.addAlgorithm( alg )
+            self.addAlgorithm(alg)
 
         # LAStools for processing entire folders of files
 
-        self.algs = [blast2demPro(), blast2isoPro(), las2demPro(), las2lasPro_filter(), las2lasPro_project(), las2lasPro_transform(), las2txtPro(), lasboundaryPro(), lascanopyPro(), lasclassifyPro(), lasduplicatePro(), lasgridPro(), lasgroundPro(), lasgroundPro_new(), lasheightPro(), lasheightPro_classify(), lasindexPro(), lasinfoPro(), lasmergePro(), lasnoisePro(), lasoveragePro(), lasoverlapPro(), laspublishPro(), lassortPro(), lastilePro(), lasthinPro(), lasvalidatePro(), laszipPro(), lasviewPro(), txt2lasPro()]
+        self.algs = [blast2demPro(), blast2isoPro(), las2demPro(), las2lasPro_filter(), las2lasPro_project(),
+                     las2lasPro_transform(), las2txtPro(), lasboundaryPro(), lascanopyPro(), lasclassifyPro(),
+                     lasduplicatePro(), lasgridPro(), lasgroundPro(), lasgroundPro_new(), lasheightPro(),
+                     lasheightPro_classify(), lasindexPro(), lasinfoPro(), lasmergePro(), lasnoisePro(),
+                     lasoveragePro(), lasoverlapPro(), laspublishPro(), lassortPro(), lastilePro(), lasthinPro(),
+                     lasvalidatePro(), laszipPro(), lasviewPro(), txt2lasPro()]
 
         for alg in self.algs:
-            self.addAlgorithm( alg )
+            self.addAlgorithm(alg)
 
         # LAStools pipelines
 
-        self.algs = [hugeFileClassify(), hugeFileGroundClassify(), hugeFileNormalize(), flightlinesToCHM_FirstReturn(), flightlinesToCHM_HighestReturn(), flightlinesToCHM_SpikeFree(), flightlinesToDTMandDSM_FirstReturn(), flightlinesToDTMandDSM_SpikeFree(), flightlinesToMergedCHM_FirstReturn(), flightlinesToMergedCHM_HighestReturn(), flightlinesToMergedCHM_PitFree(), flightlinesToMergedCHM_SpikeFree()]
+        self.algs = [hugeFileClassify(), hugeFileGroundClassify(), hugeFileNormalize(), flightlinesToCHM_FirstReturn(),
+                     flightlinesToCHM_HighestReturn(), flightlinesToCHM_SpikeFree(),
+                     flightlinesToDTMandDSM_FirstReturn(), flightlinesToDTMandDSM_SpikeFree(),
+                     flightlinesToMergedCHM_FirstReturn(), flightlinesToMergedCHM_HighestReturn(),
+                     flightlinesToMergedCHM_PitFree(), flightlinesToMergedCHM_SpikeFree()]
 
         for alg in self.algs:
-            self.addAlgorithm( alg )
+            self.addAlgorithm(alg)
 
     def icon(self):
         return QIcon(":/plugins/LAStools/LAStools.png")
