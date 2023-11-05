@@ -49,7 +49,7 @@ class Las3PolyRadialDistance(LAStoolsAlgorithm):
     0,10,0
     [...]
     """
-    SHORT_DESCRIPTION = "Modifying points within a certain radial distance of polylines"
+    SHORT_DESCRIPTION = "Modifies points within a certain radial distance of 3D polylines"
     URL_HELP_PATH = "https://downloads.rapidlasso.de/readme/las3dpoly_README.md"
     DISTANCE_RADIAL = "DISTANCE_RADIAL"
     CLASSIFY_AS = {
@@ -149,7 +149,7 @@ class Las3PolyHorizontalVerticalDistance(LAStoolsAlgorithm):
     0,10,0
     [...]
     """
-    SHORT_DESCRIPTION = "Modifying points within a certain horizontal and vertical distance of polylines"
+    SHORT_DESCRIPTION = "Modifies points within a certain horizontal and vertical distance of 3D polylines"
     URL_HELP_PATH = "https://downloads.rapidlasso.de/readme/las3dpoly_README.md"
     DISTANCE_HORIZONTAL = "DISTANCE_HORIZONTAL"
     DISTANCE_VERTICAL = "DISTANCE_VERTICAL"
