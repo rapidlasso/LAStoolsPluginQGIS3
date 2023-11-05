@@ -70,7 +70,7 @@ from .LAStools.lastile import lastile
 from .LAStools.lasthin import lasthin
 from .LAStools.lasvalidate import lasvalidate
 from .LAStools.lasview import lasview
-from .LAStools.las3poly import Las3PolyRadialDistance, Las3PolyHorizontalVerticalDistance
+from .LAStools.las3dpoly import Las3PolyRadialDistance, Las3PolyHorizontalVerticalDistance
 from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
 from .LAStools.txt2las import txt2las

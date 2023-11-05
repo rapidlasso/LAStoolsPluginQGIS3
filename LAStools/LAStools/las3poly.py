@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    las3poly.py
+    las3dpoly.py
     ---------------------
     Date                 : November 2023
     Copyright            : (C) 2023 by rapidlasso GmbH
@@ -108,7 +108,7 @@ class Las3PolyRadialDistance(LAStoolsAlgorithm):
         return 'Las3PolyRadialDistance'
 
     def displayName(self):
-        return 'las3poly (Radial Distance)'
+        return 'las3dpoly (Radial Distance)'
 
     def group(self):
         return 'Preprocessing'
@@ -214,7 +214,7 @@ class Las3PolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         return 'Las3PolyHorizontalVerticalDistance'
 
     def displayName(self):
-        return 'las3poly (Horizontal and Vertical Distance)'
+        return 'las3dpoly (Horizontal and Vertical Distance)'
 
     def group(self):
         return 'Preprocessing'
