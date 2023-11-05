@@ -70,7 +70,8 @@ from .LAStools.lastile import lastile
 from .LAStools.lasthin import lasthin
 from .LAStools.lasvalidate import lasvalidate
 from .LAStools.lasview import lasview
-from .LAStools.las3dpoly import Las3PolyRadialDistance, Las3PolyHorizontalVerticalDistance
+from .LAStools.las3dpoly import Las3dPolyRadialDistance, Las3dPolyHorizontalVerticalDistance
+from .LAStools.lasintensity import LasIntensity, LasIntensityAttenuationFactor
 from .LAStools.laszip import laszip
 from .LAStools.shp2las import shp2las
 from .LAStools.txt2las import txt2las
@@ -169,8 +170,8 @@ class LAStoolsProvider(QgsProcessingProvider):
                      lasclip(), lascolor(), lascontrol(), lasdiff(), lasduplicate(), lasgrid(), lasground(),
                      lasground_new(), lasheight(), lasheight_classify(), lasindex(), lasinfo(), lasmerge(), lasnoise(),
                      lasoverage(), lasoverlap(), lasprecision(), laspublish(), lassort(), lassplit(), lastile(),
-                     lasthin(), lasvalidate(), lasview(), Las3PolyRadialDistance(),
-                     Las3PolyHorizontalVerticalDistance(),
+                     lasthin(), lasvalidate(), lasview(), Las3dPolyRadialDistance(),
+                     Las3dPolyHorizontalVerticalDistance(), LasIntensity(), LasIntensityAttenuationFactor(),
                      laszip(), shp2las(), txt2las()]
 
         for alg in self.algs:
