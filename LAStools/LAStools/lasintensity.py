@@ -54,24 +54,24 @@ class LasIntensity(LAStoolsAlgorithm):
         # Scanner Height
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensity.SCANNER_HEIGHT, "Scanner Altitude in [km]",
-            QgsProcessingParameterNumber.Type, 3, False, 0, 10000)
+            QgsProcessingParameterNumber.Double, 3.0, False, 0.0, 10000.0)
         )
         # atmospheric visibility range
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensity.ATMOSPHERIC_VISIBILITY_RANGE, "Atmospheric Visibility Range in [km]",
-            QgsProcessingParameterNumber.Type, 10, False, 0, 10000)
+            QgsProcessingParameterNumber.Double, 10.0, False, 0.0, 10000.0)
         )
         # Laser Wavelength
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensity.LASER_WAVELENGTH, "Laser Wavelength in [µm]",
-            QgsProcessingParameterNumber.Type, 0.905, False, 0, 10000)
+            QgsProcessingParameterNumber.Double, 0.905, False, 0.0, 10000.0)
         )
         self.addParametersAdditionalGUI()
         self.helpUrl()
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasintensity")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasintensity64")]
         # append -v and -gui
         self.addParametersVerboseCommands(parameters, context, commands)
         # append -i
@@ -147,19 +147,19 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
         # Scanner Height
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensityAttenuationFactor.SCANNER_HEIGHT, "Scanner Altitude in [km]",
-            QgsProcessingParameterNumber.Type, 3.0, False, 0.0, 10000.0)
+            QgsProcessingParameterNumber.Double, 3.0, False, 0.0, 10000.0)
         )
         # Attenuation Coefficient factor
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensityAttenuationFactor.ATTENUATION_COEFFICIENT, "Attenuation Coefficient in [km^-1]",
-            QgsProcessingParameterNumber.Type, 0.0, False, 0.0, 10000.0)
+            QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 10000.0)
         )
         self.addParametersAdditionalGUI()
         self.helpUrl()
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasintensity")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasintensity64")]
         # append -v and -gui
         self.addParametersVerboseCommands(parameters, context, commands)
         # append -i
