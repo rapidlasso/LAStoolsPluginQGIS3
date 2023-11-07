@@ -55,7 +55,6 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
     URL_HELP_PATH = "https://downloads.rapidlasso.de/readme/las3dpoly_README.md"
     DISTANCE_RADIAL = "DISTANCE_RADIAL"
     WEIGHT_FIELD = 'WEIGHT_FIELD'
-    INPUT = 'INPUT'
     CLASSIFY_AS = {
         "name": 'CLASSIFY_AS',
         "options": ["default", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)",
@@ -138,7 +137,6 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         self.helpUrl()
 
     def processAlgorithm(self, parameters, context, feedback):
-        print(parameters)
         # calling the specific .exe files from source of software
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las3dpoly64")]
         # append -v and -gui
