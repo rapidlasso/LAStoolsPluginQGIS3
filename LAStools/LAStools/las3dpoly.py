@@ -137,7 +137,8 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         if parameters["CSV_SEPARATOR"] != 0:
             commands.append(f"-sep {Las3dPolyRadialDistance.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}")
         # append -o
-        self.addParametersPointOutputFormatGUI()
+        if parameters["OUTPUT_LAS_PATH"] != 'OUTPUT_LAS_PATH':
+            commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
         # append extra params
         commands.append(parameters['ADDITIONAL_PARAM'])
         LAStoolsUtils.runLAStools(commands, feedback)
@@ -186,7 +187,6 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
     0,0,0
     0,-10,0
     0,10,0
-    [...]
     """
     SHORT_DESCRIPTION = "Modifies points within a certain horizontal and vertical distance of 3D polylines"
     URL_HELP_PATH = "https://downloads.rapidlasso.de/readme/las3dpoly_README.md"
@@ -235,7 +235,8 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         classify_as_param.setFlags(classify_as_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(classify_as_param)
         # remove point
-        remove_point_param = QgsProcessingParameterBoolean(Las3dPolyHorizontalVerticalDistance.REMOVE_POINT, "Remove Point", False)
+        remove_point_param = QgsProcessingParameterBoolean(Las3dPolyHorizontalVerticalDistance.REMOVE_POINT,
+                                                           "Remove Point", False)
         remove_point_param.setFlags(remove_point_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(remove_point_param)
         # csv options
@@ -251,7 +252,8 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         )
         # additional parameters
         self.addParameter(QgsProcessingParameterString(
-            Las3dPolyHorizontalVerticalDistance.ADDITIONAL_PARAM, "additional command line parameter(s)", ' ', False, False
+            Las3dPolyHorizontalVerticalDistance.ADDITIONAL_PARAM, "additional command line parameter(s)", ' ', False,
+            False
         ))
         self.helpUrl()
 
@@ -282,7 +284,8 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
                 f"-sep {Las3dPolyHorizontalVerticalDistance.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}"
             )
         # append -o
-        self.addParametersPointOutputFormatGUI()
+        if parameters["OUTPUT_LAS_PATH"] != 'OUTPUT_LAS_PATH':
+            commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
         # append extra params
         commands.append(parameters['ADDITIONAL_PARAM'])
         LAStoolsUtils.runLAStools(commands, feedback)
