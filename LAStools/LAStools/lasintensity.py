@@ -22,6 +22,8 @@ __date__ = 'October 2023'
 __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
+
+from qgis._core import QgsProcessingParameterFileDestination, QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
@@ -45,6 +47,8 @@ class LasIntensity(LAStoolsAlgorithm):
     SCANNER_HEIGHT = "SCANNER_HEIGHT"
     ATMOSPHERIC_VISIBILITY_RANGE = "ATMOSPHERIC_VISIBILITY_RANGE"
     LASER_WAVELENGTH = "LASER_WAVELENGTH"
+    ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
+    OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
 
     def initAlgorithm(self, config=None):
         # input verbose ans gui
@@ -66,7 +70,14 @@ class LasIntensity(LAStoolsAlgorithm):
             LasIntensity.LASER_WAVELENGTH, "Laser Wavelength in [µm]",
             QgsProcessingParameterNumber.Double, 0.905, False, 0.0, 10000.0)
         )
-        self.addParametersAdditionalGUI()
+        # output las path
+        self.addParameter(QgsProcessingParameterFileDestination(
+            LasIntensity.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False)
+        )
+        # additional parameters
+        self.addParameter(QgsProcessingParameterString(
+            LasIntensity.ADDITIONAL_PARAM, "additional command line parameter(s)", ' ', False, False
+        ))
         self.helpUrl()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -75,26 +86,18 @@ class LasIntensity(LAStoolsAlgorithm):
         # append -v and -gui
         self.addParametersVerboseCommands(parameters, context, commands)
         # append -i
-        self.addParametersPointInputCommands(parameters, context, commands)
+        commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append -scanner_height
-        scanner_height = self.parameterAsDouble(
-            parameters, LasIntensity.SCANNER_HEIGHT, context
-        )
-        commands.append(f"-scanner_height {scanner_height} ")
-
+        commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         # append -av
-        atmospheric_visibility_range = self.parameterAsDouble(
-            parameters, LasIntensity.ATMOSPHERIC_VISIBILITY_RANGE, context
-        )
-        commands.append(f"-av {atmospheric_visibility_range} ")
-
+        commands.append(f"-av {parameters['ATMOSPHERIC_VISIBILITY_RANGE']} ")
         # append -w
-        laser_wavelength = self.parameterAsDouble(
-            parameters, LasIntensity.LASER_WAVELENGTH, context
-        )
-        commands.append(f"-w {laser_wavelength} ")
-
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        commands.append(f"-w {parameters['LASER_WAVELENGTH']} ")
+        # append -o
+        if parameters["OUTPUT_LAS_PATH"] != 'TEMPORARY_OUTPUT':
+            commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
+        # append extra params
+        commands.append(parameters['ADDITIONAL_PARAM'])
         LAStoolsUtils.runLAStools(commands, feedback)
         return {"command": commands}
 
@@ -138,6 +141,8 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
     URL_HELP_PATH = "https://downloads.rapidlasso.de/readme/lasintensity_README.md"
     SCANNER_HEIGHT = "SCANNER_HEIGHT"
     ATTENUATION_COEFFICIENT = "ATTENUATION_COEFFICIENT"
+    ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
+    OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
 
     def initAlgorithm(self, config=None):
         # input verbose ans gui
@@ -154,7 +159,14 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
             LasIntensityAttenuationFactor.ATTENUATION_COEFFICIENT, "Attenuation Coefficient in [km^-1]",
             QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 10000.0)
         )
-        self.addParametersAdditionalGUI()
+        # output las path
+        self.addParameter(QgsProcessingParameterFileDestination(
+            LasIntensityAttenuationFactor.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False)
+        )
+        # additional parameters
+        self.addParameter(QgsProcessingParameterString(
+            LasIntensityAttenuationFactor.ADDITIONAL_PARAM, "additional command line parameter(s)", ' ', False, False
+        ))
         self.helpUrl()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -165,16 +177,17 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
         # append -i
         self.addParametersPointInputCommands(parameters, context, commands)
         # append -scanner_height
-        scanner_height = self.parameterAsDouble(
-            parameters, LasIntensityAttenuationFactor.SCANNER_HEIGHT, context
-        )
-        commands.append(f"-scanner_height {scanner_height} ")
+        commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         # append -a
         attenuation_coefficient = self.parameterAsDouble(
             parameters, LasIntensityAttenuationFactor.ATTENUATION_COEFFICIENT, context
         )
-        commands.append(f"-a {attenuation_coefficient} ")
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        commands.append(f"-a {parameters['ATTENUATION_COEFFICIENT']}")
+        # append -o
+        if parameters["OUTPUT_LAS_PATH"] != 'TEMPORARY_OUTPUT':
+            commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
+        # append extra params
+        commands.append(parameters['ADDITIONAL_PARAM'])
         LAStoolsUtils.runLAStools(commands, feedback)
         return {"command": commands}
 
