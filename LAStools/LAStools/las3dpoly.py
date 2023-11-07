@@ -67,6 +67,9 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         "options": ["default", "comma", "tab", "dot", "colon", "semicolon", "hyphen", "space"]
     }
     REMOVE_POINT = 'REMOVE_POINT'
+    FLAG_AS_WITHHELD = 'FLAG_AS_WITHHELD'
+    FLAG_AS_KEYPOINT = 'FLAG_AS_KEYPOINT'
+    FLAG_AS_SYNTHETIC = 'FLAG_AS_SYNTHETIC'
     ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
     INPUT_POLYLINE_PATH = 'INPUT_POLYLINE_PATH'
     OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
@@ -98,6 +101,25 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         remove_point_param = QgsProcessingParameterBoolean(Las3dPolyRadialDistance.REMOVE_POINT, "Remove Point", False)
         remove_point_param.setFlags(remove_point_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(remove_point_param)
+        # flag as withheld
+        flag_as_withheld_param = QgsProcessingParameterBoolean(
+            Las3dPolyRadialDistance.FLAG_AS_WITHHELD, "Flag as Withheld", False
+        )
+        flag_as_withheld_param.setFlags(flag_as_withheld_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(flag_as_withheld_param)
+        # flag as keypoint
+        flag_as_keypoint_param = QgsProcessingParameterBoolean(
+            Las3dPolyRadialDistance.FLAG_AS_KEYPOINT, "Flag as Keypoint", False
+        )
+        flag_as_keypoint_param.setFlags(flag_as_keypoint_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(flag_as_keypoint_param)
+        # flag as synthetic
+        flag_as_synthetic_param = QgsProcessingParameterBoolean(
+            Las3dPolyRadialDistance.FLAG_AS_SYNTHETIC, "Flag as Synthetic", False
+        )
+        flag_as_synthetic_param.setFlags(
+            flag_as_synthetic_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(flag_as_synthetic_param)
         # csv options
         csv_sep_param = QgsProcessingParameterEnum(
             Las3dPolyRadialDistance.CSV_SEPARATOR["name"], "CSV Separator Options",
@@ -133,11 +155,17 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         # advance tool
         if parameters["REMOVE_POINT"]:
             commands.append("-remove_points")
+        if parameters["FLAG_AS_WITHHELD"]:
+            commands.append("-flag_as_withheld")
+        if parameters["FLAG_AS_KEYPOINT"]:
+            commands.append("-flag_as_keypoint")
+        if parameters["FLAG_AS_SYNTHETIC"]:
+            commands.append("-flag_as_synthetic")
         # append -sep
         if parameters["CSV_SEPARATOR"] != 0:
             commands.append(f"-sep {Las3dPolyRadialDistance.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}")
         # append -o
-        if parameters["OUTPUT_LAS_PATH"] != 'OUTPUT_LAS_PATH':
+        if parameters["OUTPUT_LAS_PATH"] != 'TEMPORARY_OUTPUT':
             commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
         # append extra params
         commands.append(parameters['ADDITIONAL_PARAM'])
@@ -203,6 +231,9 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         "options": ["default", "comma", "tab", "dot", "colon", "semicolon", "hyphen", "space"]
     }
     REMOVE_POINT = 'REMOVE_POINT'
+    FLAG_AS_WITHHELD = 'FLAG_AS_WITHHELD'
+    FLAG_AS_KEYPOINT = 'FLAG_AS_KEYPOINT'
+    FLAG_AS_SYNTHETIC = 'FLAG_AS_SYNTHETIC'
     ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
     INPUT_POLYLINE_PATH = 'INPUT_POLYLINE_PATH'
     OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
@@ -239,6 +270,25 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
                                                            "Remove Point", False)
         remove_point_param.setFlags(remove_point_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(remove_point_param)
+        # flag as withheld
+        flag_as_withheld_param = QgsProcessingParameterBoolean(
+            Las3dPolyHorizontalVerticalDistance.FLAG_AS_WITHHELD, "Flag as Withheld", False
+        )
+        flag_as_withheld_param.setFlags(flag_as_withheld_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(flag_as_withheld_param)
+        # flag as keypoint
+        flag_as_keypoint_param = QgsProcessingParameterBoolean(
+            Las3dPolyHorizontalVerticalDistance.FLAG_AS_KEYPOINT, "Flag as Keypoint", False
+        )
+        flag_as_keypoint_param.setFlags(flag_as_keypoint_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(flag_as_keypoint_param)
+        # flag as synthetic
+        flag_as_synthetic_param = QgsProcessingParameterBoolean(
+            Las3dPolyHorizontalVerticalDistance.FLAG_AS_SYNTHETIC, "Flag as Synthetic", False
+        )
+        flag_as_synthetic_param.setFlags(
+            flag_as_synthetic_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(flag_as_synthetic_param)
         # csv options
         csv_sep_param = QgsProcessingParameterEnum(
             Las3dPolyHorizontalVerticalDistance.CSV_SEPARATOR["name"], "CSV Separator Options",
@@ -271,25 +321,29 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         # append -distance
         commands.append(f"-distance {parameters['DISTANCE_VERTICAL']} {parameters['DISTANCE_HORIZONTAL']}")
         # append -classify_as
-        classify_as = self.parameterAsInt(parameters, Las3dPolyHorizontalVerticalDistance.CLASSIFY_AS['name'], context)
-        # append -classify_as
         if parameters["CLASSIFY_AS"] != 0:
             commands.append(f"-classify_as {parameters['CLASSIFY_AS'] - 1}")
         # advance tool
         if parameters["REMOVE_POINT"]:
             commands.append("-remove_points")
+        if parameters["FLAG_AS_WITHHELD"]:
+            commands.append("-flag_as_withheld")
+        if parameters["FLAG_AS_KEYPOINT"]:
+            commands.append("-flag_as_keypoint")
+        if parameters["FLAG_AS_SYNTHETIC"]:
+            commands.append("-flag_as_synthetic")
         # append -sep
         if parameters["CSV_SEPARATOR"] != 0:
             commands.append(
                 f"-sep {Las3dPolyHorizontalVerticalDistance.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}"
             )
         # append -o
-        if parameters["OUTPUT_LAS_PATH"] != 'OUTPUT_LAS_PATH':
+        if parameters["OUTPUT_LAS_PATH"] != 'TEMPORARY_OUTPUT':
             commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
         # append extra params
         commands.append(parameters['ADDITIONAL_PARAM'])
         LAStoolsUtils.runLAStools(commands, feedback)
-        return {"command": commands, "feedback": feedback}
+        return {"command": commands}
 
     def name(self):
         return 'Las3PolyHorizontalVerticalDistance'
