@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class txt2lasPro(LAStoolsAlgorithm):
 
@@ -48,7 +48,7 @@ class txt2lasPro(LAStoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config):
-        self.addParametersGenericInputFolderGUI("*.txt")
+        self.add_parameters_generic_input_folder_gui("*.txt")
         self.addParameter(QgsProcessingParameterString(txt2lasPro.PARSE, "parse lines as", "xyz"))
         self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SKIP, "skip the first n lines", QgsProcessingParameterNumber.Integer, 0))
         self.addParameter(QgsProcessingParameterNumber(txt2lasPro.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
@@ -57,20 +57,21 @@ class txt2lasPro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(txt2lasPro.EPSG_CODE, "EPSG code", QgsProcessingParameterNumber.Integer, 25832, False, 1, 65535))
         self.addParameter(QgsProcessingParameterEnum(txt2lasPro.UTM, "utm zone", txt2lasPro.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(txt2lasPro.SP, "state plane code", txt2lasPro.STATE_PLANES, False, 0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI() 
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui() 
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersGenericInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        # TODO: check the output and use f string
+        self.add_parameters_generic_input_folder_commands(parameters, context, commands)
         parse_string = self.parameterAsString(parameters, txt2lasPro.PARSE, context)
         if (parse_string != "xyz"):
             commands.append("-parse")
@@ -108,11 +109,11 @@ class txt2lasPro(LAStoolsAlgorithm):
                     commands.append(txt2lasPro.STATE_PLANES[sp_code])
             else:
                 commands.append("-" + txt2lasPro.PROJECTIONS[projection])
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

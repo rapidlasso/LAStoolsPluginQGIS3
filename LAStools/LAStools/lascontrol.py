@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lascontrol(LAStoolsAlgorithm):
 
@@ -37,18 +37,18 @@ class lascontrol(LAStoolsAlgorithm):
     ADJUST_Z = "ADJUST_Z"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersGenericInputGUI("ASCII text file of control points", "csv", False)
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_generic_input_gui("ASCII text file of control points", "csv", False)
         self.addParameter(QgsProcessingParameterString(lascontrol.PARSE_STRING, "parse string marking which columns are xyz (use 's' for skip)", "sxyz"))
         self.addParameter(QgsProcessingParameterEnum(lascontrol.USE_POINTS, "which points to use for elevation checks", lascontrol.USE_POINTS_LIST, False, 0))
         self.addParameter(QgsProcessingParameterBoolean(lascontrol.ADJUST_Z, "adjust z elevation by translating away the average error", False))
-        self.addParametersAdditionalGUI()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         self.addParametersGenericInputCommandsfile(parameters, context, commands, "-cp")
         parse = self.parameterAsString(parameters, lascontrol.PARSE_STRING, context)
         if parse != "":
@@ -66,7 +66,7 @@ class lascontrol(LAStoolsAlgorithm):
             commands.append("-adjust_z")
             commands.append("-odix _adjusted")
             commands.append("-olaz")
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

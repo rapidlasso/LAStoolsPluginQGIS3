@@ -28,7 +28,7 @@ from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lascanopyPro(LAStoolsAlgorithm):
 
@@ -53,8 +53,8 @@ class lascanopyPro(LAStoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersPointInputMergedGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_point_input_merged_gui()
         self.addParameter(QgsProcessingParameterNumber(lascanopyPro.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(lascanopyPro.HEIGHT_CUTOFF, "height cutoff / breast height", QgsProcessingParameterNumber.Double, 1.37, False))
         self.addParameter(QgsProcessingParameterEnum(lascanopyPro.PRODUCT1, "create", lascanopyPro.PRODUCTS, False, 0))
@@ -70,19 +70,19 @@ class lascanopyPro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(lascanopyPro.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
         self.addParameter(QgsProcessingParameterBoolean(lascanopyPro.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
         self.addParameter(QgsProcessingParameterBoolean(lascanopyPro.FILES_ARE_PLOTS, "input files are single plots", False))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersRasterOutputFormatGUI()
-        self.addParametersRasterOutputGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_raster_output_format_gui()
+        self.add_parameters_raster_output_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascanopy")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersPointInputMergedCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_point_input_merged_commands(parameters, context, commands)
         plot_size = self.getParameterValue(lascanopyPro.PLOT_SIZE)
         plot_size = self.parameterAsDouble(parameters, lascanopyPro.PLOT_SIZE, context)
         if (plot_size != 20.0):
@@ -133,12 +133,12 @@ class lascanopyPro(LAStoolsAlgorithm):
             commands.append("-use_tile_bb")
         if (self.parameterAsBool(parameters, lascanopyPro.FILES_ARE_PLOTS, context)):
             commands.append("-files_are_plots")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersRasterOutputFormatCommands(parameters, context, commands)
-        self.addParametersRasterOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_raster_output_format_commands(parameters, context, commands)
+        self.add_parameters_raster_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

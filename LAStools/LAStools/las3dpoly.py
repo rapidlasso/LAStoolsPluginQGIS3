@@ -29,7 +29,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 
 class Las3dPolyRadialDistance(LAStoolsAlgorithm):
@@ -75,9 +75,9 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         # input verbose ans gui
-        self.addParametersVerboseGUI()
+        self.add_parameters_verbose_gui()
         # input las file
-        self.addParametersPointInputGUI()
+        self.add_parameters_point_input_gui()
         # input shp
         self.addParameter(QgsProcessingParameterFile(
             Las3dPolyRadialDistance.INPUT_POLYLINE_PATH, "Input polyline(s)/polygons SHP/CSV file",
@@ -140,7 +140,7 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las3dpoly64")]
         # append -v and -gui
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
         # append -i
         commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append poly
@@ -189,7 +189,7 @@ class Las3dPolyRadialDistance(LAStoolsAlgorithm):
         return Las3dPolyRadialDistance.URL_HELP_PATH
 
     def shortHelpString(self):
-        return self.translatable_string(Las3dPolyRadialDistance.SHORT_HELP_STRING)
+        return self.tr(Las3dPolyRadialDistance.SHORT_HELP_STRING)
 
     def shortDescription(self):
         return Las3dPolyRadialDistance.SHORT_DESCRIPTION
@@ -238,9 +238,9 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         # input verbose ans gui
-        self.addParametersVerboseGUI()
+        self.add_parameters_verbose_gui()
         # input las file
-        self.addParametersPointInputGUI()
+        self.add_parameters_point_input_gui()
         # input shp
         self.addParameter(QgsProcessingParameterFile(
             Las3dPolyHorizontalVerticalDistance.INPUT_POLYLINE_PATH, "Input polyline(s)/polygons SHP/CSV file",
@@ -309,9 +309,9 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las3dpoly64")]
         # append -v and -gui
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
         # append -i
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         # append -i
         commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append poly
@@ -362,7 +362,7 @@ class Las3dPolyHorizontalVerticalDistance(LAStoolsAlgorithm):
         return Las3dPolyHorizontalVerticalDistance.URL_HELP_PATH
 
     def shortHelpString(self):
-        return self.translatable_string(Las3dPolyHorizontalVerticalDistance.SHORT_HELP_STRING)
+        return self.tr(Las3dPolyHorizontalVerticalDistance.SHORT_HELP_STRING)
 
     def shortDescription(self):
         return Las3dPolyHorizontalVerticalDistance.SHORT_DESCRIPTION

@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class blast2demPro(LAStoolsAlgorithm):
 
@@ -37,28 +37,28 @@ class blast2demPro(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersPointInputMergedGUI()
-        self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParametersStepGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_point_input_merged_gui()
+        self.add_parameters_filter1_return_class_flags_gui()
+        self.add_parameters_step_gui()
         self.addParameter(QgsProcessingParameterEnum(blast2demPro.ATTRIBUTE, "Attribute", blast2demPro.ATTRIBUTES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(blast2demPro.PRODUCT, "Product", blast2demPro.PRODUCTS, False, 0))
         self.addParameter(QgsProcessingParameterBoolean(blast2demPro.USE_TILE_BB, "Use tile bounding box (after tiling with buffer)", False))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersRasterOutputFormatGUI()
-        self.addParametersRasterOutputGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_raster_output_format_gui()
+        self.add_parameters_raster_output_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2dem")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersPointInputMergedCommands(parameters, context, commands)
-        self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
-        self.addParametersStepCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_point_input_merged_commands(parameters, context, commands)
+        self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
+        self.add_parameters_step_commands(parameters, context, commands)
         attribute = self.parameterAsInt(parameters, blast2demPro.ATTRIBUTE, context)
         if (attribute != 0):
             commands.append("-" + blast2demPro.ATTRIBUTES[attribute])
@@ -67,12 +67,12 @@ class blast2demPro(LAStoolsAlgorithm):
             commands.append("-" + blast2demPro.PRODUCTS[product])
         if (self.parameterAsBool(parameters, blast2demPro.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersRasterOutputFormatCommands(parameters, context, commands)
-        self.addParametersRasterOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_raster_output_format_commands(parameters, context, commands)
+        self.add_parameters_raster_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasduplicate(LAStoolsAlgorithm):
 
@@ -39,8 +39,8 @@ class lasduplicate(LAStoolsAlgorithm):
     RECORD_REMOVED = "RECORD_REMOVED"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.LOWEST_Z, "keep duplicate with lowest z coordinate", False))
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.HIGHEST_Z, "keep duplicate with highest z coordinate", False))
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.UNIQUE_XYZ, "only remove duplicates in x y and z", False))
@@ -48,13 +48,13 @@ class lasduplicate(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.NEARBY, "keep only one point within specified tolerance ", False))
         self.addParameter(QgsProcessingParameterNumber(lasduplicate.NEARBY_TOLERANCE, "tolerance value", QgsProcessingParameterNumber.Double, 0.02, False, 0.001))
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.RECORD_REMOVED, "record removed duplicates to LAS/LAZ file", False))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasduplicate")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasduplicate.LOWEST_Z, context)):
             commands.append("-lowest_z")
         if (self.parameterAsBool(parameters, lasduplicate.HIGHEST_Z, context)):
@@ -68,8 +68,8 @@ class lasduplicate(LAStoolsAlgorithm):
             commands.append(unicode(self.parameterAsDouble(parameters, lasduplicate.NEARBY_TOLERANCE, context)))
         if (self.parameterAsBool(parameters, lasduplicate.RECORD_REMOVED, context)):
             commands.append("-record_removed")
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

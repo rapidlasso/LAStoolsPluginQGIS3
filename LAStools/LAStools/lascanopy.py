@@ -28,7 +28,7 @@ from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lascanopy(LAStoolsAlgorithm):
 
@@ -53,8 +53,8 @@ class lascanopy(LAStoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(lascanopy.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(lascanopy.HEIGHT_CUTOFF, "height cutoff / breast height", QgsProcessingParameterNumber.Double, 1.37, False))
         self.addParameter(QgsProcessingParameterEnum(lascanopy.PRODUCT1, "create", lascanopy.PRODUCTS, False, 0))
@@ -70,13 +70,13 @@ class lascanopy(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(lascanopy.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
         self.addParameter(QgsProcessingParameterBoolean(lascanopy.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
         self.addParameter(QgsProcessingParameterBoolean(lascanopy.FILES_ARE_PLOTS, "input file is single plot", False))
-        self.addParametersRasterOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_raster_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascanopy")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         plot_size = self.parameterAsDouble(parameters, lascanopy.PLOT_SIZE, context)
         if (plot_size != 20.0):
             commands.append("-step")
@@ -126,8 +126,8 @@ class lascanopy(LAStoolsAlgorithm):
             commands.append("-use_tile_bb")
         if (self.parameterAsBool(parameters, lascanopy.FILES_ARE_PLOTS, context)):
             commands.append("-files_are_plots")
-        self.addParametersRasterOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_raster_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

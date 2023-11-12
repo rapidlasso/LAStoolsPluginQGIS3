@@ -31,7 +31,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasboundary(LAStoolsAlgorithm):
 
@@ -43,22 +43,22 @@ class lasboundary(LAStoolsAlgorithm):
     LABELS = "LABELS"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersFilter1ReturnClassFlagsGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_filter1_return_class_flags_gui()
         self.addParameter(QgsProcessingParameterEnum(lasboundary.MODE, "compute boundary based on", lasboundary.MODES, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasboundary.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001))
         self.addParameter(QgsProcessingParameterBoolean(lasboundary.HOLES, "interior holes", False))
         self.addParameter(QgsProcessingParameterBoolean(lasboundary.DISJOINT, "disjoint polygon", False))
         self.addParameter(QgsProcessingParameterBoolean(lasboundary.LABELS, "produce labels", False))
-        self.addParametersVectorOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_vector_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasboundary")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, lasboundary.MODE, context)
         if (mode != 0):
             if (mode == 1):
@@ -77,8 +77,8 @@ class lasboundary(LAStoolsAlgorithm):
                 commands.append("-disjoint")
             if (self.parameterAsBool(parameters, lasboundary.LABELS, context)):
                 commands.append("-labels")
-        self.addParametersVectorOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_vector_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

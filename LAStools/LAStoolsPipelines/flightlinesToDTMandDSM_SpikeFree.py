@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterString
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class flightlinesToDTMandDSM_SpikeFree(LAStoolsAlgorithm):
 
@@ -39,30 +39,30 @@ class flightlinesToDTMandDSM_SpikeFree(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterNumber(flightlinesToDTMandDSM_SpikeFree.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(flightlinesToDTMandDSM_SpikeFree.BUFFER, "buffer around tiles (avoids edge artifacts)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0))
         self.addParameter(QgsProcessingParameterEnum(flightlinesToDTMandDSM_SpikeFree.TERRAIN, "terrain type", flightlinesToDTMandDSM_SpikeFree.TERRAINS, False, 2))
-        self.addParametersStepGUI()
+        self.add_parameters_step_gui()
         self.addParameter(QgsProcessingParameterNumber(flightlinesToDTMandDSM_SpikeFree.FREEZE_VALUE, "spike-free freeze value (by default 3 times step)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0))
-        self.addParametersTemporaryDirectoryGUI()
-        self.addParametersOutputDirectoryGUI()
+        self.add_parameters_temporary_directory_gui()
+        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterString(flightlinesToDTMandDSM_SpikeFree.BASE_NAME, "tile base name (using 'sydney' creates sydney_274000_4714000...)", "tile"))
-        self.addParametersRasterOutputFormatGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.add_parameters_raster_output_format_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
     
         # needed for thinning and spike-free
 
-        step = self.getParametersStepValue(parameters, context)
+        step = self.get_parameters_step_value(parameters, context)
 
         # first we tile the data
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, flightlinesToDTMandDSM_SpikeFree.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -71,7 +71,7 @@ class flightlinesToDTMandDSM_SpikeFree(LAStoolsAlgorithm):
         if (buffer != 0.0):
             commands.append("-buffer")
             commands.append(unicode(buffer))
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         base_name = self.parameterAsString(parameters, flightlinesToDTMandDSM_SpikeFree.BASE_NAME, context)
         if base_name == "":
             base_name = "tile"
@@ -84,8 +84,8 @@ class flightlinesToDTMandDSM_SpikeFree(LAStoolsAlgorithm):
         # then we ground classify the tiles
  
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*.laz")
         method = self.parameterAsInt(parameters, flightlinesToDTMandDSM_SpikeFree.TERRAIN, context)
         if (method != 2):
             commands.append("-" + flightlinesToDTMandDSM_SpikeFree.TERRAINS[method])
@@ -95,41 +95,41 @@ class flightlinesToDTMandDSM_SpikeFree(LAStoolsAlgorithm):
             commands.append("-extra_fine")
         elif (method > 1):
             commands.append("-fine")
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-odix")
         commands.append("_g")
         commands.append("-olaz")
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into DTMs
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*_g.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*_g.laz")
         commands.append("-keep_class")
         commands.append("2")
         commands.append("-thin_with_grid")
         commands.append(unicode(step/2))
-        self.addParametersStepCommands(parameters, context, commands)
+        self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-use_tile_bb")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         commands.append("-ocut")
         commands.append("2")
         commands.append("-odix")
         commands.append("_dtm")
-        self.addParametersRasterOutputFormatCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_raster_output_format_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the classified tiles into spike-free DSMs
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*_g.laz")
-        self.addParametersStepCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*_g.laz")
+        self.add_parameters_step_commands(parameters, context, commands)
         freeze_value = self.parameterAsDouble(parameters, flightlinesToDTMandDSM_SpikeFree.FREEZE_VALUE, context)
         commands.append("-spike_free")
         if (freeze_value == 0.0):
@@ -137,13 +137,13 @@ class flightlinesToDTMandDSM_SpikeFree(LAStoolsAlgorithm):
         else:
             commands.append(unicode(freeze_value))
         commands.append("-use_tile_bb")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         commands.append("-ocut")
         commands.append("2")
         commands.append("-odix")
         commands.append("_dsm")
-        self.addParametersRasterOutputFormatCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_raster_output_format_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
         

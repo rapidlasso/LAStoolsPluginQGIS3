@@ -24,29 +24,29 @@ __copyright__ = '(C) 2023, rapidlasso GmbH'
 import os
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasmergePro(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersFilesAreFlightlinesGUI()
-        self.addParametersApplyFileSourceIdGUI()
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_files_are_flightlines_gui()
+        self.add_parameters_apply_file_source_id_gui()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
-        self.addParametersApplyFileSourceIdCommands(parameters, context, commands)
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
+        self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

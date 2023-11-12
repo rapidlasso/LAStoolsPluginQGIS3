@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lassplit(LAStoolsAlgorithm):
 
@@ -36,18 +36,18 @@ class lassplit(LAStoolsAlgorithm):
     INTERVAL = "INTERVAL"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(lassplit.DIGITS, "number of digits for file names", QgsProcessingParameterNumber.Integer, 5, False, 2, 10))
         self.addParameter(QgsProcessingParameterEnum(lassplit.OPERATION, "how to split", lassplit.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lassplit.INTERVAL, "interval or number", QgsProcessingParameterNumber.Double, 5.0, False, 0.00001, 100000.0))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassplit")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         digits = self.parameterAsInt(parameters, lassplit.DIGITS, context)
         if (digits != 5):
             commands.append("-digits")
@@ -61,8 +61,8 @@ class lassplit(LAStoolsAlgorithm):
         if operation > 1 and operation < 10:
             interval = self.parameterAsDouble(parameters, lassplit.INTERVAL, context)
             commands.append(unicode(interval))
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

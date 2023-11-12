@@ -27,26 +27,26 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lascolor(LAStoolsAlgorithm):
 
     ORTHO = "ORTHO"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersGenericInputGUI("Input ortho", "tif", False)
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_generic_input_gui("Input ortho", "tif", False)
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascolor")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersGenericInputCommands(parameters, context, commands, "-image")
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-image")
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

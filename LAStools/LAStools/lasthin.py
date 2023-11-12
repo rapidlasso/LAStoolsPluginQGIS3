@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasthin(LAStoolsAlgorithm):
 
@@ -40,25 +40,25 @@ class lasthin(LAStoolsAlgorithm):
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersIgnoreClass2GUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
         self.addParameter(QgsProcessingParameterNumber(lasthin.THIN_STEP, "size of grid used for thinning", QgsProcessingParameterNumber.Double, 1.0, False, 0.0))
         self.addParameter(QgsProcessingParameterEnum(lasthin.OPERATION, "keep particular point per cell", lasthin.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasthin.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, "adaptive threshold, contour intervals, or percentile", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lasthin.WITHHELD, "mark thinned-away points as withheld", False))
         self.addParameter(QgsProcessingParameterBoolean(lasthin.CLASSIFY_AS, "classify surviving points as", False))
         self.addParameter(QgsProcessingParameterNumber(lasthin.CLASSIFY_AS_CLASS, "classification code", QgsProcessingParameterNumber.Integer, 8, False, 0, 255))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersIgnoreClass2Commands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasthin.THIN_STEP, context)
         if (step != 1.0):
             commands.append("-step")
@@ -73,8 +73,8 @@ class lasthin(LAStoolsAlgorithm):
         if (self.parameterAsBool(parameters, lasthin.CLASSIFY_AS, context)):
             commands.append("-classify_as")
             commands.append(unicode(self.parameterAsInt(parameters, lasthin.CLASSIFY_AS_CLASS, context)))
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

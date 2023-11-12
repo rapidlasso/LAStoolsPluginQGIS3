@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasground_new(LAStoolsAlgorithm):
     TERRAIN = "TERRAIN"
@@ -40,10 +40,10 @@ class lasground_new(LAStoolsAlgorithm):
     OFFSET = "OFFSET"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersHorizontalAndVerticalFeetGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_horizontal_and_vertical_feet_gui()
         self.addParameter(QgsProcessingParameterEnum(lasground_new.TERRAIN, "terrain type", lasground_new.TERRAINS, False, 3))
         self.addParameter(QgsProcessingParameterEnum(lasground_new.GRANULARITY, "preprocessing", lasground_new.GRANULARITIES, False, 2))
         self.addParameter(QgsProcessingParameterNumber(lasground_new.STEP, "step (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0, 500.0))
@@ -51,15 +51,15 @@ class lasground_new(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasground_new.SPIKE, "spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
         self.addParameter(QgsProcessingParameterNumber(lasground_new.DOWN_SPIKE, "down spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
         self.addParameter(QgsProcessingParameterNumber(lasground_new.OFFSET, "offset (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 0.05, False, 0.0, 1.0))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground_new")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
         method = self.parameterAsInt(parameters, lasground_new.TERRAIN, context)
         if (method == 5):
             commands.append("-step")
@@ -77,8 +77,8 @@ class lasground_new(LAStoolsAlgorithm):
         granularity = self.parameterAsInt(parameters, lasground_new.GRANULARITY, context)
         if (granularity != 1):
             commands.append("-" + lasground_new.GRANULARITIES[granularity])
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

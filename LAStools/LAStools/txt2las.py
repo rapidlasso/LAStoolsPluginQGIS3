@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class txt2las(LAStoolsAlgorithm):
 
@@ -48,8 +48,8 @@ class txt2las(LAStoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersGenericInputGUI("Input ASCII file", "txt", False)
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_generic_input_gui("Input ASCII file", "txt", False)
         self.addParameter(QgsProcessingParameterString(txt2las.PARSE, "parse lines as", "xyz"))
         self.addParameter(QgsProcessingParameterNumber(txt2las.SKIP, "skip the first n lines", QgsProcessingParameterNumber.Integer, 0))
         self.addParameter(QgsProcessingParameterNumber(txt2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", QgsProcessingParameterNumber.Double, 0.01, False, 0.00000001))
@@ -58,16 +58,16 @@ class txt2las(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(txt2las.EPSG_CODE, "EPSG code", QgsProcessingParameterNumber.Integer, 25832))
         self.addParameter(QgsProcessingParameterEnum(txt2las.UTM, "utm zone", txt2las.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(txt2las.SP, "state plane code", txt2las.STATE_PLANES, False, 0))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "txt2las")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersGenericInputCommands(parameters, context, commands, "-i")
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         parse_string = self.parameterAsString(parameters, txt2las.PARSE, context)
         if (parse_string != "xyz"):
             commands.append("-parse")
@@ -105,8 +105,8 @@ class txt2las(LAStoolsAlgorithm):
                     commands.append(txt2las.STATE_PLANES[sp_code])
             else:
                 commands.append("-" + txt2las.PROJECTIONS[projection])
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

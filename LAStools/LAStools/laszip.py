@@ -25,7 +25,7 @@ import os
 from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 	
 class laszip(LAStoolsAlgorithm):
 
@@ -34,29 +34,29 @@ class laszip(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
         self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
         self.addParameter(QgsProcessingParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
             commands.append("-size")
         if self.parameterAsBool(parameters, laszip.CREATE_LAX, context):
             commands.append("-lax")
         if self.parameterAsBool(parameters, laszip.APPEND_LAX, context):
             commands.append("-append")
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 		
         LAStoolsUtils.runLAStools(commands, feedback)
 

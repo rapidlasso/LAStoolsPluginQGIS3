@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasdiff(LAStoolsAlgorithm):
 
@@ -35,29 +35,29 @@ class lasdiff(LAStoolsAlgorithm):
     SHUTUP_AFTER = ["5", "10", "50", "100", "1000", "10000", "50000"]
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersGenericInputGUI("other input LAS/LAZ file", "laz", False)
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_generic_input_gui("other input LAS/LAZ file", "laz", False)
         self.addParameter(QgsProcessingParameterEnum(lasdiff.SHUTUP, "stop reporting difference after this many points", lasdiff.SHUTUP_AFTER, False, 0))
         self.addParameter(QgsProcessingParameterBoolean(lasdiff.CREATE_DIFFERENCE_FILE, "create elevation difference file (if points are in the same order)", False))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasdiff.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasdiff")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersGenericInputCommands(parameters, context, commands, "-i")
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         shutup = self.parameterAsInt(parameters, lasdiff.SHUTUP, context)
         if (shutup != 0):
             commands.append("-shutup")
             commands.append(lasdiff.SHUTUP_AFTER[shutup])
         if (self.parameterAsBool(parameters, lasdiff.CREATE_DIFFERENCE_FILE, context)):
-            self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+            self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

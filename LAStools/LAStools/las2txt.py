@@ -25,32 +25,32 @@ import os
 from qgis.core import QgsProcessingParameterString
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class las2txt(LAStoolsAlgorithm):
 
     PARSE = "PARSE"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterString(las2txt.PARSE, "parse string", "xyz"))
-        self.addParametersGenericOutputGUI("Output ASCII file", "txt", False)
-        self.addParametersAdditionalGUI()
+        self.add_parameters_generic_output_gui("Output ASCII file", "txt", False)
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, las2txt.PARSE, context)
         if (parse != "xyz"):
             commands.append("-parse")
             commands.append(parse)
-        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

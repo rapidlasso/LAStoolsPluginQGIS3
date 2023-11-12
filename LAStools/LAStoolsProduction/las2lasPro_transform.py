@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class las2lasPro_transform(LAStoolsAlgorithm):
 
@@ -36,41 +36,41 @@ class las2lasPro_transform(LAStoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersTransform1CoordinateGUI()
-        self.addParametersTransform2CoordinateGUI()
-        self.addParametersTransform1OtherGUI()
-        self.addParametersTransform2OtherGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_transform1_coordinate_gui()
+        self.add_parameters_transform2_coordinate_gui()
+        self.add_parameters_transform1_other_gui()
+        self.add_parameters_transform2_other_gui()
         self.addParameter(QgsProcessingParameterEnum(las2lasPro_transform.OPERATION, "operations (first 8 need an argument)", las2lasPro_transform.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterString(las2lasPro_transform.OPERATIONARG, "argument for operation"))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersTransform1CoordinateCommands(parameters, context, commands)
-        self.addParametersTransform2CoordinateCommands(parameters, context, commands)
-        self.addParametersTransform1OtherCommands(parameters, context, commands)
-        self.addParametersTransform2OtherCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_transform1_coordinate_commands(parameters, context, commands)
+        self.add_parameters_transform2_coordinate_commands(parameters, context, commands)
+        self.add_parameters_transform1_other_commands(parameters, context, commands)
+        self.add_parameters_transform2_other_commands(parameters, context, commands)
         operation = self.parameterAsInt(parameters, las2lasPro_transform.OPERATION, context)
         if (operation != 0):
             commands.append("-" + las2lasPro_transform.OPERATIONS[operation])
             if (operation > 8):
                 commands.append(self.parameterAsString(parameters, las2lasPro_transform.OPERATIONARG, context))
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

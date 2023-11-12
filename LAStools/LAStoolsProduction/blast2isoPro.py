@@ -23,7 +23,7 @@ __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 from qgis.core import QgsProcessingParameterNumber
 
@@ -37,26 +37,26 @@ class blast2isoPro(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersPointInputMergedGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_point_input_merged_gui()
         self.addParameter(QgsProcessingParameterNumber(blast2isoPro.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
         self.addParameter(QgsProcessingParameterNumber(blast2isoPro.ISO_EVERY, "extract isoline with a spacing of", QgsProcessingParameterNumber.Double, 10.0, False, 0.05, 1000.0))
         self.addParameter(QgsProcessingParameterNumber(blast2isoPro.CLEAN, "clean isolines shorter than (0 = do not clean)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterNumber(blast2isoPro.SIMPLIFY_LENGTH, "simplify segments shorter than (0 = do not simplify)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterNumber(blast2isoPro.SIMPLIFY_AREA, "simplify segments pairs with area less than (0 = do not simplify)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersVectorOutputFormatGUI()
-        self.addParametersVectorOutputGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_vector_output_format_gui()
+        self.add_parameters_vector_output_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2iso")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersPointInputMergedCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_point_input_merged_commands(parameters, context, commands)
         smooth = self.parameterAsInt(parameters, blast2isoPro.SMOOTH, context)
         if (smooth != 0):
             commands.append("-smooth")
@@ -75,12 +75,12 @@ class blast2isoPro(LAStoolsAlgorithm):
         if (simplify_area != 0.0):
             commands.append("-simplify_area")
             commands.append(unicode(simplify_area))
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersVectorOutputFormatCommands(parameters, context, commands)
-        self.addParametersVectorOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_vector_output_format_commands(parameters, context, commands)
+        self.add_parameters_vector_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

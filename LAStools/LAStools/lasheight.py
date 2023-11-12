@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasheight(LAStoolsAlgorithm):
 
@@ -37,24 +37,24 @@ class lasheight(LAStoolsAlgorithm):
     DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersIgnoreClass2GUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasheight.REPLACE_Z, "replace z", False))
         self.addParameter(QgsProcessingParameterBoolean(lasheight.DROP_ABOVE, "drop above", False))
         self.addParameter(QgsProcessingParameterNumber(lasheight.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lasheight.DROP_BELOW, "drop below", False))
         self.addParameter(QgsProcessingParameterNumber(lasheight.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersIgnoreClass2Commands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasheight.REPLACE_Z, context)):
             commands.append("-replace_z")
         if (self.parameterAsBool(parameters, lasheight.DROP_ABOVE, context)):
@@ -63,8 +63,8 @@ class lasheight(LAStoolsAlgorithm):
         if (self.parameterAsBool(parameters, lasheight.DROP_BELOW, context)):
             commands.append("-drop_below")
             commands.append(unicode(self.parameterAsDouble(parameters, lasheight.DROP_BELOW_HEIGHT, context)))
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

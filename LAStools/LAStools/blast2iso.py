@@ -25,7 +25,7 @@ import os
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class blast2iso(LAStoolsAlgorithm):
 
@@ -36,20 +36,20 @@ class blast2iso(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(blast2iso.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10))
         self.addParameter(QgsProcessingParameterNumber(blast2iso.ISO_EVERY, "extract isoline with a spacing of", QgsProcessingParameterNumber.Double, 10.0, False, 0.05, 1000.0))
         self.addParameter(QgsProcessingParameterNumber(blast2iso.CLEAN, "clean isolines shorter than (0 = do not clean)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterNumber(blast2iso.SIMPLIFY_LENGTH, "simplify segments shorter than (0 = do not simplify)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterNumber(blast2iso.SIMPLIFY_AREA, "simplify segments pairs with area less than (0 = do not simplify)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 100.0))
-        self.addParametersVectorOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_vector_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2iso")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         smooth = self.parameterAsInt(parameters, blast2iso.SMOOTH, context)
         if (smooth != 0):
             commands.append("-smooth")
@@ -68,8 +68,8 @@ class blast2iso(LAStoolsAlgorithm):
         if (simplify_area != 0.0):
             commands.append("-simplify_area")
             commands.append(unicode(simplify_area))
-        self.addParametersVectorOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_vector_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

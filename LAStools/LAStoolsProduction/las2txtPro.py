@@ -23,7 +23,7 @@ __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 from qgis.core import QgsProcessingParameterString
 
@@ -33,30 +33,30 @@ class las2txtPro(LAStoolsAlgorithm):
     PARSE = "PARSE"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterString(las2txtPro.PARSE, "parse string", "xyz"))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, las2txtPro.PARSE, context)
         if (parse != "xyz"):
             commands.append("-parse")
             commands.append(parse)
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
         commands.append("-otxt")
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

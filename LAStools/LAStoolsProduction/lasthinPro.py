@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasthinPro(LAStoolsAlgorithm):
 
@@ -40,28 +40,28 @@ class lasthinPro(LAStoolsAlgorithm):
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersIgnoreClass2GUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
         self.addParameter(QgsProcessingParameterNumber(lasthinPro.THIN_STEP, "size of grid used for thinning", QgsProcessingParameterNumber.Double, 1.0, False, 0.0))
         self.addParameter(QgsProcessingParameterEnum(lasthinPro.OPERATION, "keep particular point per cell", lasthinPro.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasthinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, "adaptive threshold, contour intervals, or percentile", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lasthinPro.WITHHELD, "mark thinned-away points as withheld", False))
         self.addParameter(QgsProcessingParameterBoolean(lasthinPro.CLASSIFY_AS, "classify surviving points as", False))
         self.addParameter(QgsProcessingParameterNumber(lasthinPro.CLASSIFY_AS_CLASS, "classification code", QgsProcessingParameterNumber.Integer, 8, False, 0, 255))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersIgnoreClass2Commands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasthinPro.THIN_STEP, context)
         if (step != 1.0):
             commands.append("-step")
@@ -76,11 +76,11 @@ class lasthinPro(LAStoolsAlgorithm):
         if (self.parameterAsBool(parameters, lasthinPro.CLASSIFY_AS, context)):
             commands.append("-classify_as")
             commands.append(unicode(self.parameterAsInt(parameters, lasthinPro.CLASSIFY_AS_CLASS, context)))
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

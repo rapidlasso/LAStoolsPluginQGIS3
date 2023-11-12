@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class las2lasPro_project(LAStoolsAlgorithm):
 
@@ -47,7 +47,7 @@ class las2lasPro_project(LAStoolsAlgorithm):
     TARGET_SP = "TARGET_SP"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterEnum(las2lasPro_project.SOURCE_PROJECTION, "source projection", las2lasPro_project.PROJECTIONS, False, 0))
         self.addParameter(QgsProcessingParameterNumber(las2lasPro_project.SOURCE_EPSG_CODE, "source EPSG code", QgsProcessingParameterNumber.Integer, 25832, False, 1, 65535))
         self.addParameter(QgsProcessingParameterEnum(las2lasPro_project.SOURCE_UTM, "source utm zone", las2lasPro_project.UTM_ZONES, False, 0))
@@ -56,20 +56,20 @@ class las2lasPro_project(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(las2lasPro_project.TARGET_EPSG_CODE, "target EPSG code", QgsProcessingParameterNumber.Integer, 25832, False, 1, 65535))
         self.addParameter(QgsProcessingParameterEnum(las2lasPro_project.TARGET_UTM, "target utm zone", las2lasPro_project.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2lasPro_project.TARGET_SP, "target state plane code", las2lasPro_project.STATE_PLANES, False, 0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, las2lasPro_project.SOURCE_PROJECTION, context)
         if (source_projection != 0):
             if (source_projection == 1):
@@ -114,11 +114,11 @@ class las2lasPro_project(LAStoolsAlgorithm):
                     commands.append(las2lasPro_project.STATE_PLANES[target_sp_code])
             else:
                 commands.append("-target_" + las2lasPro_project.PROJECTIONS[target_projection])
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

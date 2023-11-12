@@ -25,7 +25,7 @@ import os
 from qgis.core import QgsProcessingParameterFile
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasmerge(LAStoolsAlgorithm):
 
@@ -37,26 +37,26 @@ class lasmerge(LAStoolsAlgorithm):
     FILE7 = "FILE7"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersFilesAreFlightlinesGUI()
-        self.addParametersApplyFileSourceIdGUI()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_files_are_flightlines_gui()
+        self.add_parameters_apply_file_source_id_gui()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterFile(lasmerge.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True))
         self.addParameter(QgsProcessingParameterFile(lasmerge.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True))
         self.addParameter(QgsProcessingParameterFile(lasmerge.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True))
         self.addParameter(QgsProcessingParameterFile(lasmerge.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True))
         self.addParameter(QgsProcessingParameterFile(lasmerge.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True))
         self.addParameter(QgsProcessingParameterFile(lasmerge.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         file2 = self.parameterAsString(parameters, lasmerge.FILE2, context)
         if file2 != '':
             commands.append("-i")
@@ -81,10 +81,10 @@ class lasmerge(LAStoolsAlgorithm):
         if file7 != '':
             commands.append("-i")
             commands.append(file7)
-        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
-        self.addParametersApplyFileSourceIdCommands(parameters, context, commands)
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
+        self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

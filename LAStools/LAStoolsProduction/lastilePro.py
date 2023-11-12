@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterString
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lastilePro(LAStoolsAlgorithm):
 
@@ -38,25 +38,25 @@ class lastilePro(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersFilesAreFlightlinesGUI()
-        self.addParametersApplyFileSourceIdGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_files_are_flightlines_gui()
+        self.add_parameters_apply_file_source_id_gui()
         self.addParameter(QgsProcessingParameterNumber(lastilePro.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 4.0, 10000.0))
         self.addParameter(QgsProcessingParameterNumber(lastilePro.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lastilePro.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True))
         self.addParameter(QgsProcessingParameterBoolean(lastilePro.EXTRA_PASS, "more than 2000 output tiles", False))
-        self.addParametersOutputDirectoryGUI()
+        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterString(lastilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)",""))
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
-        self.addParametersApplyFileSourceIdCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
+        self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, lastilePro.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
@@ -68,13 +68,13 @@ class lastilePro(LAStoolsAlgorithm):
             commands.append("-flag_as_withheld")
         if (self.parameterAsBool(parameters, lastilePro.EXTRA_PASS, context)):
             commands.append("-extra_pass")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         base_name = self.parameterAsString(parameters, lastilePro.BASE_NAME, context)
         if (base_name != ""):
             commands.append("-o")
             commands.append('"' + base_name + '"')
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

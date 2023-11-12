@@ -29,7 +29,7 @@ __copyright__ = '(C) 2023, rapidlasso GmbH'
 import os
 from ..LAStoolsUtils import LAStoolsUtils
 from processing.core.parameters import ParameterExtent
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 from qgis.core import QgsMapLayer, QgsMapLayerRegistry
 
 
@@ -40,14 +40,14 @@ class lasquery(LAStoolsAlgorithm):
     def initAlgorithm(self, config):
         self.name, self.i18n_name = self.trAlgorithm('lasquery')
         self.group, self.i18n_group = self.trAlgorithm('LAStools')
-        self.addParametersVerboseGUI()
+        self.add_parameters_verbose_gui()
         self.addParameter(ParameterExtent(self.AOI, self.tr('area of interest')))
-        self.addParametersAdditionalGUI()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
 
     # get area-of-interest
         aoi = unicode(self.parameterAsInt(parameters, self.AOI))
@@ -71,7 +71,7 @@ class lasquery(LAStoolsAlgorithm):
         commands.append(aoiCoords[2])
         commands.append(aoiCoords[1])
         commands.append(aoiCoords[3])
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

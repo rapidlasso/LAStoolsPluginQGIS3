@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class blast2dem(LAStoolsAlgorithm):
 
@@ -37,22 +37,22 @@ class blast2dem(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
-        self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParametersStepGUI()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_filter1_return_class_flags_gui()
+        self.add_parameters_step_gui()
         self.addParameter(QgsProcessingParameterEnum(blast2dem.ATTRIBUTE, "Attribute", blast2dem.ATTRIBUTES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(blast2dem.PRODUCT, "Product", blast2dem.PRODUCTS, False, 0))
         self.addParameter(QgsProcessingParameterBoolean(blast2dem.USE_TILE_BB, "Use tile bounding box (after tiling with buffer)", False))
-        self.addParametersRasterOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_raster_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2dem")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
-        self.addParametersStepCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
+        self.add_parameters_step_commands(parameters, context, commands)
         attribute = self.parameterAsInt(parameters, blast2dem.ATTRIBUTE, context)
         if (attribute != 0):
             commands.append("-" + blast2dem.ATTRIBUTES[attribute])
@@ -61,8 +61,8 @@ class blast2dem(LAStoolsAlgorithm):
             commands.append("-" + blast2dem.PRODUCTS[product])
         if (self.parameterAsBool(parameters, blast2dem.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
-        self.addParametersRasterOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_raster_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

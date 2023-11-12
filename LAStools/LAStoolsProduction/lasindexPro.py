@@ -25,7 +25,7 @@ import os
 from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasindexPro(LAStoolsAlgorithm):
 
@@ -33,20 +33,20 @@ class lasindexPro(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasindexPro.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(QgsProcessingParameterBoolean(lasindexPro.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasindexPro.APPEND_LAX, context)):
             commands.append("-append")
         if (self.parameterAsBool(parameters, lasindexPro.MOBILE_OR_TERRESTRIAL, context)):
@@ -54,8 +54,8 @@ class lasindexPro(LAStoolsAlgorithm):
             commands.append("10")
             commands.append("-maximum")
             commands.append("-100")
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

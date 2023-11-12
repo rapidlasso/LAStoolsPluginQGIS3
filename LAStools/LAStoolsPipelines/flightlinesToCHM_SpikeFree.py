@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterString
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
 
@@ -40,31 +40,31 @@ class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterNumber(flightlinesToCHM_SpikeFree.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(flightlinesToCHM_SpikeFree.BUFFER, "buffer around tiles (avoids edge artifacts)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0))
         self.addParameter(QgsProcessingParameterEnum(flightlinesToCHM_SpikeFree.TERRAIN, "terrain type", flightlinesToCHM_SpikeFree.TERRAINS, False, 2))
         self.addParameter(QgsProcessingParameterNumber(flightlinesToCHM_SpikeFree.BEAM_WIDTH, "laser beam width (diameter of laser footprint)", QgsProcessingParameterNumber.Double, 0.2, False, 0.0))
-        self.addParametersStepGUI()
+        self.add_parameters_step_gui()
         self.addParameter(QgsProcessingParameterNumber(flightlinesToCHM_SpikeFree.FREEZE_VALUE, "spike-free freeze value (by default 3 times step)", QgsProcessingParameterNumber.Double, 0.0, False, 0.0))
-        self.addParametersTemporaryDirectoryGUI()
-        self.addParametersOutputDirectoryGUI()
+        self.add_parameters_temporary_directory_gui()
+        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterString(flightlinesToCHM_SpikeFree.BASE_NAME, "tile base name (using 'sydney' creates sydney_274000_4714000...)", "tile"))
-        self.addParametersRasterOutputFormatGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.add_parameters_raster_output_format_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
 
         # needed for thinning and spike-free
 
-        step = self.getParametersStepValue(parameters, context)
+        step = self.get_parameters_step_value(parameters, context)
 
         # first we tile the data
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, flightlinesToCHM_SpikeFree.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -73,7 +73,7 @@ class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
         if (buffer != 0.0):
             commands.append("-buffer")
             commands.append(unicode(buffer))
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         base_name = self.parameterAsString(parameters, flightlinesToCHM_SpikeFree.BASE_NAME, context)
         if (base_name == ""):
             base_name = "tile"
@@ -86,8 +86,8 @@ class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
         # then we ground classify the tiles
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*.laz")
         method = self.parameterAsInt(parameters, flightlinesToCHM_SpikeFree.TERRAIN, context)
         if (method != 2):
             commands.append("-" + flightlinesToCHM_SpikeFree.TERRAINS[method])
@@ -97,33 +97,33 @@ class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
             commands.append("-extra_fine")
         elif (method > 1):
             commands.append("-fine")
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-odix")
         commands.append("_g")
         commands.append("-olaz")
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we height-normalize the tiles
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*_g.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*_g.laz")
         commands.append("-replace_z")
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-odix")
         commands.append("h")
         commands.append("-olaz")
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we thin and splat the tiles
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*_gh.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*_gh.laz")
         beam_width = self.parameterAsDouble(parameters, flightlinesToCHM_SpikeFree.BEAM_WIDTH, context)
         if (beam_width != 0.0):
             commands.append("-subcircle")
@@ -131,20 +131,20 @@ class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
         commands.append("-step")
         commands.append(unicode(step / 2))
         commands.append("-highest")
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-odix")
         commands.append("t")
         commands.append("-olaz")
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we rasterize the normalized tiles into CHMs
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, base_name + "*_ght.laz")
-        self.addParametersStepCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, base_name + "*_ght.laz")
+        self.add_parameters_step_commands(parameters, context, commands)
         freeze_value = self.parameterAsDouble(parameters, flightlinesToCHM_SpikeFree.FREEZE_VALUE, context)
         commands.append("-spike_free")
         if (freeze_value == 0.0):
@@ -152,13 +152,13 @@ class flightlinesToCHM_SpikeFree(LAStoolsAlgorithm):
         else:
             commands.append(unicode(freeze_value))
         commands.append("-use_tile_bb")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         commands.append("-ocut")
         commands.append("4")
         commands.append("-odix")
         commands.append("_chm_sf")
-        self.addParametersRasterOutputFormatCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_raster_output_format_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
         

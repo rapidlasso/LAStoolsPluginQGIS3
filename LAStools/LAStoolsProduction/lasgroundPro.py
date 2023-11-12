@@ -30,7 +30,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasgroundPro(LAStoolsAlgorithm):
 
@@ -42,24 +42,24 @@ class lasgroundPro(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersHorizontalAndVerticalFeetGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_horizontal_and_vertical_feet_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasgroundPro.NO_BULGE, "no triangle bulging during TIN refinement", False))
         self.addParameter(QgsProcessingParameterBoolean(lasgroundPro.BY_FLIGHTLINE, "classify flightlines separately (needs point source IDs populated)", False))
         self.addParameter(QgsProcessingParameterEnum(lasgroundPro.TERRAIN, "terrain type", lasgroundPro.TERRAINS, False, 2))
         self.addParameter(QgsProcessingParameterEnum(lasgroundPro.GRANULARITY, "preprocessing", lasgroundPro.GRANULARITIES, False, 1))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasgroundPro.NO_BULGE, context)):
             commands.append("-no_bulge")
         if (self.parameterAsBool(parameters, lasgroundPro.BY_FLIGHTLINE, context)):
@@ -70,12 +70,12 @@ class lasgroundPro(LAStoolsAlgorithm):
         granularity = self.parameterAsInt(parameters, lasgroundPro.GRANULARITY, context)
         if (granularity != 1):
             commands.append("-" + lasgroundPro.GRANULARITIES[granularity])
-        self.addParametersCoresCommands(parameters, context, commands)
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

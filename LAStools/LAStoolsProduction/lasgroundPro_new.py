@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasgroundPro_new(LAStoolsAlgorithm):
     TERRAIN = "TERRAIN"
@@ -40,10 +40,10 @@ class lasgroundPro_new(LAStoolsAlgorithm):
     OFFSET = "OFFSET"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputFolderGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersHorizontalAndVerticalFeetGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_horizontal_and_vertical_feet_gui()
         self.addParameter(QgsProcessingParameterEnum(lasgroundPro_new.TERRAIN, "terrain type", lasgroundPro_new.TERRAINS, False, 3))
         self.addParameter(QgsProcessingParameterEnum(lasgroundPro_new.GRANULARITY, "preprocessing", lasgroundPro_new.GRANULARITIES, False, 2))
         self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.STEP, "step (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0, 500.0))
@@ -51,18 +51,18 @@ class lasgroundPro_new(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.SPIKE, "spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
         self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.DOWN_SPIKE, "down spike (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 1.0, False, 0.0, 25.0))
         self.addParameter(QgsProcessingParameterNumber(lasgroundPro_new.OFFSET, "offset (for 'custom' terrain only)", QgsProcessingParameterNumber.Double, 0.05, False, 0.0, 1.0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground_new")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersHorizontalAndVerticalFeetCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
         method = self.parameterAsInt(parameters, lasgroundPro_new.TERRAIN, context)
         if (method == 5):
             commands.append("-step")
@@ -80,11 +80,11 @@ class lasgroundPro_new(LAStoolsAlgorithm):
         granularity = self.parameterAsInt(parameters, lasgroundPro_new.GRANULARITY, context)
         if (granularity != 1):
             commands.append("-" + lasgroundPro_new.GRANULARITIES[granularity])
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

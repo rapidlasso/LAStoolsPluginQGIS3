@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasoveragePro(LAStoolsAlgorithm):
 
@@ -35,24 +35,24 @@ class lasoveragePro(LAStoolsAlgorithm):
     OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersHorizontalFeetGUI()
-        self.addParametersFilesAreFlightlinesGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_horizontal_feet_gui()
+        self.add_parameters_files_are_flightlines_gui()
         self.addParameter(QgsProcessingParameterNumber(lasoveragePro.CHECK_STEP, "size of grid used for scan angle check", QgsProcessingParameterNumber.Double, 1.0, False, 0.0))
         self.addParameter(QgsProcessingParameterEnum(lasoveragePro.OPERATION, "mode of operation", lasoveragePro.OPERATIONS, False, 0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverage")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersHorizontalFeetCommands(parameters, context, commands)
-        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_horizontal_feet_commands(parameters, context, commands)
+        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasoveragePro.CHECK_STEP, context)
         if (step != 1.0):
             commands.append("-step")
@@ -62,11 +62,11 @@ class lasoveragePro(LAStoolsAlgorithm):
             commands.append("-flag_as_withheld")
         elif (operation == 2):
             commands.append("-remove_overage")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

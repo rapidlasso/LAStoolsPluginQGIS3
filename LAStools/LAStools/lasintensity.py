@@ -27,7 +27,7 @@ from qgis._core import QgsProcessingParameterFileDestination, QgsProcessingParam
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 
 class LasIntensity(LAStoolsAlgorithm):
@@ -52,9 +52,9 @@ class LasIntensity(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         # input verbose ans gui
-        self.addParametersVerboseGUI()
+        self.add_parameters_verbose_gui()
         # input las file
-        self.addParametersPointInputGUI()
+        self.add_parameters_point_input_gui()
         # Scanner Height
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensity.SCANNER_HEIGHT, "Scanner Altitude in [km]",
@@ -84,7 +84,7 @@ class LasIntensity(LAStoolsAlgorithm):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasintensity64")]
         # append -v and -gui
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
         # append -i
         commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append -scanner_height
@@ -120,7 +120,7 @@ class LasIntensity(LAStoolsAlgorithm):
         return LasIntensity.URL_HELP_PATH
 
     def shortHelpString(self):
-        return self.translatable_string(LasIntensity.SHORT_HELP_STRING)
+        return self.tr(LasIntensity.SHORT_HELP_STRING)
 
     def shortDescription(self):
         return LasIntensity.SHORT_DESCRIPTION
@@ -146,9 +146,9 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         # input verbose ans gui
-        self.addParametersVerboseGUI()
+        self.add_parameters_verbose_gui()
         # input las file
-        self.addParametersPointInputGUI()
+        self.add_parameters_point_input_gui()
         # Scanner Height
         self.addParameter(QgsProcessingParameterNumber(
             LasIntensityAttenuationFactor.SCANNER_HEIGHT, "Scanner Altitude in [km]",
@@ -173,9 +173,9 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasintensity64")]
         # append -v and -gui
-        self.addParametersVerboseCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
         # append -i
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         # append -scanner_height
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         # append -a
@@ -210,7 +210,7 @@ class LasIntensityAttenuationFactor(LAStoolsAlgorithm):
         return LasIntensityAttenuationFactor.URL_HELP_PATH
 
     def shortHelpString(self):
-        return self.translatable_string(LasIntensityAttenuationFactor.SHORT_HELP_STRING)
+        return self.tr(LasIntensityAttenuationFactor.SHORT_HELP_STRING)
 
     def shortDescription(self):
         return LasIntensityAttenuationFactor.SHORT_DESCRIPTION

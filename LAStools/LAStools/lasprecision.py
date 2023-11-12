@@ -28,22 +28,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import os
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasprecision(LAStoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
-        self.addParametersGenericOutputGUI("Output ASCII file", "txt", True)
-        self.addParametersAdditionalGUI()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_generic_output_gui("Output ASCII file", "txt", True)
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasprecision")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

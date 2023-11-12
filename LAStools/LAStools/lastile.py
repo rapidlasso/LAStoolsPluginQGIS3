@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lastile(LAStoolsAlgorithm):
 
@@ -36,19 +36,19 @@ class lastile(LAStoolsAlgorithm):
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(lastile.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 4.0, 10000.0))
         self.addParameter(QgsProcessingParameterNumber(lastile.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lastile.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True))
         self.addParameter(QgsProcessingParameterBoolean(lastile.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, lastile.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
@@ -60,8 +60,8 @@ class lastile(LAStoolsAlgorithm):
             commands.append("-flag_as_withheld")
         if (self.parameterAsBool(parameters, lastile.REVERSIBLE, context)):
             commands.append("-reversible")
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

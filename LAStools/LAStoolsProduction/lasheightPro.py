@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasheightPro(LAStoolsAlgorithm):
 
@@ -38,27 +38,27 @@ class lasheightPro(LAStoolsAlgorithm):
     DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersIgnoreClass2GUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasheightPro.REPLACE_Z, "replace z", False))
         self.addParameter(QgsProcessingParameterBoolean(lasheightPro.DROP_ABOVE, "drop above", False))
         self.addParameter(QgsProcessingParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0))
         self.addParameter(QgsProcessingParameterBoolean(lasheightPro.DROP_BELOW, "drop below", False))
         self.addParameter(QgsProcessingParameterNumber(lasheightPro.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersIgnoreClass2Commands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasheightPro.REPLACE_Z, context)):
             commands.append("-replace_z")
         if (self.parameterAsBool(parameters, lasheightPro.DROP_ABOVE, context)):
@@ -67,11 +67,11 @@ class lasheightPro(LAStoolsAlgorithm):
         if (self.parameterAsBool(parameters, lasheightPro.DROP_BELOW, context)):
             commands.append("-drop_below")
             commands.append(unicode(self.parameterAsDouble(parameters, lasheightPro.DROP_BELOW_HEIGHT, context)))
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersPointOutputFormatCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

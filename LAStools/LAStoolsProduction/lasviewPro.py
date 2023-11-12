@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasviewPro(LAStoolsAlgorithm):
 
@@ -39,19 +39,19 @@ class lasviewPro(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersFilesAreFlightlinesGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_files_are_flightlines_gui()
         self.addParameter(QgsProcessingParameterNumber(lasviewPro.POINTS, "max number of points sampled", QgsProcessingParameterNumber.Integer, 5000000, False, 100000, 20000000))
         self.addParameter(QgsProcessingParameterEnum(lasviewPro.COLORING, "color by", lasviewPro.COLORINGS, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasviewPro.SIZE,"window size (x y) in pixels", lasviewPro.SIZES, False, 0))
-        self.addParametersAdditionalGUI()
-        self.addParametersVerboseGUI()
+        self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         points = self.parameterAsInt(parameters, lasviewPro.POINTS, context)
         commands.append("-points " + unicode(points))
         coloring = self.parameterAsInt(parameters, lasviewPro.COLORING, context)
@@ -60,7 +60,7 @@ class lasviewPro(LAStoolsAlgorithm):
         size = self.parameterAsInt(parameters, lasviewPro.SIZE, context)
         if (size != 0):
             commands.append("-win " + lasviewPro.SIZES[size])
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

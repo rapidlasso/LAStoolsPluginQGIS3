@@ -25,25 +25,25 @@ import os
 from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasvalidatePro(LAStoolsAlgorithm):
 
     ONE_REPORT_PER_FILE = "ONE_REPORT_PER_FILE"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
-        self.addParametersGenericOutputGUI("Output XML file", "xml", True)
-        self.addParametersAdditionalGUI()
+        self.add_parameters_generic_output_gui("Output XML file", "xml", True)
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate")]
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasvalidatePro.ONE_REPORT_PER_FILE, context)):
             commands.append("-oxml")
-        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

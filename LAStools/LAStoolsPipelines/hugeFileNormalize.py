@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class hugeFileNormalize(LAStoolsAlgorithm):
 
@@ -40,24 +40,24 @@ class hugeFileNormalize(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputGUI()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(hugeFileNormalize.TILE_SIZE, "tile size (side length of square tile)", QgsProcessingParameterNumber.Double, 1000.0, False, 0.0))
         self.addParameter(QgsProcessingParameterNumber(hugeFileNormalize.BUFFER, "buffer around tiles (avoids edge artifacts)", QgsProcessingParameterNumber.Double, 25.0, False, 0.0))
         self.addParameter(QgsProcessingParameterBoolean(hugeFileNormalize.AIRBORNE, "airborne LiDAR", True))
         self.addParameter(QgsProcessingParameterEnum(hugeFileNormalize.TERRAIN, "terrain type", hugeFileNormalize.TERRAINS, False, 2))
         self.addParameter(QgsProcessingParameterEnum(hugeFileNormalize.GRANULARITY, "preprocessing", hugeFileNormalize.GRANULARITIES, False, 1))
-        self.addParametersTemporaryDirectoryGUI()
-        self.addParametersPointOutputGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI()
+        self.add_parameters_temporary_directory_gui()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
 
         # first we tile the data with option '-reversible'
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, hugeFileNormalize.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(unicode(tile_size))
@@ -66,7 +66,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
             commands.append("-buffer")
             commands.append(unicode(buffer))
         commands.append("-reversible")
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-o")
         commands.append("hugeFileNormalize.laz")
 
@@ -75,8 +75,8 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         # then we ground classify the reversible tiles
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileNormalize*.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "hugeFileNormalize*.laz")
         airborne = self.parameterAsBool(parameters, hugeFileNormalize.AIRBORNE, context)
         if (not airborne):
             commands.append("-not_airborne")
@@ -86,35 +86,35 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         granularity = self.parameterAsInt(parameters, hugeFileNormalize.GRANULARITY, context)
         if (granularity != 1):
             commands.append("-" + hugeFileNormalize.GRANULARITIES[granularity])
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-odix")
         commands.append("_g")
         commands.append("-olaz")
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we height-normalize each points in the reversible tiles
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileNormalize*_g.laz")
-        self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "hugeFileNormalize*_g.laz")
+        self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-replace_z")
         commands.append("-odix")
         commands.append("h")
         commands.append("-olaz")
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
         # then we reverse the tiling
 
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersTemporaryDirectoryAsInputFilesCommands(parameters, context, commands, "hugeFileNormalize*_gh.laz")
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "hugeFileNormalize*_gh.laz")
         commands.append("-reverse_tiling")
-        self.addParametersPointOutputCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
         

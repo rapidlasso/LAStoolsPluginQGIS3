@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasoverlapPro(LAStoolsAlgorithm):
 
@@ -40,28 +40,28 @@ class lasoverlapPro(LAStoolsAlgorithm):
     CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
-        self.addParametersFilesAreFlightlinesGUI()
-        self.addParametersFilter1ReturnClassFlagsGUI()
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_files_are_flightlines_gui()
+        self.add_parameters_filter1_return_class_flags_gui()
         self.addParameter(QgsProcessingParameterNumber(lasoverlapPro.CHECK_STEP, "size of grid used for overlap check", QgsProcessingParameterNumber.Double, 2.0, False, 0.001, 50.0))
         self.addParameter(QgsProcessingParameterEnum(lasoverlapPro.ATTRIBUTE, "attribute to check", lasoverlapPro.ATTRIBUTES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasoverlapPro.OPERATION, "operation on attribute per cell", lasoverlapPro.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterBoolean(lasoverlapPro.CREATE_OVERLAP_RASTER, "create overlap raster", True))
         self.addParameter(QgsProcessingParameterBoolean(lasoverlapPro.CREATE_DIFFERENCE_RASTER, "create difference raster", True))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersRasterOutputFormatGUI()
-        self.addParametersRasterOutputGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_raster_output_format_gui()
+        self.add_parameters_raster_output_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
-        self.addParametersFilesAreFlightlinesCommands(parameters, context, commands)
-        self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
+        self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, lasoverlapPro.CHECK_STEP, context)
         if (step != 2.0):
             commands.append("-step")
@@ -77,12 +77,12 @@ class lasoverlapPro(LAStoolsAlgorithm):
             commands.append("-no_over")
         if (not self.parameterAsBool(parameters, lasoverlapPro.CREATE_DIFFERENCE_RASTER, context)):
             commands.append("-no_diff")
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
-        self.addParametersRasterOutputFormatCommands(parameters, context, commands)
-        self.addParametersRasterOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_raster_output_format_commands(parameters, context, commands)
+        self.add_parameters_raster_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

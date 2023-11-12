@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class las2shp(LAStoolsAlgorithm):
 
@@ -34,25 +34,25 @@ class las2shp(LAStoolsAlgorithm):
     RECORD_SIZE = "RECORD_SIZE"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(las2shp.POINT_Z, "use PointZ instead of MultiPointZ", False))
         self.addParameter(QgsProcessingParameterNumber(las2shp.RECORD_SIZE, "number of points per record", QgsProcessingParameterNumber.Integer, 1024, False, 0, 65536))
-        self.addParametersGenericOutputGUI("Output SHP file", "shp", True)
-        self.addParametersAdditionalGUI()
+        self.add_parameters_generic_output_gui("Output SHP file", "shp", True)
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2shp")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, las2shp.POINT_Z, context)):
             commands.append("-single_points")
         record_size = self.parameterAsInt(parameters, las2shp.RECORD_SIZE, context)
         if (record_size != 1024):
             commands.append("-record_size")
             commands.append(unicode(record_size))
-        self.addParametersGenericOutputCommands(parameters, context, commands, "-o")
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_additional_commands(parameters, context, commands)
         LAStoolsUtils.runLAStools(commands, feedback)
 
         return {"": None}

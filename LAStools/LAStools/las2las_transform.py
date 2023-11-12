@@ -26,7 +26,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterString
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class las2las_transform(LAStoolsAlgorithm):
 
@@ -35,35 +35,35 @@ class las2las_transform(LAStoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersTransform1CoordinateGUI()
-        self.addParametersTransform2CoordinateGUI()
-        self.addParametersTransform1OtherGUI()
-        self.addParametersTransform2OtherGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_transform1_coordinate_gui()
+        self.add_parameters_transform2_coordinate_gui()
+        self.add_parameters_transform1_other_gui()
+        self.add_parameters_transform2_other_gui()
         self.addParameter(QgsProcessingParameterEnum(las2las_transform.OPERATION, "operations (first 8 need an argument)", las2las_transform.OPERATIONS, False, 0))
         self.addParameter(QgsProcessingParameterString(las2las_transform.OPERATIONARG, "argument for operation"))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersTransform1CoordinateCommands(parameters, context, commands)
-        self.addParametersTransform2CoordinateCommands(parameters, context, commands)
-        self.addParametersTransform1OtherCommands(parameters, context, commands)
-        self.addParametersTransform2OtherCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_transform1_coordinate_commands(parameters, context, commands)
+        self.add_parameters_transform2_coordinate_commands(parameters, context, commands)
+        self.add_parameters_transform1_other_commands(parameters, context, commands)
+        self.add_parameters_transform2_other_commands(parameters, context, commands)
         operation = self.parameterAsInt(parameters, las2las_transform.OPERATION, context)
         if (operation != 0):
             commands.append("-" + las2las_transform.OPERATIONS[operation])
             if (operation > 8):
                 commands.append(self.parameterAsString(parameters, las2las_transform.OPERATIONARG, context))
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

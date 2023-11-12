@@ -30,7 +30,7 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasgrid(LAStoolsAlgorithm):
 
@@ -41,22 +41,22 @@ class lasgrid(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParametersStepGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_filter1_return_class_flags_gui()
+        self.add_parameters_step_gui()
         self.addParameter(QgsProcessingParameterEnum(lasgrid.ATTRIBUTE, "Attribute", lasgrid.ATTRIBUTES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasgrid.METHOD, "Method", lasgrid.METHODS, False, 0))
         self.addParameter(QgsProcessingParameterBoolean(lasgrid.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
-        self.addParametersRasterOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_raster_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersFilter1ReturnClassFlagsCommands(parameters, context, commands)
-        self.addParametersStepCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
+        self.add_parameters_step_commands(parameters, context, commands)
         attribute = self.parameterAsInt(parameters, lasgrid.ATTRIBUTE, context)
         if (attribute != 0):
             commands.append("-" + lasgrid.ATTRIBUTES[attribute])
@@ -65,8 +65,8 @@ class lasgrid(LAStoolsAlgorithm):
             commands.append("-" + lasgrid.METHODS[method])
         if (self.parameterAsBool(parameters, lasgrid.USE_TILE_BB, context)):
             commands.append("-use_tile_bb")
-        self.addParametersRasterOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_raster_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

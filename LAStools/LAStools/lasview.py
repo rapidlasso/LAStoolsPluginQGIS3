@@ -30,7 +30,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasview(LAStoolsAlgorithm):
 
@@ -43,17 +43,17 @@ class lasview(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(lasview.POINTS, "max number of points sampled", QgsProcessingParameterNumber.Integer, 5000000, False, 100000, 20000000))
         self.addParameter(QgsProcessingParameterEnum(lasview.COLORING, "color by", lasview.COLORINGS, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasview.SIZE,"window size (x y) in pixels", lasview.SIZES, False, 0))
-        self.addParametersAdditionalGUI()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
-        self.addParametersVerboseCommands(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         points = self.parameterAsInt(parameters, lasview.POINTS, context)
         commands.append("-points " + unicode(points))
         coloring = self.parameterAsInt(parameters, lasview.COLORING, context)
@@ -62,7 +62,7 @@ class lasview(LAStoolsAlgorithm):
         size = self.parameterAsInt(parameters, lasview.SIZE, context)
         if (size != 0):
             commands.append("-win " + lasview.SIZES[size])
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

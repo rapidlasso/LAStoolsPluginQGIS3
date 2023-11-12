@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasheight_classify(LAStoolsAlgorithm):
 
@@ -46,10 +46,10 @@ class lasheight_classify(LAStoolsAlgorithm):
     CLASSIFY_CLASSES = ["---", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)", "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "water (9)", "rail (10)", "road surface (11)", "overlap (12)"]
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
-        self.addParametersIgnoreClass1GUI()
-        self.addParametersIgnoreClass2GUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasheight_classify.REPLACE_Z, "replace z", False))
         self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_BELOW, "classify below height as", lasheight_classify.CLASSIFY_CLASSES, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BELOW_HEIGHT, "below height", QgsProcessingParameterNumber.Double, -2.0, False))
@@ -61,15 +61,15 @@ class lasheight_classify(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_BETWEEN2_HEIGHT_TO, "... and height", QgsProcessingParameterNumber.Double, 5.0))
         self.addParameter(QgsProcessingParameterEnum(lasheight_classify.CLASSIFY_ABOVE, "classify above", lasheight_classify.CLASSIFY_CLASSES, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasheight_classify.CLASSIFY_ABOVE_HEIGHT, "classify above height", QgsProcessingParameterNumber.Double, 100.0))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
-        self.addParametersIgnoreClass1Commands(parameters, context, commands)
-        self.addParametersIgnoreClass2Commands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasheight_classify.REPLACE_Z, context)):
             commands.append("-replace_z")
         classify = self.parameterAsInt(parameters, lasheight_classify.CLASSIFY_BELOW, context)
@@ -94,8 +94,8 @@ class lasheight_classify(LAStoolsAlgorithm):
             commands.append("-classify_above")
             commands.append(unicode(self.parameterAsDouble(parameters, lasheight_classify.CLASSIFY_ABOVE_HEIGHT, context)))
             commands.append(unicode(classify-1))
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

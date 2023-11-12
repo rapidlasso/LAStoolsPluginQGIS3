@@ -25,7 +25,7 @@ import os
 from qgis.core import QgsProcessingParameterEnum
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class las2las_project(LAStoolsAlgorithm):
 
@@ -44,24 +44,24 @@ class las2las_project(LAStoolsAlgorithm):
     TARGET_SP = "TARGET_SP"
 
     def initAlgorithm(self, config):
-        self.addParametersVerboseGUI64()
-        self.addParametersPointInputGUI()
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterEnum(las2las_project.SOURCE_PROJECTION, "source projection", las2las_project.PROJECTIONS, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2las_project.SOURCE_UTM, "source utm zone", las2las_project.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2las_project.SOURCE_SP, "source state plane code", las2las_project.STATE_PLANES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2las_project.TARGET_PROJECTION, "target projection", las2las_project.PROJECTIONS, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2las_project.TARGET_UTM, "target utm zone", las2las_project.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(las2las_project.TARGET_SP, "target state plane code", las2las_project.STATE_PLANES, False, 0))
-        self.addParametersPointOutputGUI()
-        self.addParametersAdditionalGUI()
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, las2las_project.SOURCE_PROJECTION, context)
         if (source_projection != 0):
             if (source_projection == 1):
@@ -96,8 +96,8 @@ class las2las_project(LAStoolsAlgorithm):
                     commands.append(las2las_project.STATE_PLANES[target_sp_code])
             else:
                 commands.append("-target_" + las2las_project.PROJECTIONS[target_projection])
-        self.addParametersPointOutputCommands(parameters, context, commands)
-        self.addParametersAdditionalCommands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 

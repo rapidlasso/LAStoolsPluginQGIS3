@@ -27,7 +27,7 @@ from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
 from ..LAStoolsUtils import LAStoolsUtils
-from ..LAStoolsAlgorithm import LAStoolsAlgorithm
+from ..lastools_algorithm import LAStoolsAlgorithm
 
 class lasinfoPro(LAStoolsAlgorithm):
 
@@ -43,7 +43,7 @@ class lasinfoPro(LAStoolsAlgorithm):
     HISTO3_BIN = "HISTO3_BIN"
 
     def initAlgorithm(self, config):
-        self.addParametersPointInputFolderGUI()
+        self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasinfoPro.COMPUTE_DENSITY, "compute density", False))
         self.addParameter(QgsProcessingParameterBoolean(lasinfoPro.REPAIR_BB, "repair bounding box", False))
         self.addParameter(QgsProcessingParameterBoolean(lasinfoPro.REPAIR_COUNTERS, "repair counters", False))
@@ -53,19 +53,19 @@ class lasinfoPro(LAStoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(lasinfoPro.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
         self.addParameter(QgsProcessingParameterEnum(lasinfoPro.HISTO3, "histogram", lasinfoPro.HISTOGRAM, False, 0))
         self.addParameter(QgsProcessingParameterNumber(lasinfoPro.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0))
-        self.addParametersOutputDirectoryGUI()
-        self.addParametersOutputAppendixGUI()
-        self.addParametersAdditionalGUI()
-        self.addParametersCoresGUI()
-        self.addParametersVerboseGUI64()
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if (LAStoolsUtils.hasWine()):
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
         else:
             commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
-        self.addParametersVerboseCommands64(parameters, context, commands)
-        self.addParametersPointInputFolderCommands(parameters, context, commands)
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, lasinfoPro.COMPUTE_DENSITY, context):
             commands.append("-cd")
         if self.parameterAsBool(parameters, lasinfoPro.REPAIR_BB, context):
@@ -87,11 +87,11 @@ class lasinfoPro(LAStoolsAlgorithm):
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
             commands.append(unicode(self.parameterAsDouble(parameters, lasinfoPro.HISTO3_BIN, context)))
-        self.addParametersOutputDirectoryCommands(parameters, context, commands)
-        self.addParametersOutputAppendixCommands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
         commands.append("-otxt")
-        self.addParametersAdditionalCommands(parameters, context, commands)
-        self.addParametersCoresCommands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
 
         LAStoolsUtils.runLAStools(commands, feedback)
 
