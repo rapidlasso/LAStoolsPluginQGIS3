@@ -37,6 +37,8 @@ from .lastools.core.processing import (
     LasOverage, LasOveragePro,
     LasBoundary, LasBoundaryPro,
     LasClip,
+    LasTile, LasTilePro,
+    LasSplit,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
 )
@@ -91,6 +93,8 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasOverage(), LasOveragePro(),
             LasBoundary(), LasBoundaryPro(),
             LasClip(),
+            LasTile(), LasTilePro(),
+            LasSplit(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
         ]

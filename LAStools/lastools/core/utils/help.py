@@ -275,6 +275,54 @@ descript_processing = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasclip_README.md'
             },
         },
+
+        "lastile": {
+            "LasTile": {
+                "name": 'LasTile',
+                "display_name": 'lastile',
+                "licence": True,
+                "short_help_string": """
+                tiles a potentially very large amount of LAS/LAZ/ASCII points from one  or many files into square non-overlapping tiles of a specified size and save them into LAS or LAZ format. Optionally the tool can also create a small ‘-buffer 10’ around every tile where the parameter 10 specifies the number of units each tile is (temporarily) grown in each direction. It is possible to remove the buffer from a tile by running with ‘-remove_buffer’ option. You may also flag the points that fall into the buffer with the new ‘-flag_as_withheld’ or ‘-flag_as_synthetic’ options. If you spatially index your input files using lasindex you may also run lastile on multiple processors with the ‘-cores 4’ option.
+
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Tiles LIDAR points into tiles',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lastile_README.md'
+            },
+
+            "LasTilePro": {
+                "name": 'LasTilePro',
+                "display_name": 'lastile (folder)',
+                "licence": True,
+                "short_help_string": """
+                tiles a potentially very large amount of LAS/LAZ/ASCII points from one  or many files into square non-overlapping tiles of a specified size and save them into LAS or LAZ format. Optionally the tool can also create a small ‘-buffer 10’ around every tile where the parameter 10 specifies the number of units each tile is (temporarily) grown in each direction. It is possible to remove the buffer from a tile by running with ‘-remove_buffer’ option. You may also flag the points that fall into the buffer with the new ‘-flag_as_withheld’ or ‘-flag_as_synthetic’ options. If you spatially index your input files using lasindex you may also run lastile on multiple processors with the ‘-cores 4’ option.
+
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Tiles LIDAR points into tiles (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lastile_README.md'
+            },
+
+        },
+
+        "lassplit": {
+            "LasSplit": {
+                "name": 'LasSplit',
+                "display_name": 'lassplit',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that splits LAS or LAZ files into multiple files based on some criteria. By default it splits the points into separate files based on the ‘point source ID’ field that usually contains the flightline ID. 
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'A tool that splits LAS or LAZ files into multiple files.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lassplit_README.md'
+            },
+        },
+
+        
+
     },
 
 }
