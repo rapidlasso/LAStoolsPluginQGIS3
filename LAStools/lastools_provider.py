@@ -43,7 +43,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
     def __init__(self):
         QgsProcessingProvider.__init__(self)
-        self.algorithms = list()
+        self.algos = None
 
     def load(self):
         """In this method we add settings needed to configure our
@@ -86,8 +86,8 @@ class LAStoolsProvider(QgsProcessingProvider):
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
         ]
-        self.algorithms.extend(processing_algorithms)
-        for algorithm in self.algorithms:
+        self.algos = processing_algorithms
+        for algorithm in self.algos:
             self.addAlgorithm(algorithm)
 
     def icon(self):
