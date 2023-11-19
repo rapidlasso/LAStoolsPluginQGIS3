@@ -40,6 +40,7 @@ from .lastools.core.processing import (
     LasTile, LasTilePro,
     LasSplit,
     LasNoise, LasNoisePro,
+    LasDiff,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
 )
@@ -95,6 +96,7 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasTile(), LasTilePro(),
             LasSplit(),
             LasNoise(), LasNoisePro(),
+            LasDiff(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
         ]

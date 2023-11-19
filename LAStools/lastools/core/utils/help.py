@@ -362,6 +362,21 @@ descript_processing = {
 
         },
 
+        "lasdiff": {
+            "LasDiff": {
+                "name": 'LasDiff',
+                "display_name": 'lasdiff',
+                "licence": True,
+                "short_help_string": """
+                    compares the LIDAR data of two LAS/LAZ/ASCII files and reports whether they are identical or whether they are different.
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Compares the LIDAR data of two LAS/LAZ/ASCII files and reports whether they are identical or different.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasdiff_README.md'
+            },
+        },
+
     },
 
 }
