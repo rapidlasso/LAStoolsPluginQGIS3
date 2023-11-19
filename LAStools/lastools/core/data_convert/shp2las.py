@@ -31,7 +31,7 @@ from ..algo import LastoolsAlgorithm
 
 
 class Shp2Las(LastoolsAlgorithm):
-    TOOL_INFO = ('las2txt', 'Las2txt')
+    TOOL_INFO = ('shp2las', 'Shp2Las')
     SCALE_FACTOR_XY = "SCALE_FACTOR_XY"
     SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
