@@ -44,6 +44,9 @@ from .lastools.core.processing import (
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
 )
+from .lastools.core.data_convert import (
+    Las2txt
+)
 from .lastools.core.utils import paths
 
 
@@ -102,6 +105,10 @@ class LAStoolsProvider(QgsProcessingProvider):
         ]
         self.algos = processing_algorithms
 
+        data_convert_algorithms = [
+            Las2txt(),
+        ]
+        self.algos.extend(data_convert_algorithms)
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)
 
