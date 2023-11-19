@@ -526,5 +526,20 @@ descript_data_convert = {
 
         },
 
+        "las2shp": {
+            "Las2Shp": {
+                "name": 'Las2Shp',
+                "display_name": 'las2shp',
+                "licence": True,
+                "short_help_string": """
+                converts LIDAR from LAS/LAZ/ASCII to ESRI’s Shapefile format by grouping consecutive points into MultiPointZ records. The default size is 1024. It can be changed with ‘-record 2048’. If you want to use PointZ records instead you need to add ‘-single_points’ to the command line.
+                
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Converts LIDAR from LAS/LAZ/ASCII to ESRI’s Shapefile format by grouping consecutive points into MultiPointZ records.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2shp_README.md'
+            },
+        },
+
     },
 }
