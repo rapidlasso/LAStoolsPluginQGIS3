@@ -1,0 +1,73 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    las2shp.py
+    ---------------------
+    Date                 : September 2013 and August 2018
+    Copyright            : (C) 2013 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, rapidlasso GmbH'
+
+import os
+from qgis.core import QgsProcessingParameterBoolean
+from qgis.core import QgsProcessingParameterNumber
+
+from lastools.core.utils.utils import LastoolsUtils
+from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
+
+class las2shp(LastoolsAlgorithm):
+
+    POINT_Z = "POINT_Z"
+    RECORD_SIZE = "RECORD_SIZE"
+
+    def initAlgorithm(self, config):
+        self.add_parameters_verbose_gui()
+        self.add_parameters_point_input_gui()
+        self.addParameter(QgsProcessingParameterBoolean(las2shp.POINT_Z, "use PointZ instead of MultiPointZ", False))
+        self.addParameter(QgsProcessingParameterNumber(las2shp.RECORD_SIZE, "number of points per record", QgsProcessingParameterNumber.Integer, 1024, False, 0, 65536))
+        self.add_parameters_generic_output_gui("Output SHP file", "shp", True)
+        self.add_parameters_additional_gui()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2shp")]
+        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        if (self.parameterAsBool(parameters, las2shp.POINT_Z, context)):
+            commands.append("-single_points")
+        record_size = self.parameterAsInt(parameters, las2shp.RECORD_SIZE, context)
+        if (record_size != 1024):
+            commands.append("-record_size")
+            commands.append(unicode(record_size))
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_additional_commands(parameters, context, commands)
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"": None}
+
+    def name(self):
+        return 'las2shp'
+
+    def displayName(self):
+        return 'las2shp'
+
+    def group(self):
+        return 'file - conversion'
+
+    def groupId(self):
+        return 'file - conversion'
+
+    def createInstance(self):
+        return las2shp()
