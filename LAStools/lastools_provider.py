@@ -39,6 +39,7 @@ from .lastools.core.processing import (
     LasClip,
     LasTile, LasTilePro,
     LasSplit,
+    LasNoise, LasNoisePro,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
 )
@@ -85,8 +86,6 @@ class LAStoolsProvider(QgsProcessingProvider):
         """
         Loads all algorithms belonging to this provider.
         """
-
-        # LAStools for processing single files
         processing_algorithms = [
             LasIndex(), LasIndexPro(),
             LasMerge(), LasMergePro(),
@@ -95,6 +94,7 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasClip(),
             LasTile(), LasTilePro(),
             LasSplit(),
+            LasNoise(), LasNoisePro(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
         ]

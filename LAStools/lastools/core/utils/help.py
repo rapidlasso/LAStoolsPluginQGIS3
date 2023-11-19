@@ -321,7 +321,46 @@ descript_processing = {
             },
         },
 
+        "lasnoise": {
+
+            "LasNoise": {
+                "name": 'LasNoise',
+                "display_name": 'lasnoise',
+                "licence": True,
+                "short_help_string": """
+                    This tool flags or removes noise points in LAS/LAZ/BIN/ASCII files. The tool looks for isolated points according to certain criteria that can be modified via ‘-step 3’ and ‘-isolated 3’ as needed. The default for step is 4 and for isolated is 5. It is possible to specify the xy and the z size of the 27 cells separately with ‘-step_xy 2’ and ‘-step_z 0.3’ which would create cells of size 2 by 2 by 0.3 units.
+    
+                    The tool tries to find points that have only few other points in their surrounding 3 by 3 by 3 grid of cells with the cell the respective point falls into being in the center. The size of each of the 27 cells is set with the ‘-step 5’ parameter. The maximal number of few other points in the 3 by 3 by 3 grid still designating a point as isolated is set with ‘-isolated 6’.
+                    
+                    By default the noise points are given the classification code 7 (low or high noise). Using the ‘-remove_noise’ flag will instead remove them from the output file. Alternatively with the ‘-classify_as 31’ switch a different classification code can be selected. Another option is the ‘-flag_as_withheld’ switch which sets the withheld flag on the points identified as noise.
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Flags or removes noise points in LAS or LAZ files.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasnoise_README.md'
+            },
+
+            "LasNoisePro": {
+                "name": 'LasNoisePro',
+                "display_name": 'lasnoise (folder)',
+                "licence": True,
+                "short_help_string": """
+                    This tool flags or removes noise points in LAS/LAZ/BIN/ASCII files. The tool looks for isolated points according to certain criteria that can be modified via ‘-step 3’ and ‘-isolated 3’ as needed. The default for step is 4 and for isolated is 5. It is possible to specify the xy and the z size of the 27 cells separately with ‘-step_xy 2’ and ‘-step_z 0.3’ which would create cells of size 2 by 2 by 0.3 units.
         
+                    The tool tries to find points that have only few other points in their surrounding 3 by 3 by 3 grid of cells with the cell the respective point falls into being in the center. The size of each of the 27 cells is set with the ‘-step 5’ parameter. The maximal number of few other points in the 3 by 3 by 3 grid still designating a point as isolated is set with ‘-isolated 6’.
+                    
+                    By default the noise points are given the classification code 7 (low or high noise). Using the ‘-remove_noise’ flag will instead remove them from the output file. Alternatively with the ‘-classify_as 31’ switch a different classification code can be selected. Another option is the ‘-flag_as_withheld’ switch which sets the withheld flag on the points identified as noise.
+                        
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Flags or removes noise points in LAS or LAZ files (using a folder contain multiple input file).',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasnoise_README.md'
+            },
+
+
+
+        },
 
     },
 

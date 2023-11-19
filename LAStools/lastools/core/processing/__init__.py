@@ -8,6 +8,7 @@ from .lasboundary import LasBoundary, LasBoundaryPro
 from .lasclip import LasClip
 from .lastile import LasTile, LasTilePro
 from .lassplit import LasSplit
+from .lasnoise import LasNoise, LasNoisePro
 from .las3dpoly import Las3dPolyRadialDistance, Las3dPolyHorizontalVerticalDistance
 from .lasintensity import LasIntensity, LasIntensityAttenuationFactor
 
@@ -19,6 +20,7 @@ __all__ = [
     LasClip,
     LasTile, LasTilePro,
     LasSplit,
+    LasNoise, LasNoisePro,
     Las3dPolyRadialDistance, Las3dPolyHorizontalVerticalDistance,
     LasIntensity, LasIntensityAttenuationFactor,
 ]
