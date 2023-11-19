@@ -22,8 +22,11 @@ descript_template = {
                 "licence": False,
                 "short_help_string": """
                 short_help_string
+                
+                (for pro classes) With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
                 """,
-                "short_description": 'short_description',
+                "short_description": 'short_description ("for pro classes" using multi file inside a folder)',
                 "url_path": 'url_path'
             },
         },
@@ -59,6 +62,8 @@ descript_processing = {
                 0,0,0
                 0,-10,0
                 0,10,0
+                
+                For more details see the README file (Please click on help button).
             """,
                 "short_description": 'Modifies points within a certain radial distance of 3D polylines',
                 "url_path": 'https://downloads.rapidlasso.de/readme/las3dpoly_README.md'
@@ -85,6 +90,8 @@ descript_processing = {
                 0,0,0
                 0,-10,0
                 0,10,0
+                
+                For more details see the README file (Please click on help button).
             """,
                 "short_description": 'Modifies points within a certain horizontal and vertical distance of 3D polylines',
                 "url_path": 'https://downloads.rapidlasso.de/readme/las3dpoly_README.md'
@@ -107,6 +114,8 @@ descript_processing = {
                     - Scanner height above ground level (AGL) [km]
                     - Scanner wavelength [µm]
                     - Atmospheric visibility range [km]
+                    
+                    For more details see the README file (Please click on help button).
                 """,
                 "short_description": 'corrects the intensity attenuation due to atmospheric absorption.',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasintensity_README.md'
@@ -124,6 +133,8 @@ descript_processing = {
                     In order to get a reliant attenuation estimate several parameters are essential:
                     - Scanner height above ground level (AGL) [km]
                     - Absorption coefficient [km^-1]
+                    
+                    For more details see the README file (Please click on help button).
                 """,
                 "short_description": 'corrects the intensity attenuation due to atmospheric absorption.',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasintensity_README.md'
@@ -166,19 +177,9 @@ descript_processing = {
                 "display_name": 'lasindex',
                 "licence": False,
                 "short_help_string": """
-                    Creates a *.lax file for a given *.las or *.laz file that contains spatial indexing information. When this LAX file is present it will be used to speed up access to the relevant areas of the LAS/LAZ file whenever a spatial queries of the type
-    
-                    -inside_tile ll_x ll_y size  
-                    -inside_circle center_x center_y radius  
-                    -inside_rectangle min_x min_y max_x max_y  (or simply -inside)  
+                    Creates a *.lax file for a given *.las or *.laz file that contains spatial indexing information. When this LAX file is present it will be used to speed up access to the relevant areas of the LAS/LAZ file.                   
                     
-                    appears in the command line of any LAStools invocation. This acceleration is also available to users of the LASlib API. The LASreader class has three new functions called
-                    
-                    BOOL inside_tile(F32 ll_x, F32 ll_y, F32 size);  
-                    BOOL inside_circle(F64 center_x, F64 center_y, F64 radius);  
-                    BOOL inside_rectangle(F64 min_x, F64 min_y, F64 max_x, F64 max_y);  
-                    
-                    if any of these functions is called the LASreader will only return the points that fall inside the specified region and use - when available - the spatial indexing information in the LAX file created by lasindex.
+                    For more details see the README file (Please click on help button).
                 """,
                 "short_description": 'Creates an index file (LAX) about a LAS/LAZ file (using multi file inside a folder).',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasindex_README.md'
@@ -189,24 +190,43 @@ descript_processing = {
                 "display_name": 'lasindex (folder)',
                 "licence": False,
                 "short_help_string": """
-                    Creates a *.lax file for a given *.las or *.laz file that contains spatial indexing information. When this LAX file is present it will be used to speed up access to the relevant areas of the LAS/LAZ file whenever a spatial queries of the type
-    
-                    -inside_tile ll_x ll_y size  
-                    -inside_circle center_x center_y radius  
-                    -inside_rectangle min_x min_y max_x max_y  (or simply -inside)  
-                    
-                    appears in the command line of any LAStools invocation. This acceleration is also available to users of the LASlib API. The LASreader class has three new functions called
-                    
-                    BOOL inside_tile(F32 ll_x, F32 ll_y, F32 size);  
-                    BOOL inside_circle(F64 center_x, F64 center_y, F64 radius);  
-                    BOOL inside_rectangle(F64 min_x, F64 min_y, F64 max_x, F64 max_y);  
-                    
-                    if any of these functions is called the LASreader will only return the points that fall inside the specified region and use - when available - the spatial indexing information in the LAX file created by lasindex.
+                    Creates a *.lax file for a given *.las or *.laz file that contains spatial indexing information. When this LAX file is present it will be used to speed up access to the relevant areas of the LAS/LAZ file.                   
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
                 """,
                 "short_description": 'Creates an index file (LAX) about a LAS/LAZ file (using multi file inside a folder).',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasindex_README.md'
             },
 
+        },
+
+        "lasmerge": {
+            "LasMerge": {
+                "name": 'LasMerge',
+                "display_name": 'lasmerge',
+                "licence": False,
+                "short_help_string": """
+                This is a handy tool to merge multiple LiDAR files into one. However, we usually discourage this practice as this can also be achieved on-the-fly with the ‘-merged’ option in any of the other LAStools without creating a second copy on disk. In addition this tools allows splitting larger files into smaller subsets each containing a user-specified number of points. This tool is 100% open source LGPL.
+                
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Merges several LAS or LAZ files.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasmerge_README.md'
+            },
+
+            "LasMergePro": {
+                "name": 'LasMergePro',
+                "display_name": 'lasmerge (folder)',
+                "licence": False,
+                "short_help_string": """
+                This is a handy tool to merge multiple LiDAR files into one. However, we usually discourage this practice as this can also be achieved on-the-fly with the ‘-merged’ option in any of the other LAStools without creating a second copy on disk. In addition this tools allows splitting larger files into smaller subsets each containing a user-specified number of points. This tool is 100% open source LGPL.
+                
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Merges several LAS or LAZ files (using multi file inside a folder).',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasmerge_README.md'
+            },
         },
     },
 

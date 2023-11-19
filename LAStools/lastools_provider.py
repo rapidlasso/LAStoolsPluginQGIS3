@@ -33,6 +33,7 @@ from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 from .lastools.core.processing import (
     LasIndex, LasIndexPro,
+    LasMerge, LasMergePro,
     LasBoundary, LasBoundaryPro,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
@@ -84,6 +85,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         # LAStools for processing single files
         processing_algorithms = [
             LasIndex(), LasIndexPro(),
+            LasMerge(), LasMergePro(),
             LasBoundary(), LasBoundaryPro(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
