@@ -23,10 +23,11 @@ __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 
-from qgis._core import QgsProcessingParameterDefinition, QgsProcessingParameterBoolean, QgsProcessingParameterString, \
-    QgsProcessingParameterFile, QgsProcessingParameterFileDestination
-from qgis.core import QgsProcessingParameterNumber
-from qgis.core import QgsProcessingParameterEnum
+from qgis.core import (
+    QgsProcessingParameterNumber, QgsProcessingParameterDefinition, QgsProcessingParameterBoolean,
+    QgsProcessingParameterString, QgsProcessingParameterFile, QgsProcessingParameterFileDestination,
+    QgsProcessingParameterEnum
+)
 
 from ..utils import LastoolsUtils, descript_processing as descript_info, paths
 from ..algo import LastoolsAlgorithm

@@ -24,8 +24,7 @@ __copyright__ = '(C) 2023, rapidlasso GmbH'
 import os
 
 from PyQt5.QtGui import QIcon
-from qgis._core import QgsProcessingParameterFileDestination, QgsProcessingParameterString
-from qgis.core import QgsProcessingParameterNumber
+from qgis.core import QgsProcessingParameterNumber, QgsProcessingParameterFileDestination, QgsProcessingParameterString
 
 from ..utils import LastoolsUtils, descript_processing as descript_info, paths
 from ..algo import LastoolsAlgorithm
