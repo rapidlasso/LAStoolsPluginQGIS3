@@ -413,5 +413,33 @@ descript_data_convert = {
             },
         },
 
+        "txt2las": {
+            "Txt2Las": {
+                "name": 'Txt2Las',
+                "display_name": 'txt2las',
+                "licence": False,
+                "short_help_string": """
+                    This handy tool converts from points from bloated ASCII to binary LAS or compressed LAZ file. When you send us a support request for this tool please include a few lines (around 20 to 50) of your ASCII text representation as well the command lines (aka parse strings)
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Converts from ASCII to binary LAS or compressed LAZ file.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/txt2las_README.md'
+            },
+            "Txt2LasPro": {
+                "name": 'Txt2LasPro',
+                "display_name": 'txt2las (folder)',
+                "licence": False,
+                "short_help_string": """
+                    This handy tool converts from points from bloated ASCII to binary LAS or compressed LAZ file. When you send us a support request for this tool please include a few lines (around 20 to 50) of your ASCII text representation as well the command lines (aka parse strings)
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Converts from ASCII to binary LAS or compressed LAZ file (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/txt2las_README.md'
+            },
+        },
+
     },
 }
