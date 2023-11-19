@@ -26,27 +26,34 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
+
+from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
-from lastools.core.utils.utils import LastoolsUtils
-from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
+from ..utils import LastoolsUtils, descript_processing as descript_info, paths
+from ..algo import LastoolsAlgorithm
 
-class lasclip(LastoolsAlgorithm):
 
+class LasClip(LastoolsAlgorithm):
+    TOOL_INFO = ('lasclip', 'LasClip')
     INTERIOR = "INTERIOR"
     OPERATION = "OPERATION"
     OPERATIONS = ["clip", "classify"]
     CLASSIFY_AS = "CLASSIFY_AS"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
         self.add_parameters_verbose_gui64()
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("Input polygon(s)", "shp", False)
-        self.addParameter(QgsProcessingParameterBoolean(lasclip.INTERIOR, "interior", False))
-        self.addParameter(QgsProcessingParameterEnum(lasclip.OPERATION, "what to do with points", lasclip.OPERATIONS, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(lasclip.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 12, False, 0, 255))
+        self.addParameter(QgsProcessingParameterBoolean(LasClip.INTERIOR, "interior", False))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasClip.OPERATION, "what to do with points", LasClip.OPERATIONS, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasClip.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 12, False, 0, 255
+        ))
         self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
 
@@ -55,31 +62,45 @@ class lasclip(LastoolsAlgorithm):
         self.add_parameters_verbose_commands64(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
-        if (self.parameterAsBool(parameters, lasclip.INTERIOR, context)):
+        if self.parameterAsBool(parameters, LasClip.INTERIOR, context):
             commands.append("-interior")
-        operation = self.parameterAsInt(parameters, lasclip.OPERATION, context)
+        operation = self.parameterAsInt(parameters, LasClip.OPERATION, context)
         if operation != 0:
             commands.append("-classify")
-            classify_as = self.parameterAsInt(parameters, lasclip.CLASSIFY_AS, context)
-            commands.append(unicode(classify_as))
+            classify_as = self.parameterAsInt(parameters, LasClip.CLASSIFY_AS, context)
+            commands.append(str(classify_as))
         self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
 
         LastoolsUtils.run_lastools(commands, feedback)
 
-        return {"": None}
-
-    def name(self):
-        return 'lasclip'
-
-    def displayName(self):
-        return 'lasclip'
-
-    def group(self):
-        return 'file - processing points'
-
-    def groupId(self):
-        return 'file - processing points'
+        return {"commands": commands}
 
     def createInstance(self):
-        return lasclip()
+        return LasClip()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")

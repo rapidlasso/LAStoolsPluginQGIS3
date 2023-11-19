@@ -19,14 +19,14 @@ descript_template = {
             "tool_class_name_1": {
                 "name": 'name',
                 "display_name": 'display_name',
-                "licence": False,
+                "licence": True,
                 "short_help_string": """
                 short_help_string
                 
                 (for pro classes) With this tool you can choose a folder contain multiple input file rather than single file.
                 For more details see the README file (Please click on help button).
                 """,
-                "short_description": 'short_description ("for pro classes" using multi file inside a folder)',
+                "short_description": 'short_description ("for pro classes" using a folder contain multiple input file)',
                 "url_path": 'url_path'
             },
         },
@@ -142,34 +142,6 @@ descript_processing = {
             },
         },
 
-        "lasboundary": {
-
-            "LasBoundary": {
-                "name": 'LasBoundary',
-                "display_name": 'lasboundary',
-                "licence": True,
-                "short_help_string": """
-                reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”. 
-                For more details see the README file (Please click on help button).
-                """,
-                "short_description": 'Computes a boundary polygon that encloses LIDAR points.',
-                "url_path": 'https://downloads.rapidlasso.de/readme/lasboundary_README.md'
-            },
-
-            "LasBoundaryPro": {
-                "name": 'LasBoundaryPro',
-                "display_name": 'lasboundary (folder)',
-                "licence": True,
-                "short_help_string": """
-                reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”. 
-                For more details see the README file (Please click on help button).
-                """,
-                "short_description": 'Computes a boundary polygon that encloses LIDAR points.',
-                "url_path": 'https://downloads.rapidlasso.de/readme/lasboundary_README.md'
-            },
-
-        },
-
         "lasindex": {
 
             "LasIndex": {
@@ -181,7 +153,7 @@ descript_processing = {
                     
                     For more details see the README file (Please click on help button).
                 """,
-                "short_description": 'Creates an index file (LAX) about a LAS/LAZ file (using multi file inside a folder).',
+                "short_description": 'Creates an index file (LAX) about a LAS/LAZ file (using a folder contain multiple input file).',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasindex_README.md'
             },
 
@@ -194,7 +166,7 @@ descript_processing = {
                     With this tool you can choose a folder contain multiple input file rather than single file.
                     For more details see the README file (Please click on help button).
                 """,
-                "short_description": 'Creates an index file (LAX) about a LAS/LAZ file (using multi file inside a folder).',
+                "short_description": 'Creates an index file (LAX) about a LAS/LAZ file (using a folder contain multiple input file).',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasindex_README.md'
             },
 
@@ -224,8 +196,52 @@ descript_processing = {
                 With this tool you can choose a folder contain multiple input file rather than single file.
                 For more details see the README file (Please click on help button).
                 """,
-                "short_description": 'Merges several LAS or LAZ files (using multi file inside a folder).',
+                "short_description": 'Merges several LAS or LAZ files (using a folder contain multiple input file).',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasmerge_README.md'
+            },
+        },
+
+        "lasboundary": {
+
+            "LasBoundary": {
+                "name": 'LasBoundary',
+                "display_name": 'lasboundary',
+                "licence": True,
+                "short_help_string": """
+                reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”. 
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes a boundary polygon that encloses LIDAR points.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasboundary_README.md'
+            },
+
+            "LasBoundaryPro": {
+                "name": 'LasBoundaryPro',
+                "display_name": 'lasboundary (folder)',
+                "licence": True,
+                "short_help_string": """
+                reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”. 
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes a boundary polygon that encloses LIDAR points (using a folder contain multiple input file).',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasboundary_README.md'
+            },
+
+        },
+
+        "lasclip": {
+            "LasClip": {
+                "name": 'LasClip',
+                "display_name": 'lasclip',
+                "licence": True,
+                "short_help_string": """
+                    takes as input a LAS/LAZ/TXT file and a SHP/TXT file with one or many polygons (e.g. building footprints or flight lines), clips away all the points that fall outside all polygons (or inside some polygon), and stores the surviving points to the output LAS/LAZ/TXT file. Instead of clipping the points they can also be classified.
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Clip LIDAR data by polygons.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasclip_README.md'
             },
         },
     },

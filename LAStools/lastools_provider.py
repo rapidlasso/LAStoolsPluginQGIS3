@@ -35,6 +35,7 @@ from .lastools.core.processing import (
     LasIndex, LasIndexPro,
     LasMerge, LasMergePro,
     LasBoundary, LasBoundaryPro,
+    LasClip,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
 )
@@ -87,6 +88,7 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasIndex(), LasIndexPro(),
             LasMerge(), LasMergePro(),
             LasBoundary(), LasBoundaryPro(),
+            LasClip(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
         ]
