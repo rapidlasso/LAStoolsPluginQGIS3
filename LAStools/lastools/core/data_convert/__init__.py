@@ -6,6 +6,7 @@ from .las2las import (
     Las2LasTransform, Las2LasProTransform,
 )
 from .las2shp import Las2Shp
+from .shp2las import Shp2Las
 
 __all__ = [
     Las2txt, Las2txtPro,
@@ -14,4 +15,5 @@ __all__ = [
     Las2LasProject, Las2LasProProject,
     Las2LasTransform, Las2LasProTransform,
     Las2Shp,
+    Shp2Las
 ]

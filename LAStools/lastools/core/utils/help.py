@@ -541,5 +541,20 @@ descript_data_convert = {
             },
         },
 
+        "shp2las": {
+            "Shp2Las": {
+                "name": 'Shp2Las',
+                "display_name": 'shp2las',
+                "licence": True,
+                "short_help_string": """
+                    Converts from points from ESRI’s Shapefile to LAS/LAZ/ASCII format given the input contains Points or MultiPoints (that is any of the shape types 1,11,21,8,18,28).
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Converts from points from ESRI’s Shapefile to LAS/LAZ/ASCII format, given the input, contains Points or MultiPoints.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/shp2las_README.md'
+            },
+        },
+
     },
 }

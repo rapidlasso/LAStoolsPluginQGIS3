@@ -51,6 +51,7 @@ from .lastools.core.data_convert import (
     Las2LasProject, Las2LasProProject,
     Las2LasTransform, Las2LasProTransform,
     Las2Shp,
+    Shp2Las,
 )
 from .lastools.core.utils import paths
 
@@ -116,7 +117,8 @@ class LAStoolsProvider(QgsProcessingProvider):
             Las2LasFilter(), Las2LasProFilter(),
             Las2LasProject(), Las2LasProProject(),
             Las2LasTransform(), Las2LasProTransform(),
-            Las2Shp()
+            Las2Shp(),
+            Shp2Las(),
         ]
         self.algos.extend(data_convert_algorithms)
         for algorithm in self.algos:
