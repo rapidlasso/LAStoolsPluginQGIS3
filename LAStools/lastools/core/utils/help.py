@@ -558,3 +558,40 @@ descript_data_convert = {
 
     },
 }
+
+descript_classification_filtering = {
+    "info": {
+        "group": 'Classification & Filtering',
+        "group_id": 'classification_filtering',
+    },
+    "items": {
+        "lasground": {
+            "LasGround": {
+                "name": 'LasGround',
+                "display_name": 'lasground',
+                "licence": True,
+                "short_help_string": """
+                    is a tool for bare-earth extraction: it classifies the LiDAR points into ground points (class = 2) and non-ground points (class = 1). The tools works very well in natural environments such as mountains, forests, fields, hills, and even steep terrain but also gives excellent results in towns or cities. 
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Tool for bare-earth extraction.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasground_README.md'
+            },
+            "LasGroundPro": {
+                "name": 'LasGroundPro',
+                "display_name": 'lasground (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is a tool for bare-earth extraction: it classifies the LiDAR points into ground points (class = 2) and non-ground points (class = 1). The tools works very well in natural environments such as mountains, forests, fields, hills, and even steep terrain but also gives excellent results in towns or cities. 
+                    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Tool for bare-earth extraction (using a folder contain multiple input file).',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasground_README.md'
+            },
+        },
+
+    },
+}

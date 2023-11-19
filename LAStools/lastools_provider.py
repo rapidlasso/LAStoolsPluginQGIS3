@@ -53,6 +53,10 @@ from .lastools.core.data_convert import (
     Las2Shp,
     Shp2Las,
 )
+
+from .lastools.core.classification_filtering import (
+    LasGround, LasGroundPro,
+)
 from .lastools.core.utils import paths
 
 
@@ -121,6 +125,12 @@ class LAStoolsProvider(QgsProcessingProvider):
             Shp2Las(),
         ]
         self.algos.extend(data_convert_algorithms)
+
+        classification_filtering_algorithms = [
+            LasGround(), LasGroundPro(),
+        ]
+        self.algos.extend(classification_filtering_algorithms)
+
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)
 
