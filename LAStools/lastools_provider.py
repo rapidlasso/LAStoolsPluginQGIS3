@@ -32,6 +32,7 @@ from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 from .lastools.core.processing import (
+    LasIndex, LasIndexPro,
     LasBoundary, LasBoundaryPro,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
@@ -82,11 +83,13 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         # LAStools for processing single files
         processing_algorithms = [
+            LasIndex(), LasIndexPro(),
             LasBoundary(), LasBoundaryPro(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
             LasIntensity(), LasIntensityAttenuationFactor()
         ]
         self.algos = processing_algorithms
+
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)
 
