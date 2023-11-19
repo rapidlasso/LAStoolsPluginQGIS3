@@ -34,6 +34,7 @@ from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from .lastools.core.processing import (
     LasIndex, LasIndexPro,
     LasMerge, LasMergePro,
+    LasOverage, LasOveragePro,
     LasBoundary, LasBoundaryPro,
     LasClip,
     Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
@@ -87,6 +88,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         processing_algorithms = [
             LasIndex(), LasIndexPro(),
             LasMerge(), LasMergePro(),
+            LasOverage(), LasOveragePro(),
             LasBoundary(), LasBoundaryPro(),
             LasClip(),
             Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),

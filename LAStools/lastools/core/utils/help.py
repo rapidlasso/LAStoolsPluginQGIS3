@@ -201,6 +201,37 @@ descript_processing = {
             },
         },
 
+        "lasoverage": {
+
+            "LasOverage": {
+                "name": 'LasOverage',
+                "display_name": 'lasoverage',
+                "licence": True,
+                "short_help_string": """
+                reads LiDAR points of an airborne collect and finds the “overage” points that get covered by more than a single flightline. It either marks these overage points or removes them from the output files. The tool requires that the files either have the flightline information stored for each point in the point source ID field (e.g. for tiles containing overlapping flightlines) or that there are multiple files where each corresponds to a flight line (‘-files_are_flightlines’). It is also required that the scan angle field of each point is properly populated.
+                
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'short_description ("for pro classes" using a folder contain multiple input file)',
+                "url_path": 'url_path'
+            },
+
+            "LasOveragePro": {
+                "name": 'LasOveragePro',
+                "display_name": 'lasoverage (folder)',
+                "licence": True,
+                "short_help_string": """
+                reads LiDAR points of an airborne collect and finds the “overage” points that get covered by more than a single flightline. It either marks these overage points or removes them from the output files. The tool requires that the files either have the flightline information stored for each point in the point source ID field (e.g. for tiles containing overlapping flightlines) or that there are multiple files where each corresponds to a flight line (‘-files_are_flightlines’). It is also required that the scan angle field of each point is properly populated.
+
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Find “overage” points of multiple lightlines (using a folder contain multiple input file).',
+                "url_path": 'url_path'
+            },
+
+        },
+
         "lasboundary": {
 
             "LasBoundary": {
