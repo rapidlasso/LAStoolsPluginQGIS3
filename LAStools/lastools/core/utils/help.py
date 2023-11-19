@@ -91,6 +91,7 @@ descript_processing = {
             }
 
         },
+
         "lasintensity": {
 
             "LasIntensity": {
@@ -128,6 +129,34 @@ descript_processing = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasintensity_README.md'
 
             },
+        },
+
+        "lasboundary": {
+
+            "LasBoundary": {
+                "name": 'LasBoundary',
+                "display_name": 'lasboundary',
+                "licence": True,
+                "short_help_string": """
+                reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”. 
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes a boundary polygon that encloses LIDAR points.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasboundary_README.md'
+            },
+
+            "LasBoundaryPro": {
+                "name": 'LasBoundaryPro',
+                "display_name": 'lasboundary (folder)',
+                "licence": True,
+                "short_help_string": """
+                reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”. 
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes a boundary polygon that encloses LIDAR points.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasboundary_README.md'
+            },
+
         },
     },
 

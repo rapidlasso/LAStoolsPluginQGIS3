@@ -200,9 +200,12 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append('"' + input_las_laz + '"')
 
     def add_parameters_point_input_folder_gui(self):
-        self.addParameter(QgsProcessingParameterFile(LastoolsAlgorithm.INPUT_DIRECTORY, "input directory",
-                                                     QgsProcessingParameterFile.Folder))
-        self.addParameter(QgsProcessingParameterString(LastoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", "*.laz"))
+        self.addParameter(QgsProcessingParameterFile(
+            LastoolsAlgorithm.INPUT_DIRECTORY, "input directory", QgsProcessingParameterFile.Folder
+        ))
+        self.addParameter(QgsProcessingParameterString(
+            LastoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", "*.laz"
+        ))
 
     def add_parameters_point_input_folder_commands(self, parameters, context, commands):
         input_directory = self.parameterAsString(parameters, LastoolsAlgorithm.INPUT_DIRECTORY, context)

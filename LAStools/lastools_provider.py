@@ -32,8 +32,9 @@ from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 from .lastools.core.processing import (
+    LasBoundary, LasBoundaryPro,
+    Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
     LasIntensity, LasIntensityAttenuationFactor,
-    Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance
 )
 from .lastools.core.utils import paths
 
@@ -42,7 +43,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
     def __init__(self):
         QgsProcessingProvider.__init__(self)
-        self.algs = None
+        self.algorithms = list()
 
     def load(self):
         """In this method we add settings needed to configure our
@@ -80,10 +81,14 @@ class LAStoolsProvider(QgsProcessingProvider):
         """
 
         # LAStools for processing single files
-        self.algs = [Las3dPolyRadialDistance(), LasIntensityAttenuationFactor(),
-                     Las3dPolyHorizontalVerticalDistance(), LasIntensity()]
-        for alg in self.algs:
-            self.addAlgorithm(alg)
+        processing_algorithms = [
+            LasBoundary(), LasBoundaryPro(),
+            Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
+            LasIntensity(), LasIntensityAttenuationFactor()
+        ]
+        self.algorithms.extend(processing_algorithms)
+        for algorithm in self.algorithms:
+            self.addAlgorithm(algorithm)
 
     def icon(self):
         return QIcon(f'{paths["img"]}/lastools.png')
