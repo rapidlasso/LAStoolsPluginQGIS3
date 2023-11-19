@@ -45,7 +45,7 @@ from .lastools.core.processing import (
     LasIntensity, LasIntensityAttenuationFactor,
 )
 from .lastools.core.data_convert import (
-    Las2txt
+    Las2txt, Las2txtPro
 )
 from .lastools.core.utils import paths
 
@@ -106,7 +106,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         self.algos = processing_algorithms
 
         data_convert_algorithms = [
-            Las2txt(),
+            Las2txt(), Las2txtPro()
         ]
         self.algos.extend(data_convert_algorithms)
         for algorithm in self.algos:

@@ -383,6 +383,7 @@ descript_data_convert = {
         "group_id": 'data_convert',
     },
     "items": {
+
         "las2txt": {
             "Las2txt": {
                 "name": 'Las2txt',
@@ -396,8 +397,21 @@ descript_data_convert = {
                 "short_description": 'Converts binary LAS or LAZ files to human-readable ASCII text format.',
                 "url_path": 'https://downloads.rapidlasso.de/readme/las2txt_README.md'
             },
+
+            "Las2txtPro": {
+                "name": 'Las2txtPro',
+                "display_name": 'las2txt (folder)',
+                "licence": False,
+                "short_help_string": """
+                    A simple open source tool licensed LGPL 2.1 that converts binary LAS or LAZ files to human readable ASCII text format. Below is an example command line that converts one LAZ file to text by placing the x, y, and z coordinate of each point as the 1st, 2nd, and 3rd entries, the intensity as the 4th entry, and the gps_time as the 5th entry of each line. 
+                    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Converts binary LAS or LAZ files to human-readable ASCII text format (using a folder contain multiple input file).',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2txt_README.md'
+            },
         },
+
     },
 }
-
-

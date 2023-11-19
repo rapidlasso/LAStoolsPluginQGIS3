@@ -87,3 +87,67 @@ class Las2txt(LastoolsAlgorithm):
         img_path = 'licenced.png' \
             if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
         return QIcon(f"{paths['img']}{img_path}")
+
+
+class Las2txtPro(LastoolsAlgorithm):
+    TOOL_INFO = ('las2txt', 'Las2txtPro')
+    PARSE = "PARSE"
+
+    def initAlgorithm(self, config=None):
+        self.add_parameters_point_input_folder_gui()
+        self.addParameter(QgsProcessingParameterString(Las2txtPro.PARSE, "parse string", "xyz"))
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        if LastoolsUtils.has_wine():
+            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt.exe")]
+        else:
+            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt")]
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        parse = self.parameterAsString(parameters, Las2txtPro.PARSE, context)
+        if parse != "xyz":
+            commands.append("-parse")
+            commands.append(parse)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        commands.append("-otxt")
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
+
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"commands": commands}
+
+    def createInstance(self):
+        return Las2txtPro()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")
