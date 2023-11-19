@@ -441,5 +441,90 @@ descript_data_convert = {
             },
         },
 
+        "las2las": {
+
+            "Las2LasFilter": {
+                "name": 'Las2LasFilter',
+                "display_name": 'las2las - filter',
+                "licence": False,
+                "short_help_string": """
+                This tool is the “swiss-army knife” of LiDAR file processing. It can convert, filter, transform, subset, repair, scale, translate, zero, clamp, compress, initialize, … LAS or LAZ files in numerous ways. This tool is 100% open source LGPL.
+                
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts last returns, clips, subsamples, translates, etc.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2las_README.md'
+            },
+
+            "Las2LasProject": {
+                "name": 'Las2LasProject',
+                "display_name": 'las2las - project',
+                "licence": False,
+                "short_help_string": """
+                This tool is the “swiss-army knife” of LiDAR file processing. It can convert, filter, transform, subset, repair, scale, translate, zero, clamp, compress, initialize, … LAS or LAZ files in numerous ways. This tool is 100% open source LGPL.
+                
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts last returns, clips, subsamples, translates, etc.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2las_README.md'
+            },
+
+            "Las2LasTransform": {
+                "name": 'Las2LasTransform',
+                "display_name": 'las2las - transform',
+                "licence": False,
+                "short_help_string": """
+                This tool is the “swiss-army knife” of LiDAR file processing. It can convert, filter, transform, subset, repair, scale, translate, zero, clamp, compress, initialize, … LAS or LAZ files in numerous ways. This tool is 100% open source LGPL.
+                
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts last returns, clips, subsamples, translates, etc.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2las_README.md'
+            },
+
+            "Las2LasProFilter": {
+                "name": 'Las2LasProFilter',
+                "display_name": 'las2las - filter (folder)',
+                "licence": False,
+                "short_help_string": """
+                This tool is the “swiss-army knife” of LiDAR file processing. It can convert, filter, transform, subset, repair, scale, translate, zero, clamp, compress, initialize, … LAS or LAZ files in numerous ways. This tool is 100% open source LGPL.
+                
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts last returns, clips, subsamples, translates, etc. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2las_README.md'
+            },
+
+            "Las2LasProProject": {
+                "name": 'Las2LasProProject',
+                "display_name": 'las2las - project (folder)',
+                "licence": False,
+                "short_help_string": """
+                This tool is the “swiss-army knife” of LiDAR file processing. It can convert, filter, transform, subset, repair, scale, translate, zero, clamp, compress, initialize, … LAS or LAZ files in numerous ways. This tool is 100% open source LGPL.
+                
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts last returns, clips, subsamples, translates, etc. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2las_README.md'
+            },
+
+            "Las2LasProTransform": {
+                "name": 'Las2LasProTransform',
+                "display_name": 'las2las - transform (folder)',
+                "licence": False,
+                "short_help_string": """
+                This tool is the “swiss-army knife” of LiDAR file processing. It can convert, filter, transform, subset, repair, scale, translate, zero, clamp, compress, initialize, … LAS or LAZ files in numerous ways. This tool is 100% open source LGPL.
+                
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts last returns, clips, subsamples, translates, etc. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2las_README.md'
+            },
+
+        },
+
     },
 }
