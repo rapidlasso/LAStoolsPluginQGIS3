@@ -860,5 +860,34 @@ descript_dsm_dtm_generation_production = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasheight_README.md'
             },
         },
+
+        "lascanopy": {
+            "LasCanopy": {
+                "name": 'LasCanopy',
+                "display_name": 'lascanopy',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that computes common forestry metrics from height-normalized LiDAR point clouds. It can compute canopy density or canopy cover (or gap fractions), height or intensity percentiles, averages, minima, maxima, kurtosis, skewness, standard deviation, and many more
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes common forestry metrics from height-normalized LiDAR point clouds',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lascanopy_README.md'
+            },
+
+            "LasCanopyPro": {
+                "name": 'LasCanopyPro',
+                "display_name": 'lascanopy (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that computes common forestry metrics from height-normalized LiDAR point clouds. It can compute canopy density or canopy cover (or gap fractions), height or intensity percentiles, averages, minima, maxima, kurtosis, skewness, standard deviation, and many more
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes common forestry metrics from height-normalized LiDAR point clouds ("using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lascanopy_README.md'
+            },
+        },
     },
 }
