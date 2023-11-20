@@ -889,5 +889,61 @@ descript_dsm_dtm_generation_production = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/lascanopy_README.md'
             },
         },
+
+        "blast2dem": {
+            "Blast2Dem": {
+                "name": 'Blast2Dem',
+                "display_name": 'blast2dem',
+                "licence": True,
+                "short_help_string": """
+                is almost identical to las2dem except that it can process much much larger inputs. While las2dem operates in-core and is therefore limited to a maximum of around 20 million points, blast2dem utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools. 
+
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Rasters billions of LiDAR points via a streaming TIN to elevation, intensity, slope, or RGB grid.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/blast2dem_README.md'
+            },
+            "Blast2DemPro": {
+                "name": 'Blast2DemPro',
+                "display_name": 'blast2dem (folder)',
+                "licence": True,
+                "short_help_string": """
+                is almost identical to las2dem except that it can process much much larger inputs. While las2dem operates in-core and is therefore limited to a maximum of around 20 million points, blast2dem utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools. 
+
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Rasters billions of LiDAR points via a streaming TIN to elevation, intensity, slope, or RGB grid (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/blast2dem_README.md'
+            },
+        },
+
+        "blast2iso": {
+            "Blast2Iso": {
+                "name": 'Blast2Iso',
+                "display_name": 'blast2iso',
+                "licence": True,
+                "short_help_string": """
+                    is almost identical to las2iso except that it can extract elevation contours from much much larger inputs. While las2iso operates in-core and is therefore limited to a maximum of around 20 million points, blast2iso utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools.
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Contours billions of LiDAR points via a streaming TIN to isolines in KML or SHP format. ',
+                "url_path": 'https://downloads.rapidlasso.de/blast2iso_README.txt'
+            },
+            "Blast2IsoPro": {
+                "name": 'Blast2IsoPro',
+                "display_name": 'blast2iso (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is almost identical to las2iso except that it can extract elevation contours from much much larger inputs. While las2iso operates in-core and is therefore limited to a maximum of around 20 million points, blast2iso utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools.
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Contours billions of LiDAR points via a streaming TIN to isolines in KML or SHP format. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/blast2iso_README.txt'
+            },
+        },
     },
 }

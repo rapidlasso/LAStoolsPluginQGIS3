@@ -68,6 +68,8 @@ from .lastools.core.dsm_dtm_generation_prodctions import (
     LasGrid, LasGridPro,
     LasHeight, LasHeightClassify, LasHeightPro, LasHeightProClassify,
     LasCanopy, LasCanopyPro,
+    Blast2Dem, Blast2DemPro,
+    Blast2Iso, Blast2IsoPro,
 )
 from .lastools.core.utils import paths
 
@@ -157,6 +159,8 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasGrid(), LasGridPro(),
             LasHeight(), LasHeightClassify(), LasHeightPro(), LasHeightProClassify(),
             LasCanopy(), LasCanopyPro(),
+            Blast2Dem(), Blast2DemPro(),
+            Blast2Iso(), Blast2IsoPro(),
         ]
         self.algos.extend(dsm_dtm_generation_productions_algorithms)
 
