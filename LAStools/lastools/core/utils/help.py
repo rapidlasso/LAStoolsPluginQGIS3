@@ -947,3 +947,41 @@ descript_dsm_dtm_generation_production = {
         },
     },
 }
+
+descript_publishing = {
+    "info": {
+        "group": 'Publishing',
+        "group_id": 'publishing',
+    },
+    "items": {
+        "laspublish": {
+
+            "LasPublish": {
+                "name": 'LasPublish',
+                "display_name": 'laspublish',
+                "licence": True,
+                "short_help_string": """
+                    Creates a LiDAR portal for 3D visualization (and optionally also for downloading) of LAS and LAZ files in any modern Web browser using the WebGL Potree from Markus Schuetz
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Creates a LiDAR portal for 3D visualization (and optionally also for downloading) of LAS and LAZ files in any modern Web browser.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/laspublish_README.md'
+            },
+
+            "LasPublishPro": {
+                "name": 'LasPublishPro',
+                "display_name": 'laspublish (folder)',
+                "licence": True,
+                "short_help_string": """
+                    Creates a LiDAR portal for 3D visualization (and optionally also for downloading) of LAS and LAZ files in any modern Web browser using the WebGL Potree from Markus Schuetz
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Creates a LiDAR portal for 3D visualization (and optionally also for downloading) of LAS and LAZ files in any modern Web browser. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/laspublish_README.md'
+            },
+        },
+    },
+}

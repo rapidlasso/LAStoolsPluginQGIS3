@@ -71,6 +71,9 @@ from .lastools.core.dsm_dtm_generation_prodctions import (
     Blast2Dem, Blast2DemPro,
     Blast2Iso, Blast2IsoPro,
 )
+from .lastools.core.publishing import (
+    LasPublish, LasPublishPro
+)
 from .lastools.core.utils import paths
 
 
@@ -163,6 +166,11 @@ class LAStoolsProvider(QgsProcessingProvider):
             Blast2Iso(), Blast2IsoPro(),
         ]
         self.algos.extend(dsm_dtm_generation_productions_algorithms)
+
+        publishing_algorithms = [
+            LasPublish(), LasPublishPro(),
+        ]
+        self.algos.extend(publishing_algorithms)
 
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)
