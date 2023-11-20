@@ -653,5 +653,35 @@ descript_classification_filtering = {
 
         },
 
+        "lasthin": {
+
+            "LasThin": {
+                "name": 'LasThin',
+                "display_name": 'lasthin',
+                "licence": True,
+                "short_help_string": """
+                    A simple LiDAR thinning algorithm for LAS/LAZ/ASCII. It places a uniform grid over the points and within each grid cell keeps only the point with the lowest (or ‘-highest’) Z coordinate a -random’ point per cell or the most ‘-central’ one. When keeping ‘-random’ points you can in addition specify a ‘-seed 232’ for the random generator. Instead of removing the thinned out points from the output file you can also flag them with ‘-flag_as_withheld’ or ‘-flag_as_keypoint’. Then you can use the standard ‘-drop_withheld’ or ‘-keep_withheld’ filters to get either the thinned points or their complement.
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'A simple LIDAR thinning algorithm',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasthin_README.md'
+            },
+
+            "LasThinPro": {
+                "name": 'LasThinPro',
+                "display_name": 'lasthin (folder)',
+                "licence": True,
+                "short_help_string": """
+                    A simple LiDAR thinning algorithm for LAS/LAZ/ASCII. It places a uniform grid over the points and within each grid cell keeps only the point with the lowest (or ‘-highest’) Z coordinate a -random’ point per cell or the most ‘-central’ one. When keeping ‘-random’ points you can in addition specify a ‘-seed 232’ for the random generator. Instead of removing the thinned out points from the output file you can also flag them with ‘-flag_as_withheld’ or ‘-flag_as_keypoint’. Then you can use the standard ‘-drop_withheld’ or ‘-keep_withheld’ filters to get either the thinned points or their complement.
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'A simple LIDAR thinning algorithm (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasthin_README.md'
+            },
+        },
+
     },
 }

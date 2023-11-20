@@ -58,6 +58,7 @@ from .lastools.core.classification_filtering import (
     LasGround, LasGroundPro,
     LasGroundNew, LasGroundProNew,
     LasClassify, LasClassifyPro,
+    LasThin, LasThinPro,
 )
 from .lastools.core.utils import paths
 
@@ -132,6 +133,7 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasGround(), LasGroundPro(),
             LasGroundNew(), LasGroundProNew(),
             LasClassify(), LasClassifyPro(),
+            LasThin(), LasThinPro(),
         ]
         self.algos.extend(classification_filtering_algorithms)
 
