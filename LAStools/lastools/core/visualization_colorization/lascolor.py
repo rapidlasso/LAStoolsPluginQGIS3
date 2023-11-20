@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    lasclip.py
+    lascolor.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -26,14 +26,18 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
-from lastools.core.utils.utils import LastoolsUtils
-from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
-class lascolor(LastoolsAlgorithm):
+from PyQt5.QtGui import QIcon
 
+from ..utils import LastoolsUtils, descript_visualization_colorization as descript_info, paths
+from ..algo import LastoolsAlgorithm
+
+
+class LasColor(LastoolsAlgorithm):
+    TOOL_INFO = ('lascolor', 'LasColor')
     ORTHO = "ORTHO"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
         self.add_parameters_verbose_gui64()
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("Input ortho", "tif", False)
@@ -50,19 +54,33 @@ class lascolor(LastoolsAlgorithm):
 
         LastoolsUtils.run_lastools(commands, feedback)
 
-        return {"": None}
-
-    def name(self):
-        return 'lascolor'
-
-    def displayName(self):
-        return 'lascolor'
-
-    def group(self):
-        return 'file - processing points'
-
-    def groupId(self):
-        return 'file - processing points'
+        return {"commands": commands}
 
     def createInstance(self):
-        return lascolor()
+        return LasColor()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")

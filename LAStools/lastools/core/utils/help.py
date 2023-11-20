@@ -1103,6 +1103,7 @@ descript_visualization_colorization = {
         "group_id": 'visualization_colorization',
     },
     "items": {
+
         "lasview": {
             "LasView": {
                 "name": 'LasView',
@@ -1128,6 +1129,21 @@ descript_visualization_colorization = {
                     For more details see the README file (Please click on help button).
                 """,
                 "short_description": 'Simple and fast LiDAR visualization tool. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasview_README.md'
+            },
+        },
+
+        "lascolor": {
+            "LasColor": {
+                "name": 'LasColor',
+                "display_name": 'lascolor',
+                "licence": True,
+                "short_help_string": """
+                    is a simple yet fast LiDAR visualization tool that has a number of neat little tricks that may surprise you. It can also edit the classification of the points as well as delete them.
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Colorize LIDAR points using an external image.',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasview_README.md'
             },
         },

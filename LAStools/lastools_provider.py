@@ -82,6 +82,7 @@ from .lastools.core.quality_control_information import (
 )
 from .lastools.core.visualization_colorization import (
     LasView, LasViewPro,
+    LasColor,
 )
 from .lastools.core.utils import paths
 
@@ -191,6 +192,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         visualization_colorization_algorithms = [
             LasView(), LasViewPro(),
+            LasColor(),
         ]
         self.algos.extend(visualization_colorization_algorithms)
 
