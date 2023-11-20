@@ -65,6 +65,7 @@ from .lastools.core.data_compression import (
 from .lastools.core.dsm_dtm_generation_prodctions import (
     Las2Dem, Las2DemPro,
     Las2Iso,
+    LasGrid, LasGridPro,
 )
 from .lastools.core.utils import paths
 
@@ -151,6 +152,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         dsm_dtm_generation_productions_algorithms = [
             Las2Dem(), Las2DemPro(),
             Las2Iso(),
+            LasGrid(), LasGridPro(),
         ]
         self.algos.extend(dsm_dtm_generation_productions_algorithms)
 

@@ -775,5 +775,34 @@ descript_dsm_dtm_generation_production = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/las2iso_README.md'
             },
         },
+        "lasgrid": {
+            "LasGrid": {
+                "name": 'LasGrid',
+                "display_name": 'lasgrid',
+                "licence": True,
+                "short_help_string": """
+                is a tool that reads LIDAR from LAS/LAZ/ASCII and grids them onto a raster. The most important parameter ‘-step n’ specifies the n x n area that of LiDAR points that are gridded on one raster cell (or pixel). The output is either in BIL, ASC, IMG, TIF, PNG, JPG, XYZ, FLT, or DTM format. The tool can raster the ‘-elevation’ or the ‘-intensity’ of each point and stores the ‘-lowest’ or the ‘-highest’, the ‘-average’, or the standard deviation ‘-stddev’. Other gridding options are ‘-scan_angle_abs’, ‘-counter’, ‘-counter_16bit’, ‘-counter_32bit’, ‘-user_data’, ‘-point_source’, and others. 
+
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Grid LIDAR onto a raster',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasgrid_README.md'
+            },
+
+            "LasGridPro": {
+                "name": 'LasGridPro',
+                "display_name": 'lasgrid (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that reads LIDAR from LAS/LAZ/ASCII and grids them onto a raster. The most important parameter ‘-step n’ specifies the n x n area that of LiDAR points that are gridded on one raster cell (or pixel). The output is either in BIL, ASC, IMG, TIF, PNG, JPG, XYZ, FLT, or DTM format. The tool can raster the ‘-elevation’ or the ‘-intensity’ of each point and stores the ‘-lowest’ or the ‘-highest’, the ‘-average’, or the standard deviation ‘-stddev’. Other gridding options are ‘-scan_angle_abs’, ‘-counter’, ‘-counter_16bit’, ‘-counter_32bit’, ‘-user_data’, ‘-point_source’, and others. 
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Grid LIDAR onto a raster (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasgrid_README.md'
+            },
+        },
+
     },
 }
