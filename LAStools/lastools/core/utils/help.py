@@ -1096,3 +1096,40 @@ descript_quality_control_information = {
         },
     },
 }
+
+descript_visualization_colorization = {
+    "info": {
+        "group": 'Visualization & Colorization',
+        "group_id": 'visualization_colorization',
+    },
+    "items": {
+        "lasview": {
+            "LasView": {
+                "name": 'LasView',
+                "display_name": 'lasview',
+                "licence": True,
+                "short_help_string": """
+                    is a simple yet fast LiDAR visualization tool that has a number of neat little tricks that may surprise you. It can also edit the classification of the points as well as delete them
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Simple and fast LiDAR visualization tool.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasview_README.md'
+            },
+
+            "LasViewPro": {
+                "name": 'LasViewPro',
+                "display_name": 'lasview (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is a simple yet fast LiDAR visualization tool that has a number of neat little tricks that may surprise you. It can also edit the classification of the points as well as delete them
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Simple and fast LiDAR visualization tool. (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasview_README.md'
+            },
+        },
+    },
+}

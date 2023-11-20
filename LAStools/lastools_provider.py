@@ -74,12 +74,14 @@ from .lastools.core.dsm_dtm_generation_prodctions import (
 from .lastools.core.publishing import (
     LasPublish, LasPublishPro
 )
-
 from .lastools.core.quality_control_information import (
     LasInfo, LasInfoPro,
     LasOverlap, LasOverlapPro,
     LasControl,
     LasValidate, LasValidatePro,
+)
+from .lastools.core.visualization_colorization import (
+    LasView, LasViewPro,
 )
 from .lastools.core.utils import paths
 
@@ -184,9 +186,13 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasOverlap(), LasOverlapPro(),
             LasControl(),
             LasValidate(), LasValidatePro(),
-
         ]
         self.algos.extend(quality_control_information_algorithms)
+
+        visualization_colorization_algorithms = [
+            LasView(), LasViewPro(),
+        ]
+        self.algos.extend(visualization_colorization_algorithms)
 
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)
