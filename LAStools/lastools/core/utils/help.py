@@ -1065,5 +1065,34 @@ descript_quality_control_information = {
             },
         },
 
+        "lasvalidate": {
+
+            "LasValidate": {
+                "name": 'LasValidate',
+                "display_name": 'lasvalidate',
+                "licence": False,
+                "short_help_string": """
+                    A simple open source tool with LGPL 2.1 license to validate whether a single or a folder of LAS or LAZ files conform to the LAS specification of the ASPRS.
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Determine if LAS files conform to the ASPRS LAS specifications.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasvalidate_README.md'
+            },
+
+            "LasValidatePro": {
+                "name": 'LasValidatePro',
+                "display_name": 'lasvalidate (folder)',
+                "licence": False,
+                "short_help_string": """
+                    A simple open source tool with LGPL 2.1 license to validate whether a single or a folder of LAS or LAZ files conform to the LAS specification of the ASPRS.
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Determine if LAS files conform to the ASPRS LAS specifications (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasvalidate_README.md'
+            },
+        },
     },
 }
