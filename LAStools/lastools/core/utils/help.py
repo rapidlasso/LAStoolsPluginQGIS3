@@ -1020,5 +1020,50 @@ descript_quality_control_information = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasinfo_README.md'
             },
         },
+
+        "lasoverlap": {
+            "LasOverlap": {
+                "name": 'LasOverlap',
+                "display_name": 'lasoverlap',
+                "licence": True,
+                "short_help_string": """
+                is a tool that reads LIDAR points from LAS/LAZ or ASCII files and computes the flight line overlap and / or the vertical and horizontal alignment. The output rasters can either be a color coded visual illustration of the level of overlap or the differences or the actual values and can be either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format.
+
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the flight line overlap and alignment of LIDAR points.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasoverlap_README.md'
+            },
+            "LasOverlapPro": {
+                "name": 'LasOverlapPro',
+                "display_name": 'lasoverlap (folder)',
+                "licence": True,
+                "short_help_string": """
+                is a tool that reads LIDAR points from LAS/LAZ or ASCII files and computes the flight line overlap and / or the vertical and horizontal alignment. The output rasters can either be a color coded visual illustration of the level of overlap or the differences or the actual values and can be either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format.
+
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the flight line overlap and alignment of LIDAR points (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasoverlap_README.md'
+
+            },
+        },
+
+        "lascontrol": {
+            "LasControl": {
+                "name": 'LasControl',
+                "display_name": 'lascontrol',
+                "licence": True,
+                "short_help_string": """
+                    computes the elevation of the LiDAR at certain x and y control point locations and reports the difference in respect to the control point elevation. The tool reads LiDAR in LAS/LAZ/ASCII format, triangulates the relevant points around the control points into a TIN.
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the elevation of LiDAR data at specific points.',
+                "url_path": 'https://rapidlasso.de/lascontrol/'
+            },
+        },
+
     },
 }

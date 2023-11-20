@@ -77,6 +77,8 @@ from .lastools.core.publishing import (
 
 from .lastools.core.quality_control_information import (
     LasInfo, LasInfoPro,
+    LasOverlap, LasOverlapPro,
+    LasControl,
 )
 from .lastools.core.utils import paths
 
@@ -178,6 +180,8 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         quality_control_information_algorithms = [
             LasInfo(), LasInfoPro(),
+            LasOverlap(), LasOverlapPro(),
+            LasControl(),
         ]
         self.algos.extend(quality_control_information_algorithms)
 
