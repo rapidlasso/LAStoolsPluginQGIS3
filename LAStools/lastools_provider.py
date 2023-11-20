@@ -74,6 +74,10 @@ from .lastools.core.dsm_dtm_generation_prodctions import (
 from .lastools.core.publishing import (
     LasPublish, LasPublishPro
 )
+
+from .lastools.core.quality_control_information import (
+    LasInfo, LasInfoPro,
+)
 from .lastools.core.utils import paths
 
 
@@ -171,6 +175,11 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasPublish(), LasPublishPro(),
         ]
         self.algos.extend(publishing_algorithms)
+
+        quality_control_information_algorithms = [
+            LasInfo(), LasInfoPro(),
+        ]
+        self.algos.extend(quality_control_information_algorithms)
 
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)

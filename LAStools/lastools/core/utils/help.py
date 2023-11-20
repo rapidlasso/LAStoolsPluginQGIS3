@@ -985,3 +985,40 @@ descript_publishing = {
         },
     },
 }
+
+descript_quality_control_information = {
+    "info": {
+        "group": 'Quality Control & Information',
+        "group_id": 'quality_control_information',
+    },
+    "items": {
+        "lasinfo": {
+            "LasInfo": {
+                "name": 'LasInfo',
+                "display_name": 'lasinfo',
+                "licence": False,
+                "short_help_string": """
+                This is a handy tool to report the contents of the header, the VLRs, and a short summary of the min and max values of the points for LAS/LAZ files. The tool warns when there is a difference between the header information and the point content for counters and bounding box extent. 
+
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Report content of a LAS/LAZ file header',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasinfo_README.md'
+            },
+
+            "LasInfoPro": {
+                "name": 'LasInfoPro',
+                "display_name": 'lasinfo (folder)',
+                "licence": False,
+                "short_help_string": """
+                This is a handy tool to report the contents of the header, the VLRs, and a short summary of the min and max values of the points for LAS/LAZ files. The tool warns when there is a difference between the header information and the point content for counters and bounding box extent. 
+                
+                With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Report content of a LAS/LAZ file header (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasinfo_README.md'
+            },
+        },
+    },
+}
