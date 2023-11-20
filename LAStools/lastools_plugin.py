@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-/***************************************************************************
-    __init__.py
+***************************************************************************
+    lastools_plugin.py
     ---------------------
-    This script initializes the plugin, making it known to QGIS.
+    This script initializes the plugin providers and registers their GUIs.
     ---------------------    
     Date                 : January 2017, August 2018
     Copyright            : (C) 2017 Boundless
@@ -21,16 +21,31 @@
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2017'
-__copyright__ = '(C) 2017 Boundless'
+__copyright__ = '(C) 2017, Boundless'
 
 __author__ = 'Martin Isenburg'
 __date__ = 'August 2018'
-__copyright__ = '(C) 2018 rapidlasso GmbH, https://rapidlasso.de'
+__copyright__ = '(C) 2018, rapidlasso GmbH, https://rapidlasso.de'
 
-__author__ = 'Jochen Keil'
-__date__ = 'March 2023'
-__copyright__ = '(C) 2023 rapidlasso GmbH, https://rapidlasso.de'
+import os
+import sys
+import inspect
 
-def classFactory(iface):
-    from .lastools_plugin import LAStoolsPlugin
-    return LAStoolsPlugin(iface)
+from qgis.core import QgsProcessingAlgorithm, QgsApplication
+from .lastools_provider import LAStoolsProvider
+
+cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
+
+if cmd_folder not in sys.path:
+    sys.path.insert(0, cmd_folder)
+
+class LAStoolsPlugin(object):
+
+    def __init__(self,iface):
+        self.provider = LAStoolsProvider()
+
+    def initGui(self):
+        QgsApplication.processingRegistry().addProvider(self.provider)
+
+    def unload(self):
+        QgsApplication.processingRegistry().removeProvider(self.provider)

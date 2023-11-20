@@ -1,0 +1,472 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    lasheight.py
+    ---------------------
+    Date                 : September 2013, May 2016 and August 2018
+    Copyright            : (C) 2013 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, rapidlasso GmbH'
+
+import os
+
+from PyQt5.QtGui import QIcon
+from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber, QgsProcessingParameterEnum
+
+from ..utils import LastoolsUtils, descript_dsm_dtm_generation_production as descript_info, paths
+from ..algo import LastoolsAlgorithm
+
+
+class LasHeight(LastoolsAlgorithm):
+    TOOL_INFO = ('lasheight', 'LasHeight')
+    REPLACE_Z = "REPLACE_Z"
+    DROP_ABOVE = "DROP_ABOVE"
+    DROP_ABOVE_HEIGHT = "DROP_ABOVE_HEIGHT"
+    DROP_BELOW = "DROP_BELOW"
+    DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
+
+    def initAlgorithm(self, config=None):
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasHeight.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(LasHeight.DROP_ABOVE, "drop above", False))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeight.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0
+        ))
+        self.addParameter(QgsProcessingParameterBoolean(LasHeight.DROP_BELOW, "drop below", False))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeight.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0
+        ))
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
+        if self.parameterAsBool(parameters, LasHeight.REPLACE_Z, context):
+            commands.append("-replace_z")
+        if self.parameterAsBool(parameters, LasHeight.DROP_ABOVE, context):
+            commands.append("-drop_above")
+            commands.append(str(self.parameterAsDouble(parameters, LasHeight.DROP_ABOVE_HEIGHT, context)))
+        if self.parameterAsBool(parameters, LasHeight.DROP_BELOW, context):
+            commands.append("-drop_below")
+            commands.append(str(self.parameterAsDouble(parameters, LasHeight.DROP_BELOW_HEIGHT, context)))
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"commands": commands}
+
+    def createInstance(self):
+        return LasHeight()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")
+
+
+class LasHeightClassify(LastoolsAlgorithm):
+    TOOL_INFO = ('lasheight', 'LasHeightClassify')
+    REPLACE_Z = "REPLACE_Z"
+    CLASSIFY_BELOW = "CLASSIFY_BELOW"
+    CLASSIFY_BELOW_HEIGHT = "CLASSIFY_BELOW_HEIGHT"
+    CLASSIFY_BETWEEN1 = "CLASSIFY_BETWEEN1"
+    CLASSIFY_BETWEEN1_HEIGHT_FROM = "CLASSIFY_BETWEEN1_HEIGHT_FROM"
+    CLASSIFY_BETWEEN1_HEIGHT_TO = "CLASSIFY_BETWEEN1_HEIGHT_TO"
+    CLASSIFY_BETWEEN2 = "CLASSIFY_BETWEEN2"
+    CLASSIFY_BETWEEN2_HEIGHT_FROM = "CLASSIFY_BETWEEN2_HEIGHT_FROM"
+    CLASSIFY_BETWEEN2_HEIGHT_TO = "CLASSIFY_BETWEEN2_HEIGHT_TO"
+    CLASSIFY_ABOVE = "CLASSIFY_ABOVE"
+    CLASSIFY_ABOVE_HEIGHT = "CLASSIFY_ABOVE_HEIGHT"
+
+    CLASSIFY_CLASSES = ["---", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)",
+                        "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "water (9)",
+                        "rail (10)", "road surface (11)", "overlap (12)"]
+
+    def initAlgorithm(self, config):
+        self.add_parameters_verbose_gui64()
+        self.add_parameters_point_input_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasHeightClassify.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightClassify.CLASSIFY_BELOW, "classify below height as", LasHeightClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightClassify.CLASSIFY_BELOW_HEIGHT, "below height", QgsProcessingParameterNumber.Double, -2.0, False
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightClassify.CLASSIFY_BETWEEN1, "classify between height as",
+            LasHeightClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM, "between height ... ",
+            QgsProcessingParameterNumber.Double, 0.5
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_TO, "... and height", QgsProcessingParameterNumber.Double, 2.0
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightClassify.CLASSIFY_BETWEEN2, "classify between height as",
+            LasHeightClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM, "between height ...",
+            QgsProcessingParameterNumber.Double, 2.0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_TO, "... and height", QgsProcessingParameterNumber.Double, 5.0
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightClassify.CLASSIFY_ABOVE, "classify above", LasHeightClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightClassify.CLASSIFY_ABOVE_HEIGHT, "classify above height",
+            QgsProcessingParameterNumber.Double, 100.0
+        ))
+        self.add_parameters_point_output_gui()
+        self.add_parameters_additional_gui()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
+        if self.parameterAsBool(parameters, LasHeightClassify.REPLACE_Z, context):
+            commands.append("-replace_z")
+        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_BELOW, context)
+        if classify != 0:
+            commands.append("-classify_below")
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BELOW_HEIGHT, context)))
+            commands.append(str(classify - 1))
+        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_BETWEEN1, context)
+        if classify != 0:
+            commands.append("-classify_between")
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM, context)))
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_TO, context)))
+            commands.append(str(classify - 1))
+        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_BETWEEN2, context)
+        if classify != 0:
+            commands.append("-classify_between")
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM, context)))
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_TO, context)))
+            commands.append(str(classify - 1))
+        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_ABOVE, context)
+        if classify != 0:
+            commands.append("-classify_above")
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_ABOVE_HEIGHT, context))
+            )
+            commands.append(str(classify - 1))
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"commands": commands}
+
+    def createInstance(self):
+        return LasHeightClassify()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")
+
+
+class LasHeightPro(LastoolsAlgorithm):
+    TOOL_INFO = ('lasheight', 'LasHeightPro')
+    REPLACE_Z = "REPLACE_Z"
+    DROP_ABOVE = "DROP_ABOVE"
+    DROP_ABOVE_HEIGHT = "DROP_ABOVE_HEIGHT"
+    DROP_BELOW = "DROP_BELOW"
+    DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
+
+    def initAlgorithm(self, config=None):
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasHeightPro.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(LasHeightPro.DROP_ABOVE, "drop above", False))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightPro.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0
+        ))
+        self.addParameter(QgsProcessingParameterBoolean(LasHeightPro.DROP_BELOW, "drop below", False))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightPro.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0
+        ))
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
+        if self.parameterAsBool(parameters, LasHeightPro.REPLACE_Z, context):
+            commands.append("-replace_z")
+        if self.parameterAsBool(parameters, LasHeightPro.DROP_ABOVE, context):
+            commands.append("-drop_above")
+            commands.append(str(self.parameterAsDouble(parameters, LasHeightPro.DROP_ABOVE_HEIGHT, context)))
+        if self.parameterAsBool(parameters, LasHeightPro.DROP_BELOW, context):
+            commands.append("-drop_below")
+            commands.append(str(self.parameterAsDouble(parameters, LasHeightPro.DROP_BELOW_HEIGHT, context)))
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
+
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"commands": commands}
+
+    def createInstance(self):
+        return LasHeightPro()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")
+
+
+class LasHeightProClassify(LastoolsAlgorithm):
+    TOOL_INFO = ('lasheight', 'LasHeightProClassify')
+    REPLACE_Z = "REPLACE_Z"
+    CLASSIFY_BELOW = "CLASSIFY_BELOW"
+    CLASSIFY_BELOW_HEIGHT = "CLASSIFY_BELOW_HEIGHT"
+    CLASSIFY_BETWEEN1 = "CLASSIFY_BETWEEN1"
+    CLASSIFY_BETWEEN1_HEIGHT_FROM = "CLASSIFY_BETWEEN1_HEIGHT_FROM"
+    CLASSIFY_BETWEEN1_HEIGHT_TO = "CLASSIFY_BETWEEN1_HEIGHT_TO"
+    CLASSIFY_BETWEEN2 = "CLASSIFY_BETWEEN2"
+    CLASSIFY_BETWEEN2_HEIGHT_FROM = "CLASSIFY_BETWEEN2_HEIGHT_FROM"
+    CLASSIFY_BETWEEN2_HEIGHT_TO = "CLASSIFY_BETWEEN2_HEIGHT_TO"
+    CLASSIFY_ABOVE = "CLASSIFY_ABOVE"
+    CLASSIFY_ABOVE_HEIGHT = "CLASSIFY_ABOVE_HEIGHT"
+
+    CLASSIFY_CLASSES = ["---", "never classified (0)", "unclassified (1)", "ground (2)", "veg low (3)", "veg mid (4)",
+                        "veg high (5)", "buildings (6)", "noise (7)", "keypoint (8)", "water (9)", "water (9)",
+                        "rail (10)", "road surface (11)", "overlap (12)"]
+
+    def initAlgorithm(self, config=None
+                      ):
+        self.add_parameters_point_input_folder_gui()
+        self.add_parameters_ignore_class1_gui()
+        self.add_parameters_ignore_class2_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasHeightProClassify.REPLACE_Z, "replace z", False
+                                                        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightProClassify.CLASSIFY_BELOW, "classify below height as",
+            LasHeightProClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightProClassify.CLASSIFY_BELOW_HEIGHT, "below height",
+            QgsProcessingParameterNumber.Double, -2.0, False
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightProClassify.CLASSIFY_BETWEEN1, "classify between height as",
+            LasHeightProClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM, "between height ... ",
+            QgsProcessingParameterNumber.Double, 0.5
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_TO, "... and height",
+            QgsProcessingParameterNumber.Double, 2.0
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightProClassify.CLASSIFY_BETWEEN2, "classify between height as",
+            LasHeightProClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM, "between height ...",
+            QgsProcessingParameterNumber.Double, 2.0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_TO, "... and height",
+            QgsProcessingParameterNumber.Double, 5.0
+        ))
+        self.addParameter(QgsProcessingParameterEnum(
+            LasHeightProClassify.CLASSIFY_ABOVE, "classify above", LasHeightProClassify.CLASSIFY_CLASSES, False, 0
+        ))
+        self.addParameter(QgsProcessingParameterNumber(
+            LasHeightProClassify.CLASSIFY_ABOVE_HEIGHT, "classify above height",
+            QgsProcessingParameterNumber.Double, 100.0
+        ))
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        self.add_parameters_ignore_class1_commands(parameters, context, commands)
+        self.add_parameters_ignore_class2_commands(parameters, context, commands)
+        if self.parameterAsBool(parameters, LasHeightProClassify.REPLACE_Z, context):
+            commands.append("-replace_z")
+        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_BELOW, context)
+        if classify != 0:
+            commands.append("-classify_below")
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BELOW_HEIGHT, context)))
+            commands.append(str(classify - 1))
+        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_BETWEEN1, context)
+        if classify != 0:
+            commands.append("-classify_between")
+            commands.append(str(
+                self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM, context)))
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_TO, context))
+            )
+            commands.append(str(classify - 1))
+        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_BETWEEN2, context)
+        if classify != 0:
+            commands.append("-classify_between")
+            commands.append(str(
+                self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM, context)))
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_TO, context)))
+            commands.append(str(classify - 1))
+        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_ABOVE, context)
+        if classify != 0:
+            commands.append("-classify_above")
+            commands.append(
+                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_ABOVE_HEIGHT, context)))
+            commands.append(str(classify - 1))
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
+
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"commands": commands}
+
+    def createInstance(self):
+        return LasHeightProClassify()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")
