@@ -565,6 +565,7 @@ descript_classification_filtering = {
         "group_id": 'classification_filtering',
     },
     "items": {
+
         "lasground": {
             "LasGround": {
                 "name": 'LasGround',
@@ -591,6 +592,65 @@ descript_classification_filtering = {
                 "short_description": 'Tool for bare-earth extraction (using a folder contain multiple input file).',
                 "url_path": 'https://downloads.rapidlasso.de/readme/lasground_README.md'
             },
+        },
+
+        "lasground_new": {
+            "LasGroundNew": {
+                "name": 'LasGroundNew',
+                "display_name": 'lasground_new',
+                "licence": True,
+                "short_help_string": """
+                    This is a tool for bare-earth extraction: it classifies LIDAR points into ground points (class = 2) and non-ground points (class = 1). This is a totally redesigned version of lasground that handles complicated terrain much better where there are steep mountains nearby urban areas with many buildings.
+                    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'This is a tool for bare-earth extraction—a redesigned version of lasground..',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasground_README.md'
+            },
+            "LasGroundProNew": {
+                "name": 'LasGroundProNew',
+                "display_name": 'lasground_new (folder)',
+                "licence": True,
+                "short_help_string": """
+                    This is a tool for bare-earth extraction: it classifies LIDAR points into ground points (class = 2) and non-ground points (class = 1). This is a totally redesigned version of lasground that handles complicated terrain much better where there are steep mountains nearby urban areas with many buildings.
+
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'This is a tool for bare-earth extraction—a redesigned version of lasground. (using a folder contain multiple input file).',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasground_README.md'
+            },
+        },
+
+        "lasclassify": {
+
+            "LasClassify": {
+                "name": 'LasClassify',
+                "display_name": 'lasclassify',
+                "licence": True,
+                "short_help_string": """
+                    is a tool to classify buildings and high vegetation (i.e. trees) in LAS/LAZ files. This tool requires that the bare-earth points have already been identified (e.g. with lasground) and that the elevation of each point above the ground was already computed with lasheight (which stores a coarse height value in the ‘user_data’ field of each point)
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Classify buildings and high vegetation',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasclassify_README.md'
+            },
+
+            "LasClassifyPro": {
+                "name": 'LasClassifyPro',
+                "display_name": 'lasclassify (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is a tool to classify buildings and high vegetation (i.e. trees) in LAS/LAZ files. This tool requires that the bare-earth points have already been identified (e.g. with lasground) and that the elevation of each point above the ground was already computed with lasheight (which stores a coarse height value in the ‘user_data’ field of each point)
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Classify buildings and high vegetation (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasclassify_README.md'
+            },
+
         },
 
     },
