@@ -759,7 +759,21 @@ descript_dsm_dtm_generation_production = {
                 "short_description": 'Triangulates LIDAR points from LAS/LAZ to TIN and DEM (using a folder contain multiple input file)',
                 "url_path": 'https://downloads.rapidlasso.de/readme/las2dem_README.md'
             },
+        },
 
+        "las2iso": {
+            "Las2Iso": {
+                "name": 'Las2Iso',
+                "display_name": 'las2iso',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that reads LIDAR points from LAS/LAZ/ASCII (or rasters from ASC/BIL/DTM format) and extracts a set of particular elevation contours in SHP/KML/WKT/TXT format. The user may specify to extract contours every 5 meters or only for individual elevation values. The contours can be smoothed or simplified on demand and hydro breaklines can be specified as well. las2iso can handle files up to about 20 mio. points. 
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Extracts elevation contours to SHP/KML/WKT/TXT format',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2iso_README.md'
+            },
         },
     },
 }
