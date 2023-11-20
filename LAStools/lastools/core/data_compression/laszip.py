@@ -22,58 +22,149 @@ __date__ = 'September 2013'
 __copyright__ = '(C) 2013, rapidlasso GmbH'
 
 import os
+
+from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean
 
-from lastools.core.utils.utils import LastoolsUtils
-from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
-	
-class laszip(LastoolsAlgorithm):
+from ..utils import LastoolsUtils, descript_data_compression as descript_info, paths
+from ..algo import LastoolsAlgorithm
 
+
+class LasZip(LastoolsAlgorithm):
+    TOOL_INFO = ('laszip', 'LasZip')
     REPORT_SIZE = "REPORT_SIZE"
     CREATE_LAX = "CREATE_LAX"
     APPEND_LAX = "APPEND_LAX"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
         self.add_parameters_verbose_gui64()
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(LasZip.REPORT_SIZE, "only report size", False))
+        self.addParameter(QgsProcessingParameterBoolean(
+            LasZip.CREATE_LAX, "create spatial indexing file (*.lax)", False
+        ))
+        self.addParameter(QgsProcessingParameterBoolean(LasZip.APPEND_LAX, "append *.lax into *.laz file", False))
         self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if (LastoolsUtils.has_wine()):
+        if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
         self.add_parameters_verbose_commands64(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszip.REPORT_SIZE, context):
+        if self.parameterAsBool(parameters, LasZip.REPORT_SIZE, context):
             commands.append("-size")
-        if self.parameterAsBool(parameters, laszip.CREATE_LAX, context):
+        if self.parameterAsBool(parameters, LasZip.CREATE_LAX, context):
             commands.append("-lax")
-        if self.parameterAsBool(parameters, laszip.APPEND_LAX, context):
+        if self.parameterAsBool(parameters, LasZip.APPEND_LAX, context):
             commands.append("-append")
         self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-		
+
         LastoolsUtils.run_lastools(commands, feedback)
 
-        return {"": None}
-
-    def name(self):
-        return 'laszip'
-
-    def displayName(self):
-        return 'laszip'
-
-    def group(self):
-        return 'file - conversion'
-
-    def groupId(self):
-        return 'file - conversion'
+        return {"commands": commands}
 
     def createInstance(self):
-        return laszip()
-	
+        return LasZip()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")
+
+
+class LasZipPro(LastoolsAlgorithm):
+    TOOL_INFO = ('laszip', 'LasZipPro')
+    REPORT_SIZE = "REPORT_SIZE"
+    CREATE_LAX = "CREATE_LAX"
+    APPEND_LAX = "APPEND_LAX"
+
+    def initAlgorithm(self, config=None):
+        self.add_parameters_point_input_folder_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.REPORT_SIZE, "only report size", False))
+        self.addParameter(QgsProcessingParameterBoolean(
+            LasZipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False
+        ))
+        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
+        self.add_parameters_verbose_gui64()
+
+    def processAlgorithm(self, parameters, context, feedback):
+        if LastoolsUtils.has_wine():
+            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
+        else:
+            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
+        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
+        if self.parameterAsBool(parameters, LasZipPro.REPORT_SIZE, context):
+            commands.append("-size")
+        if self.parameterAsBool(parameters, LasZipPro.CREATE_LAX, context):
+            commands.append("-lax")
+        if self.parameterAsBool(parameters, LasZipPro.APPEND_LAX, context):
+            commands.append("-append")
+        self.add_parameters_output_directory_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_cores_commands(parameters, context, commands)
+
+        LastoolsUtils.run_lastools(commands, feedback)
+
+        return {"commands": commands}
+
+    def createInstance(self):
+        return LasZipPro()
+
+    def name(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+
+    def displayName(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+
+    def group(self):
+        return descript_info["info"]["group"]
+
+    def groupId(self):
+        return descript_info["info"]["group_id"]
+
+    def helpUrl(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+
+    def shortHelpString(self):
+        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+
+    def shortDescription(self):
+        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+
+    def icon(self):
+        img_path = 'licenced.png' \
+            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
+        return QIcon(f"{paths['img']}{img_path}")

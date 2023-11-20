@@ -27,59 +27,5 @@ from qgis.core import QgsProcessingParameterBoolean
 from lastools.core.utils.utils import LastoolsUtils
 from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
-class laszipPro(LastoolsAlgorithm):
 
-    REPORT_SIZE = "REPORT_SIZE"
-    CREATE_LAX = "CREATE_LAX"
-    APPEND_LAX = "APPEND_LAX"
 
-    def initAlgorithm(self, config):
-        self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(QgsProcessingParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
-        self.add_parameters_output_directory_gui()
-        self.add_parameters_output_appendix_gui()
-        self.add_parameters_point_output_format_gui()
-        self.add_parameters_additional_gui()
-        self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
-
-    def processAlgorithm(self, parameters, context, feedback):
-        if (LastoolsUtils.has_wine()):
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
-        self.add_parameters_point_input_folder_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, laszipPro.REPORT_SIZE, context):
-            commands.append("-size")
-        if self.parameterAsBool(parameters, laszipPro.CREATE_LAX, context):
-            commands.append("-lax")
-        if self.parameterAsBool(parameters, laszipPro.APPEND_LAX, context):
-            commands.append("-append")
-        self.add_parameters_output_directory_commands(parameters, context, commands)
-        self.add_parameters_output_appendix_commands(parameters, context, commands)
-        self.add_parameters_point_output_format_commands(parameters, context, commands)
-        self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_cores_commands(parameters, context, commands)
-
-        LastoolsUtils.run_lastools(commands, feedback)
-
-        return {"": None}
-
-    def name(self):
-        return 'laszipPro'
-
-    def displayName(self):
-        return 'laszipPro'
-
-    def group(self):
-        return 'folder - conversion'
-
-    def groupId(self):
-        return 'folder - conversion'
-
-    def createInstance(self):
-        return laszipPro()
-	

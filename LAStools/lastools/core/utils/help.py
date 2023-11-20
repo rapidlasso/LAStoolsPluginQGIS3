@@ -685,3 +685,42 @@ descript_classification_filtering = {
 
     },
 }
+
+descript_data_compression = {
+    "info": {
+        "group": 'Data Compression',
+        "group_id": 'data_compression',
+    },
+    "items": {
+        "laszip": {
+
+            "LasZip": {
+                "name": 'LasZip',
+                "display_name": 'laszip',
+                "licence": False,
+                "short_help_string": """
+                    Compresses and uncompresses LiDAR data stored in binary LAS
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Compresses LAS files',
+                "url_path": 'https://downloads.rapidlasso.de/readme/laszip_README.md'
+            },
+
+            "LasZipPro": {
+                "name": 'LasZipPro',
+                "display_name": 'laszip (folder)',
+                "licence": False,
+                "short_help_string": """
+                    format (1.0 - 1.4) in a completely lossless manner to the
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Compresses LAS files (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/laszip_README.md'
+            },
+
+        },
+    },
+}

@@ -53,12 +53,14 @@ from .lastools.core.data_convert import (
     Las2Shp,
     Shp2Las,
 )
-
 from .lastools.core.classification_filtering import (
     LasGround, LasGroundPro,
     LasGroundNew, LasGroundProNew,
     LasClassify, LasClassifyPro,
     LasThin, LasThinPro,
+)
+from .lastools.core.data_compression import (
+    LasZip, LasZipPro
 )
 from .lastools.core.utils import paths
 
@@ -136,6 +138,11 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasThin(), LasThinPro(),
         ]
         self.algos.extend(classification_filtering_algorithms)
+
+        data_compression_algorithms = [
+            LasZip(), LasZipPro(),
+        ]
+        self.algos.extend(data_compression_algorithms)
 
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)
