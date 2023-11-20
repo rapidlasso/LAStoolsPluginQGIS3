@@ -724,3 +724,42 @@ descript_data_compression = {
         },
     },
 }
+
+descript_dsm_dtm_generation_production = {
+    "info": {
+        "group": 'DSM/DTM Generation & Production',
+        "group_id": 'dsm_dtm_generation_production',
+    },
+    "items": {
+        "las2dem": {
+
+            "Las2Dem": {
+                "name": 'Las2Dem',
+                "display_name": 'las2dem',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that triangulates LIDAR points from the LAS/LAZ format (or some ASCII format) into a temporary TIN and then rasters the TIN to create a DEM. The tool can either raster the ‘-elevation’, the ‘-slope’, the ‘-intensity’, the ‘-rgb’ values, or a ‘-hillshade’ or ‘-gray’ or ‘-false’ coloring. The output is either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format. 
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Triangulates LIDAR points from LAS/LAZ to TIN and DEM.',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2dem_README.md'
+            },
+
+            "Las2DemPro": {
+                "name": 'Las2DemPro',
+                "display_name": 'las2dem (folder)',
+                "licence": True,
+                "short_help_string": """
+                    is a tool that triangulates LIDAR points from the LAS/LAZ format (or some ASCII format) into a temporary TIN and then rasters the TIN to create a DEM. The tool can either raster the ‘-elevation’, the ‘-slope’, the ‘-intensity’, the ‘-rgb’ values, or a ‘-hillshade’ or ‘-gray’ or ‘-false’ coloring. The output is either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format. 
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Triangulates LIDAR points from LAS/LAZ to TIN and DEM (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/las2dem_README.md'
+            },
+
+        },
+    },
+}
