@@ -66,6 +66,7 @@ from .lastools.core.dsm_dtm_generation_prodctions import (
     Las2Dem, Las2DemPro,
     Las2Iso,
     LasGrid, LasGridPro,
+    LasHeight, LasHeightClassify, LasHeightPro, LasHeightProClassify
 )
 from .lastools.core.utils import paths
 
@@ -153,6 +154,7 @@ class LAStoolsProvider(QgsProcessingProvider):
             Las2Dem(), Las2DemPro(),
             Las2Iso(),
             LasGrid(), LasGridPro(),
+            LasHeight(), LasHeightClassify(), LasHeightPro(), LasHeightProClassify()
         ]
         self.algos.extend(dsm_dtm_generation_productions_algorithms)
 

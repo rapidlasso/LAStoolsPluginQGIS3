@@ -775,6 +775,7 @@ descript_dsm_dtm_generation_production = {
                 "url_path": 'https://downloads.rapidlasso.de/readme/las2iso_README.md'
             },
         },
+
         "lasgrid": {
             "LasGrid": {
                 "name": 'LasGrid',
@@ -804,5 +805,60 @@ descript_dsm_dtm_generation_production = {
             },
         },
 
+        "lasheight": {
+            "LasHeight": {
+                "name": 'LasHeight',
+                "display_name": 'lasheight',
+                "licence": True,
+                "short_help_string": """
+                    computes the height of each point above the ground. This assumes that grounds points have already been ground-classified (with standard classification 2 or selected with ‘-class 31’ or ‘-classification 8’) so they can be identified to construct a ground TIN. The ground points can also be in an separate file ‘-ground_points ground.las’ or ‘-ground_points dtm.csv -parse ssxyz’. By default the resulting heights are quantized, scaled with a factor of 10, clamped into an unsigned char between 0 and 255, and stored in the “user data” field of each point.
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the height of each point above the ground',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasheight_README.md'
+            },
+
+            "LasHeightClassify": {
+                "name": 'LasHeightClassify',
+                "display_name": 'lasheight - classify',
+                "licence": True,
+                "short_help_string": """
+                    computes the height of each point above the ground. This assumes that grounds points have already been ground-classified (with standard classification 2 or selected with ‘-class 31’ or ‘-classification 8’) so they can be identified to construct a ground TIN. The ground points can also be in an separate file ‘-ground_points ground.las’ or ‘-ground_points dtm.csv -parse ssxyz’. By default the resulting heights are quantized, scaled with a factor of 10, clamped into an unsigned char between 0 and 255, and stored in the “user data” field of each point.
+    
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the height of each point above the ground',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasheight_README.md'
+            },
+
+            "LasHeightPro": {
+                "name": 'LasHeightPro',
+                "display_name": 'lasheight (folder)',
+                "licence": True,
+                "short_help_string": """
+                    computes the height of each point above the ground. This assumes that grounds points have already been ground-classified (with standard classification 2 or selected with ‘-class 31’ or ‘-classification 8’) so they can be identified to construct a ground TIN. The ground points can also be in an separate file ‘-ground_points ground.las’ or ‘-ground_points dtm.csv -parse ssxyz’. By default the resulting heights are quantized, scaled with a factor of 10, clamped into an unsigned char between 0 and 255, and stored in the “user data” field of each point.
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the height of each point above the ground (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasheight_README.md'
+            },
+
+            "LasHeightProClassify": {
+                "name": 'LasHeightProClassify',
+                "display_name": 'lasheight - classify (folder)',
+                "licence": True,
+                "short_help_string": """
+                    computes the height of each point above the ground. This assumes that grounds points have already been ground-classified (with standard classification 2 or selected with ‘-class 31’ or ‘-classification 8’) so they can be identified to construct a ground TIN. The ground points can also be in an separate file ‘-ground_points ground.las’ or ‘-ground_points dtm.csv -parse ssxyz’. By default the resulting heights are quantized, scaled with a factor of 10, clamped into an unsigned char between 0 and 255, and stored in the “user data” field of each point.
+    
+                    With this tool you can choose a folder contain multiple input file rather than single file.
+                    For more details see the README file (Please click on help button).
+                """,
+                "short_description": 'Computes the height of each point above the ground (using a folder contain multiple input file)',
+                "url_path": 'https://downloads.rapidlasso.de/readme/lasheight_README.md'
+            },
+        },
     },
 }
