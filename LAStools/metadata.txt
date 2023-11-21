@@ -25,7 +25,7 @@ about=
 
 
 changelog=
-    Here you can find a list of the most important updates in the 2.0.1 version of LASTools.
+    Here you can find a list of the most important updates in the 2.0.1 version of LAStools.
 
     - add las3dpoly and lasintensity tools
     - add help option and description panel

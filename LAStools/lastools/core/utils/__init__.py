@@ -5,11 +5,11 @@ from .utils import LastoolsUtils
 from .help import (
     descript_processing, descript_data_convert, descript_classification_filtering, descript_data_compression,
     descript_dsm_dtm_generation_production, descript_publishing, descript_quality_control_information,
-    descript_visualization_colorization, paths
+    descript_visualization_colorization, descript_pipelines, paths
 )
 
 __all__ = [
     LastoolsUtils, descript_processing, descript_data_convert, descript_classification_filtering,
     descript_data_compression, descript_dsm_dtm_generation_production, descript_publishing,
-    descript_quality_control_information, descript_visualization_colorization, paths
+    descript_quality_control_information, descript_visualization_colorization, descript_pipelines, paths
 ]

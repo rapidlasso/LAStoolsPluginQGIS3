@@ -1149,3 +1149,48 @@ descript_visualization_colorization = {
         },
     },
 }
+
+descript_pipelines = {
+    "info": {
+        "group": 'Pipelines',
+        "group_id": 'pipelines',
+    },
+    "items": {
+        "flightlines2chm": {
+
+            "FlightLinesToCHMFirstReturn": {
+                "name": 'FlightLinesToCHMFirstReturn',
+                "display_name": 'Flight lines to CHM - first return',
+                "licence": True,
+                "short_help_string": """
+                Create a canopy height model with first return only
+                """,
+                "short_description": 'Create a canopy height model with first return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToCHMHighestReturn": {
+                "name": 'FlightLinesToCHMHighestReturn',
+                "display_name": 'Flight lines to CHM - highest return',
+                "licence": True,
+                "short_help_string": """
+                Create a canopy height model with hightest return only
+                """,
+                "short_description": 'Create a canopy height model with hightest return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToCHMSpikeFree": {
+                "name": 'FlightLinesToCHMSpikeFree',
+                "display_name": 'Flight lines to CHM - spike free',
+                "licence": True,
+                "short_help_string": """
+                Create a canopy height model with spike free option
+                """,
+                "short_description": 'Create a canopy height model with spike free option',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+        },
+    },
+}
