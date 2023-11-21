@@ -84,6 +84,10 @@ from .lastools.core.visualization_colorization import (
     LasView, LasViewPro,
     LasColor,
 )
+from .lastools.core.pipelines import (
+    FlightLinesToCHMFirstReturn, FlightLinesToCHMHighestReturn, FlightLinesToCHMSpikeFree,
+    FlightLinesToDTMandDSMFirstReturn, FlightLinesToDTMandDSMSpikeFree,
+)
 from .lastools.core.utils import paths
 
 
@@ -195,6 +199,12 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasColor(),
         ]
         self.algos.extend(visualization_colorization_algorithms)
+
+        pipelines_algorithms = [
+            FlightLinesToCHMFirstReturn(), FlightLinesToCHMHighestReturn(), FlightLinesToCHMSpikeFree(),
+            FlightLinesToDTMandDSMFirstReturn(), FlightLinesToDTMandDSMSpikeFree(),
+        ]
+        self.algos.extend(pipelines_algorithms)
 
         for algorithm in self.algos:
             self.addAlgorithm(algorithm)

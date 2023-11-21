@@ -1160,10 +1160,10 @@ descript_pipelines = {
 
             "FlightLinesToCHMFirstReturn": {
                 "name": 'FlightLinesToCHMFirstReturn',
-                "display_name": 'Flight lines to CHM - first return',
+                "display_name": 'Flightlines to CHM - first return',
                 "licence": True,
                 "short_help_string": """
-                Create a canopy height model with first return only
+                    Create a canopy height model with first return only
                 """,
                 "short_description": 'Create a canopy height model with first return only',
                 "url_path": 'https://rapidlasso.de/product-overview/'
@@ -1171,24 +1171,48 @@ descript_pipelines = {
 
             "FlightLinesToCHMHighestReturn": {
                 "name": 'FlightLinesToCHMHighestReturn',
-                "display_name": 'Flight lines to CHM - highest return',
+                "display_name": 'Flightlines to CHM - highest return',
                 "licence": True,
                 "short_help_string": """
-                Create a canopy height model with hightest return only
+                    Create a canopy height model with highest return only
                 """,
-                "short_description": 'Create a canopy height model with hightest return only',
+                "short_description": 'Create a canopy height model with highest return only',
                 "url_path": 'https://rapidlasso.de/product-overview/'
             },
 
             "FlightLinesToCHMSpikeFree": {
                 "name": 'FlightLinesToCHMSpikeFree',
-                "display_name": 'Flight lines to CHM - spike free',
+                "display_name": 'Flightlines to CHM - spike free',
                 "licence": True,
                 "short_help_string": """
-                Create a canopy height model with spike free option
+                    Create a canopy height model with spike free option
                 """,
                 "short_description": 'Create a canopy height model with spike free option',
                 "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+        },
+
+        "flightlines2dtmdsm": {
+            "FlightLinesToDTMandDSMFirstReturn": {
+                "name": 'FlightLinesToDTMandDSMFirstReturn',
+                "display_name": 'FlightLines to DTM & DSM - first return',
+                "licence": True,
+                "short_help_string": """
+                     Create a digital terrain model and digital surface model out of lidar data files using the first return only
+                """,
+                "short_description": 'Create a digital terrain model and digital surface model out of lidar data files using the first return only',
+                "url_path": 'url_path'
+            },
+            "FlightLinesToDTMandDSMSpikeFree": {
+                "name": 'FlightLinesToDTMandDSMSpikeFree',
+                "display_name": 'FlightLines to DTM & DSM - spike free',
+                "licence": True,
+                "short_help_string": """
+                    Create a digital terrain model and digital surface model with spike free option
+                """,
+                "short_description": 'Create a digital terrain model and digital surface model with spike free option',
+                "url_path": 'url_path'
             },
 
         },
