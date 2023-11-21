@@ -1202,7 +1202,7 @@ descript_pipelines = {
                      Create a digital terrain model and digital surface model out of lidar data files using the first return only
                 """,
                 "short_description": 'Create a digital terrain model and digital surface model out of lidar data files using the first return only',
-                "url_path": 'url_path'
+                "url_path": 'https://rapidlasso.de/product-overview/'
             },
             "FlightLinesToDTMandDSMSpikeFree": {
                 "name": 'FlightLinesToDTMandDSMSpikeFree',
@@ -1212,9 +1212,55 @@ descript_pipelines = {
                     Create a digital terrain model and digital surface model with spike free option
                 """,
                 "short_description": 'Create a digital terrain model and digital surface model with spike free option',
-                "url_path": 'url_path'
+                "url_path": 'https://rapidlasso.de/product-overview/'
             },
 
+        },
+
+        "flightlines2mergedchm": {
+            "FlightLinesToMergedCHMFirstReturn": {
+                "name": 'FlightLinesToMergedCHMFirstReturn',
+                "display_name": 'FlightLines to merged CHM - first return',
+                "licence": True,
+                "short_help_string": """
+                    Create a merged canopy height model out of lidar data files using the first return only
+                """,
+                "short_description": 'Create a merged canopy height model out of lidar data files using the first return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToMergedCHMHighestReturn": {
+                "name": 'FlightLinesToMergedCHMHighestReturn',
+                "display_name": 'FlightLines to merged CHM - highest return',
+                "licence": True,
+                "short_help_string": """
+                    Create a merged canopy height model out of lidar data files with highest return
+                """,
+                "short_description": 'Create a merged canopy height model out of lidar data files with highest return',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToMergedCHMPitFree": {
+                "name": 'FlightLinesToMergedCHMPitFree',
+                "display_name": 'FlightLines to merged CHM - pit free',
+                "licence": True,
+                "short_help_string": """
+                    Create a pit free merged canopy height model out of lidar data files
+                """,
+                "short_description": 'Create a pit free merged canopy height model out of lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToMergedCHMSpikeFree": {
+                "name": 'FlightLinesToMergedCHMSpikeFree',
+                "display_name": 'FlightLines to merged CHM - spike free',
+                "licence": True,
+                "short_help_string": """
+                    Create a canopy height model out of lidar data files which are optional in flightlines
+                """,
+                "short_description": 'Create a canopy height model out of lidar data files which are optional in flightlines',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
         },
     },
 }
