@@ -1262,5 +1262,38 @@ descript_pipelines = {
                 "url_path": 'https://rapidlasso.de/product-overview/'
             },
         },
+
+        "hugefile": {
+            "HugeFileClassify": {
+                "name": 'HugeFileClassify',
+                "display_name": 'Huge file - classify',
+                "licence": True,
+                "short_help_string": """
+                    Do a classification for huge lidar data files
+                """,
+                "short_description": 'Do a classification for huge lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+            "HugeFileGroundClassify": {
+                "name": 'HugeFileGroundClassify',
+                "display_name": 'Huge file - ground classify',
+                "licence": True,
+                "short_help_string": """
+                    Do a ground classification for huge lidar data files
+                """,
+                "short_description": 'Do a ground classification for huge lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+            "HugeFileNormalize": {
+                "name": 'HugeFileNormalize',
+                "display_name": 'Huge file - normalize',
+                "licence": True,
+                "short_help_string": """
+                    Normalize huge lidar data files
+                """,
+                "short_description": 'Normalize huge lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+        },
     },
 }

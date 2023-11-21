@@ -89,6 +89,7 @@ from .lastools.core.pipelines import (
     FlightLinesToDTMandDSMFirstReturn, FlightLinesToDTMandDSMSpikeFree,
     FlightLinesToMergedCHMFirstReturn, FlightLinesToMergedCHMHighestReturn, FlightLinesToMergedCHMPitFree,
     FlightLinesToMergedCHMSpikeFree,
+    HugeFileClassify, HugeFileNormalize, HugeFileGroundClassify,
 )
 from .lastools.core.utils import paths
 
@@ -207,6 +208,8 @@ class LAStoolsProvider(QgsProcessingProvider):
             FlightLinesToDTMandDSMFirstReturn(), FlightLinesToDTMandDSMSpikeFree(),
             FlightLinesToMergedCHMFirstReturn(), FlightLinesToMergedCHMHighestReturn(), FlightLinesToMergedCHMPitFree(),
             FlightLinesToMergedCHMSpikeFree(),
+            HugeFileClassify(), HugeFileGroundClassify(), HugeFileNormalize(),
+
         ]
         self.algos.extend(pipelines_algorithms)
 
