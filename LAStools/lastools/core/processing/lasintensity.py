@@ -18,7 +18,7 @@
 """
 
 __author__ = 'rapidlasso'
-__date__ = 'October 2023'
+__date__ = 'September 2023'
 __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os

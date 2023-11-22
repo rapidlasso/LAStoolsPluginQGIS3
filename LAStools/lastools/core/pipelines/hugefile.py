@@ -4,7 +4,7 @@
 ***************************************************************************
     hugefile.py
     ---------------------
-    Date                 : May 2014 and August 2018
+    Date                 : November 2023
     Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
@@ -17,8 +17,8 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'May 2014'
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
 __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os

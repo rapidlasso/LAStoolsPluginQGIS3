@@ -10,6 +10,7 @@ icon=lastools/assets/img/lastools.png
 experimental=False
 deprecated=False
 category=Plugins
+collaborators=Martin Isenburg and Victor Olaya
 
 
 homepage=http://github.com/rapidlasso/LAStoolsPluginQGIS3

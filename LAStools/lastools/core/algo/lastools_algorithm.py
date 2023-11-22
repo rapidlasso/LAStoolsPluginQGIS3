@@ -4,9 +4,9 @@
 ***************************************************************************
     lastools_algorithm.py
     ---------------------
-    Date                 : August 2012, September 2023
-    Copyright            : (C) 2012 by Victor Olaya, (C) 2014 - 2023, rapidlasso GmbH
-    Email                : volayaf at gmail dot com, info near rapidlasso point de
+    Date                 : November 2023
+    Copyright            : (C) 2023 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = ('Victor Olaya', 'rapidlasso')
-__date__ = ('August 2012', 'September 2023')
-__copyright__ = ('(C) 2012, Victor Olaya', '(C) 2023, rapidlasso GmbH')
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 
 from PyQt5.QtGui import QIcon
 from qgis.core import (QgsProcessingAlgorithm,
