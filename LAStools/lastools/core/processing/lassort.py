@@ -4,8 +4,8 @@
 ***************************************************************************
     lassort.py
     ---------------------
-    Date                 : September 2013 and August 2018
-    Copyright            : (C) 2013 by rapidlasso GmbH
+    Date                 : November 2023
+    Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, rapidlasso GmbH'
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 from qgis.core import QgsProcessingParameterBoolean
@@ -27,8 +27,8 @@ from qgis.core import QgsProcessingParameterBoolean
 from lastools.core.utils.utils import LastoolsUtils
 from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
-class lassort(LastoolsAlgorithm):
 
+class lassort(LastoolsAlgorithm):
     BY_GPS_TIME = "BY_GPS_TIME"
     BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"

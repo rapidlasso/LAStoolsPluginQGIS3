@@ -4,11 +4,7 @@
 ***************************************************************************
     las2tin.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
-    ---------------------
-    Date                 : March 2014 and August 2018
+    Date                 : November 2023
     Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
@@ -21,13 +17,14 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 from lastools.core.utils.utils import LastoolsUtils
 from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
+
 
 class las2tin(LastoolsAlgorithm):
 

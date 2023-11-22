@@ -4,11 +4,9 @@
 ***************************************************************************
     lastools_plugin.py
     ---------------------
-    This script initializes the plugin providers and registers their GUIs.
-    ---------------------    
-    Date                 : January 2017, August 2018
-    Copyright            : (C) 2017 Boundless
-                           (C) 2018 rapidlasso GmbH, https://rapidlasso.de
+    Date                 : November 2023
+    Copyright            : (C) 2023 by rapidlasso GmbH
+    Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -19,13 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'January 2017'
-__copyright__ = '(C) 2017, Boundless'
-
-__author__ = 'Martin Isenburg'
-__date__ = 'August 2018'
-__copyright__ = '(C) 2018, rapidlasso GmbH, https://rapidlasso.de'
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 import sys

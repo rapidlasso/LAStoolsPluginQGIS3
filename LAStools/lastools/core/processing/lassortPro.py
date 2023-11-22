@@ -4,7 +4,7 @@
 ***************************************************************************
     lassortPro.py
     ---------------------
-    Date                 : October 2014 and August 2018
+    Date                 : November 2023
     Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
@@ -17,8 +17,8 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'October 2014'
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
 __copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
@@ -27,8 +27,8 @@ from qgis.core import QgsProcessingParameterBoolean
 from lastools.core.utils.utils import LastoolsUtils
 from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
-class lassortPro(LastoolsAlgorithm):
 
+class lassortPro(LastoolsAlgorithm):
     BY_GPS_TIME = "BY_GPS_TIME"
     BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
@@ -37,7 +37,8 @@ class lassortPro(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_GPS_TIME, "sort by GPS time", False))
         self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_RETURN_NUMBER, "sort by return number", False))
-        self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_POINT_SOURCE_ID, "sort by point source ID", False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(lassortPro.BY_POINT_SOURCE_ID, "sort by point source ID", False))
         self.add_parameters_output_directory_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()

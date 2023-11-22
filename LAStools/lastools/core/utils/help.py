@@ -1149,3 +1149,151 @@ descript_visualization_colorization = {
         },
     },
 }
+
+descript_pipelines = {
+    "info": {
+        "group": 'Pipelines',
+        "group_id": 'pipelines',
+    },
+    "items": {
+        "flightlines2chm": {
+
+            "FlightLinesToCHMFirstReturn": {
+                "name": 'FlightLinesToCHMFirstReturn',
+                "display_name": 'Flightlines to CHM - first return',
+                "licence": True,
+                "short_help_string": """
+                    Create a canopy height model with first return only
+                """,
+                "short_description": 'Create a canopy height model with first return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToCHMHighestReturn": {
+                "name": 'FlightLinesToCHMHighestReturn',
+                "display_name": 'Flightlines to CHM - highest return',
+                "licence": True,
+                "short_help_string": """
+                    Create a canopy height model with highest return only
+                """,
+                "short_description": 'Create a canopy height model with highest return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToCHMSpikeFree": {
+                "name": 'FlightLinesToCHMSpikeFree',
+                "display_name": 'Flightlines to CHM - spike free',
+                "licence": True,
+                "short_help_string": """
+                    Create a canopy height model with spike free option
+                """,
+                "short_description": 'Create a canopy height model with spike free option',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+        },
+
+        "flightlines2dtmdsm": {
+            "FlightLinesToDTMandDSMFirstReturn": {
+                "name": 'FlightLinesToDTMandDSMFirstReturn',
+                "display_name": 'FlightLines to DTM & DSM - first return',
+                "licence": True,
+                "short_help_string": """
+                     Create a digital terrain model and digital surface model out of lidar data files using the first return only
+                """,
+                "short_description": 'Create a digital terrain model and digital surface model out of lidar data files using the first return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+            "FlightLinesToDTMandDSMSpikeFree": {
+                "name": 'FlightLinesToDTMandDSMSpikeFree',
+                "display_name": 'FlightLines to DTM & DSM - spike free',
+                "licence": True,
+                "short_help_string": """
+                    Create a digital terrain model and digital surface model with spike free option
+                """,
+                "short_description": 'Create a digital terrain model and digital surface model with spike free option',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+        },
+
+        "flightlines2mergedchm": {
+            "FlightLinesToMergedCHMFirstReturn": {
+                "name": 'FlightLinesToMergedCHMFirstReturn',
+                "display_name": 'FlightLines to merged CHM - first return',
+                "licence": True,
+                "short_help_string": """
+                    Create a merged canopy height model out of lidar data files using the first return only
+                """,
+                "short_description": 'Create a merged canopy height model out of lidar data files using the first return only',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToMergedCHMHighestReturn": {
+                "name": 'FlightLinesToMergedCHMHighestReturn',
+                "display_name": 'FlightLines to merged CHM - highest return',
+                "licence": True,
+                "short_help_string": """
+                    Create a merged canopy height model out of lidar data files with highest return
+                """,
+                "short_description": 'Create a merged canopy height model out of lidar data files with highest return',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToMergedCHMPitFree": {
+                "name": 'FlightLinesToMergedCHMPitFree',
+                "display_name": 'FlightLines to merged CHM - pit free',
+                "licence": True,
+                "short_help_string": """
+                    Create a pit free merged canopy height model out of lidar data files
+                """,
+                "short_description": 'Create a pit free merged canopy height model out of lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+
+            "FlightLinesToMergedCHMSpikeFree": {
+                "name": 'FlightLinesToMergedCHMSpikeFree',
+                "display_name": 'FlightLines to merged CHM - spike free',
+                "licence": True,
+                "short_help_string": """
+                    Create a canopy height model out of lidar data files which are optional in flightlines
+                """,
+                "short_description": 'Create a canopy height model out of lidar data files which are optional in flightlines',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+        },
+
+        "hugefile": {
+            "HugeFileClassify": {
+                "name": 'HugeFileClassify',
+                "display_name": 'Huge file - classify',
+                "licence": True,
+                "short_help_string": """
+                    Do a classification for huge lidar data files
+                """,
+                "short_description": 'Do a classification for huge lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+            "HugeFileGroundClassify": {
+                "name": 'HugeFileGroundClassify',
+                "display_name": 'Huge file - ground classify',
+                "licence": True,
+                "short_help_string": """
+                    Do a ground classification for huge lidar data files
+                """,
+                "short_description": 'Do a ground classification for huge lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+            "HugeFileNormalize": {
+                "name": 'HugeFileNormalize',
+                "display_name": 'Huge file - normalize',
+                "licence": True,
+                "short_help_string": """
+                    Normalize huge lidar data files
+                """,
+                "short_description": 'Normalize huge lidar data files',
+                "url_path": 'https://rapidlasso.de/product-overview/'
+            },
+        },
+    },
+}

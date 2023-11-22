@@ -3,8 +3,9 @@
 """
 ***************************************************************************
     lasground_new.py
-    Date                 : May 2016 and August 2018
-    Copyright            : (C) 2016 by rapidlasso GmbH
+    ---------------------
+    Date                 : November 2023
+    Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -16,10 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'May 2016'
-__copyright__ = '(C) 2016 by rapidlasso GmbH'
-
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 import os
 
 from PyQt5.QtGui import QIcon

@@ -4,12 +4,8 @@
 ***************************************************************************
     lasview.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
-    ---------------------
-    Date                 : September 2013
-    Copyright            : (C) 2013 by rapidlasso GmbH
+    Date                 : November 2023
+    Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -21,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Isenburg'
-__date__ = 'September 2013'
-__copyright__ = '(C) 2013, rapidlasso GmbH'
+__author__ = 'rapidlasso'
+__date__ = 'September 2023'
+__copyright__ = '(C) 2023, rapidlasso GmbH'
 
 import os
 
