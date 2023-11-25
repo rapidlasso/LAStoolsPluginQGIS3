@@ -74,7 +74,7 @@ class Txt2Las(LastoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_generic_input_gui("Input ASCII file", "txt", False)
         self.addParameter(QgsProcessingParameterString(Txt2Las.PARSE, "parse lines as", "xyz"))
         self.addParameter(QgsProcessingParameterNumber(
@@ -102,7 +102,7 @@ class Txt2Las(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "txt2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "txt2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         parse_string = self.parameterAsString(parameters, Txt2Las.PARSE, context)
         if parse_string != "xyz":
@@ -252,14 +252,14 @@ class Txt2LasPro(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "txt2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "txt2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         # TODO: check the output and use f string
         self.add_parameters_generic_input_folder_commands(parameters, context, commands)
         parse_string = self.parameterAsString(parameters, Txt2LasPro.PARSE, context)

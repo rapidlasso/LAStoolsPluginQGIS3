@@ -39,7 +39,7 @@ class LasTile(LastoolsAlgorithm):
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(
             LasTile.TILE_SIZE, "tile size (side length of square tile)",
@@ -59,7 +59,7 @@ class LasTile(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, LasTile.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -140,11 +140,11 @@ class LasTilePro(LastoolsAlgorithm):
         ))
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)

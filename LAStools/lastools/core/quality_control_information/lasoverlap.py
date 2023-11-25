@@ -41,7 +41,7 @@ class LasOverlap(LastoolsAlgorithm):
     CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.addParameter(QgsProcessingParameterNumber(
@@ -65,7 +65,7 @@ class LasOverlap(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasoverlap")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, LasOverlap.CHECK_STEP, context)
@@ -156,11 +156,11 @@ class LasOverlapPro(LastoolsAlgorithm):
         self.add_parameters_raster_output_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasoverlap")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)

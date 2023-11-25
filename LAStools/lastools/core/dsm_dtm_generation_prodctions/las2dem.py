@@ -39,7 +39,7 @@ class Las2Dem(LastoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.add_parameters_step_gui()
@@ -53,7 +53,7 @@ class Las2Dem(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_step_commands(parameters, context, commands)
@@ -126,11 +126,11 @@ class Las2DemPro(LastoolsAlgorithm):
         self.add_parameters_raster_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_step_commands(parameters, context, commands)

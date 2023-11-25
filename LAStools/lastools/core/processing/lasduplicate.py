@@ -39,7 +39,7 @@ class lasduplicate(LastoolsAlgorithm):
     RECORD_REMOVED = "RECORD_REMOVED"
 
     def initAlgorithm(self, config):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.LOWEST_Z, "keep duplicate with lowest z coordinate", False))
         self.addParameter(QgsProcessingParameterBoolean(lasduplicate.HIGHEST_Z, "keep duplicate with highest z coordinate", False))
@@ -53,7 +53,7 @@ class lasduplicate(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasduplicate")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if (self.parameterAsBool(parameters, lasduplicate.LOWEST_Z, context)):
             commands.append("-lowest_z")

@@ -42,7 +42,7 @@ class LasGroundNew(LastoolsAlgorithm):
     OFFSET = "OFFSET"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_horizontal_and_vertical_feet_gui()
@@ -77,7 +77,7 @@ class LasGroundNew(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground_new")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
@@ -148,7 +148,7 @@ class LasGroundProNew(LastoolsAlgorithm):
     OFFSET = "OFFSET"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_horizontal_and_vertical_feet_gui()
@@ -187,7 +187,7 @@ class LasGroundProNew(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground_new")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)

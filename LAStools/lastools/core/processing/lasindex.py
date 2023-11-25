@@ -35,7 +35,7 @@ class LasIndex(LastoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(
             LasIndex.APPEND_LAX, "append *.lax file to *.laz file", False
@@ -50,7 +50,7 @@ class LasIndex(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasIndex.APPEND_LAX, context):
             commands.append("-append")
@@ -110,14 +110,14 @@ class LasIndexPro(LastoolsAlgorithm):
         ))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasIndexPro.APPEND_LAX, context):
             commands.append("-append")

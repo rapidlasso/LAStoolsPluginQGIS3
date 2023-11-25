@@ -39,7 +39,7 @@ class Las2Iso(LastoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(
             Las2Iso.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10
@@ -65,7 +65,7 @@ class Las2Iso(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2iso")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         smooth = self.parameterAsInt(parameters, Las2Iso.SMOOTH, context)
         if smooth != 0:

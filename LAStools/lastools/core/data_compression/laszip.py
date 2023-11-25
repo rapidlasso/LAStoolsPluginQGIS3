@@ -37,7 +37,7 @@ class LasZip(LastoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(LasZip.REPORT_SIZE, "only report size", False))
         self.addParameter(QgsProcessingParameterBoolean(
@@ -52,7 +52,7 @@ class LasZip(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasZip.REPORT_SIZE, context):
             commands.append("-size")
@@ -115,14 +115,14 @@ class LasZipPro(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasZipPro.REPORT_SIZE, context):
             commands.append("-size")

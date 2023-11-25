@@ -44,7 +44,7 @@ class LasClip(LastoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("Input polygon(s)", "shp", False)
         self.addParameter(QgsProcessingParameterBoolean(LasClip.INTERIOR, "interior", False))
@@ -59,7 +59,7 @@ class LasClip(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasclip")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
         if self.parameterAsBool(parameters, LasClip.INTERIOR, context):

@@ -29,7 +29,7 @@ from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 class las2tin(LastoolsAlgorithm):
 
     def initAlgorithm(self, config):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.add_parameters_vector_output_gui()
@@ -37,7 +37,7 @@ class las2tin(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2tin")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_vector_output_commands(parameters, context, commands)

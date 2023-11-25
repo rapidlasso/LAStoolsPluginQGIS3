@@ -35,7 +35,7 @@ class Las2LasFilter(LastoolsAlgorithm):
     TOOL_INFO = ('las2las', 'Las2LasFilter')
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.add_parameters_filter2_return_class_flags_gui()
@@ -49,7 +49,7 @@ class Las2LasFilter(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_filter2_return_class_flags_commands(parameters, context, commands)
@@ -134,7 +134,7 @@ class Las2LasProject(LastoolsAlgorithm):
     TARGET_SP = "TARGET_SP"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterEnum(
             Las2LasProject.SOURCE_PROJECTION, "source projection", Las2LasProject.PROJECTIONS, False, 0
@@ -162,7 +162,7 @@ class Las2LasProject(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, Las2LasProject.SOURCE_PROJECTION, context)
         if source_projection != 0:
@@ -244,7 +244,7 @@ class Las2LasTransform(LastoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_transform1_coordinate_gui()
         self.add_parameters_transform2_coordinate_gui()
@@ -262,7 +262,7 @@ class Las2LasTransform(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_transform1_coordinate_commands(parameters, context, commands)
         self.add_parameters_transform2_coordinate_commands(parameters, context, commands)
@@ -326,7 +326,7 @@ class Las2LasProFilter(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_filter2_return_class_flags_commands(parameters, context, commands)
@@ -447,14 +447,14 @@ class Las2LasProProject(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, Las2LasProProject.SOURCE_PROJECTION, context)
         if source_projection != 0:
@@ -564,14 +564,14 @@ class Las2LasProTransform(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2las")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_transform1_coordinate_commands(parameters, context, commands)
         self.add_parameters_transform2_coordinate_commands(parameters, context, commands)
