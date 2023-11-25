@@ -56,7 +56,6 @@ class LasPublish(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(
             LasPublish.MATERIAL, "default material colors on start-up", LasPublish.MATERIALS, False, 0
         ))
-        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterEnum(
             LasPublish.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)",
             LasPublish.COPY_OR_MOVE_OPTIONS, False, 2
@@ -67,6 +66,7 @@ class LasPublish(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"))
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_DESCRIPTION, "portal description", ""))
+        self.add_parameters_output_directory_gui(optional_value=False)
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -170,7 +170,6 @@ class LasPublishPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(
             LasPublishPro.MATERIAL, "default material colors on start-up", LasPublishPro.MATERIALS, False, 0
         ))
-        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterEnum(
             LasPublishPro.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)",
             LasPublishPro.COPY_OR_MOVE_OPTIONS, False, 2
@@ -183,6 +182,7 @@ class LasPublishPro(LastoolsAlgorithm):
         self.addParameter(
             QgsProcessingParameterString(LasPublishPro.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublishPro.PORTAL_DESCRIPTION, "portal description", ""))
+        self.add_parameters_output_directory_gui(optional_value=False)
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
