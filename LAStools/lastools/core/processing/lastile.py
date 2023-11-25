@@ -32,7 +32,7 @@ from ..algo import LastoolsAlgorithm
 
 
 class LasTile(LastoolsAlgorithm):
-    TOOL_INFO = ('lasintensity', 'LasIntensity')
+    TOOL_INFO = ('lastile', 'LasTile')
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     REVERSIBLE = "REVERSIBLE"
@@ -110,14 +110,14 @@ class LasTile(LastoolsAlgorithm):
 
 
 class LasTilePro(LastoolsAlgorithm):
-    TOOL_INFO = ('lasintensity', 'LasIntensity')
+    TOOL_INFO = ('lastile', 'LasTilePro')
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
     EXTRA_PASS = "EXTRA_PASS"
     BASE_NAME = "BASE_NAME"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
