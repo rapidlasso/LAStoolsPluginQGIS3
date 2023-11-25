@@ -355,9 +355,9 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         format_output_vector = self.parameterAsInt(parameters, LastoolsAlgorithm.OUTPUT_VECTOR_FORMAT, context)
         commands.append("-o" + LastoolsAlgorithm.OUTPUT_VECTOR_FORMATS[format_output_vector])
 
-    def add_parameters_output_directory_gui(self):
+    def add_parameters_output_directory_gui(self, optional_value=True):
         self.addParameter(QgsProcessingParameterFolderDestination(
-            LastoolsAlgorithm.OUTPUT_DIRECTORY, "output directory", None, True)
+            LastoolsAlgorithm.OUTPUT_DIRECTORY, "output directory", None, optional_value)
         )
 
     def add_parameters_output_directory_commands(self, parameters, context, commands):
