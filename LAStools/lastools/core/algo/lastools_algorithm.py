@@ -459,7 +459,7 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         ))
         self.addParameter(QgsProcessingParameterString(
             LastoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG,
-            "value for second filter (by coordinate, intensity, GPS time, ...)"
+            "value for second filter (by coordinate, intensity, GPS time, ...)", optional=True
         ))
 
     def add_parameters_filter2_coords_intensity_commands(self, parameters, context, commands):
