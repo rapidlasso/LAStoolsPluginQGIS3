@@ -69,7 +69,7 @@ class Blast2Iso(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "blast2iso")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         smooth = self.parameterAsInt(parameters, Blast2Iso.SMOOTH, context)
         if smooth != 0:
@@ -166,7 +166,7 @@ class Blast2IsoPro(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "blast2iso")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_point_input_merged_commands(parameters, context, commands)
         smooth = self.parameterAsInt(parameters, Blast2IsoPro.SMOOTH, context)

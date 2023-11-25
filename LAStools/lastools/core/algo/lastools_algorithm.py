@@ -129,7 +129,7 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.VERBOSE, "verbose", False))
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.GUI, "open LAStools GUI", False))
 
-    def add_parameters_verbose_commands(self, parameters, context, commands):
+    def add_parameters_verbose_gui_commands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LastoolsAlgorithm.VERBOSE, context):
             commands.append("-v")
         if self.parameterAsBool(parameters, LastoolsAlgorithm.GUI, context):
