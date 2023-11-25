@@ -135,22 +135,31 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         if self.parameterAsBool(parameters, LastoolsAlgorithm.GUI, context):
             commands.append("-gui")
 
-    def add_parameters_verbose_gui64(self):
+    def add_parameters_verbose_gui_64(self):
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.VERBOSE, "verbose", False))
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.CPU64, "run new 64 bit executable", False))
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.GUI, "open LAStools GUI", False))
 
-    def add_parameters_verbose_commands64(self, parameters, context, commands):
+    def add_parameters_verbose_gui_64_commands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LastoolsAlgorithm.VERBOSE, context):
             commands.append("-v")
         if self.parameterAsBool(parameters, LastoolsAlgorithm.CPU64, context):
             commands.append("-cpu64")
-        if self.parameterAsBool(parameters, LastoolsAlgorithm.GUI, context):
-            commands.append("-gui")
+
+    def add_parameters_verbose_64(self):
+        self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.VERBOSE, "verbose", False))
+        self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.CPU64, "run new 64 bit executable", False))
+
+    def add_parameters_verbose_64_commands(self, parameters, context, commands):
+        if self.parameterAsBool(parameters, LastoolsAlgorithm.VERBOSE, context):
+            commands.append("-v")
+        if self.parameterAsBool(parameters, LastoolsAlgorithm.CPU64, context):
+            commands.append("-cpu64")
 
     def add_parameters_cores_gui(self):
-        self.addParameter(QgsProcessingParameterNumber(LastoolsAlgorithm.CORES, "number of cores",
-                                                       QgsProcessingParameterNumber.Integer, 4, False, 1, 32))
+        self.addParameter(QgsProcessingParameterNumber(
+            LastoolsAlgorithm.CORES, "number of cores", QgsProcessingParameterNumber.Integer, 4, False, 1, 32
+        ))
 
     def add_parameters_cores_commands(self, parameters, context, commands):
         cores = self.parameterAsInt(parameters, LastoolsAlgorithm.CORES, context)
@@ -159,11 +168,9 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(str(cores))
 
     def add_parameters_generic_input_gui(self, description, extension, optional):
-        self.addParameter(
-            QgsProcessingParameterFile(LastoolsAlgorithm.INPUT_GENERIC, description,
-                                       QgsProcessingParameterFile.File,
-                                       extension, None, optional)
-        )
+        self.addParameter(QgsProcessingParameterFile(
+            LastoolsAlgorithm.INPUT_GENERIC, description, QgsProcessingParameterFile.File, extension, None, optional
+        ))
 
     def add_parameters_generic_input_commands(self, parameters, context, commands, switch):
         input_generic = self.parameterAsString(parameters, LastoolsAlgorithm.INPUT_GENERIC, context)
