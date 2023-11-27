@@ -15,15 +15,15 @@ icon_help_text = """
 
 licence = {
     "c": {
-        "descript": 'c: Closed source tool (licensed)',
+        "descript": '[c] Closed source tool (licensed)',
         "path": 'lic_com.png'
     },
     "o": {
-        "descript": 'o: Open source tool',
+        "descript": '[o] Open source tool',
         "path": 'lic_opensource.png'
     },
     "f": {
-        "descript": 'f: Free tool',
+        "descript": '[f] Free tool',
         "path": 'lic_free.png'
     },
 }
