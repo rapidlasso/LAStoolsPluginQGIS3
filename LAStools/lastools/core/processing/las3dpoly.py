@@ -55,10 +55,11 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
     ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
     INPUT_POLYLINE_PATH = 'INPUT_POLYLINE_PATH'
     OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
+    VERBOSE = 'VERBOSE'
 
     def initAlgorithm(self, config=None):
-        # input verbose ans gui
-        self.add_parameters_verbose_gui()
+        # input verbose
+        self.addParameter(QgsProcessingParameterBoolean(Las3dPolyRadialDistance.VERBOSE, "verbose", False))
         # input las file
         self.add_parameters_point_input_gui()
         # input shp
@@ -123,8 +124,8 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las3dpoly64")]
-        # append -v and -gui
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        # append -v
+        commands.append(f"-v {parameters['VERBOSE']}")
         # append -i
         commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append poly
@@ -179,9 +180,8 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
@@ -205,10 +205,11 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
     ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
     INPUT_POLYLINE_PATH = 'INPUT_POLYLINE_PATH'
     OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
+    VERBOSE = 'VERBOSE'
 
     def initAlgorithm(self, config=None):
-        # input verbose ans gui
-        self.add_parameters_verbose_gui()
+        # input verbose
+        self.addParameter(QgsProcessingParameterBoolean(Las3dPolyHorizontalVerticalDistance.VERBOSE, "verbose", False))
         # input las file
         self.add_parameters_point_input_gui()
         # input shp
@@ -278,8 +279,8 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las3dpoly64")]
-        # append -v and -gui
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        # append -v
+        commands.append(f"-v {parameters['VERBOSE']}")
         # append -i
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append -i
@@ -338,6 +339,5 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

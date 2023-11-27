@@ -67,7 +67,7 @@ class HugeFileClassify(LastoolsAlgorithm):
 
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, HugeFileClassify.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -85,7 +85,7 @@ class HugeFileClassify(LastoolsAlgorithm):
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*.laz"
         )
@@ -108,7 +108,7 @@ class HugeFileClassify(LastoolsAlgorithm):
 
         # then we compute the height for each points in the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*_g.laz"
         )
@@ -122,7 +122,7 @@ class HugeFileClassify(LastoolsAlgorithm):
 
         # then we classify buildings and trees in the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasclassify")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*_gh.laz"
         )
@@ -136,7 +136,7 @@ class HugeFileClassify(LastoolsAlgorithm):
 
         # then we reverse the tiling
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*_ghc.laz"
         )
@@ -172,9 +172,8 @@ class HugeFileClassify(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class HugeFileGroundClassify(LastoolsAlgorithm):
@@ -217,7 +216,7 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
 
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, HugeFileGroundClassify.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -235,7 +234,7 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileGroundClassify*.laz"
         )
@@ -258,7 +257,7 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
 
         # then we reverse the tiling
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileGroundClassify*_g.laz"
         )
@@ -294,9 +293,8 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class HugeFileNormalize(LastoolsAlgorithm):
@@ -336,7 +334,7 @@ class HugeFileNormalize(LastoolsAlgorithm):
 
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, HugeFileNormalize.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -354,7 +352,7 @@ class HugeFileNormalize(LastoolsAlgorithm):
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileNormalize*.laz"
         )
@@ -377,7 +375,7 @@ class HugeFileNormalize(LastoolsAlgorithm):
 
         # then we height-normalize each points in the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileNormalize*_g.laz"
         )
@@ -392,7 +390,7 @@ class HugeFileNormalize(LastoolsAlgorithm):
 
         # then we reverse the tiling
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileNormalize*_gh.laz"
         )
@@ -428,6 +426,5 @@ class HugeFileNormalize(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

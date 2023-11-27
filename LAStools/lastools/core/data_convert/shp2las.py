@@ -51,7 +51,7 @@ class Shp2Las(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "shp2las")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         scale_factor_xy = self.parameterAsDouble(parameters, Shp2Las.SCALE_FACTOR_XY, context)
         scale_factor_z = self.parameterAsInt(parameters, Shp2Las.SCALE_FACTOR_Z, context)
@@ -90,6 +90,5 @@ class Shp2Las(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

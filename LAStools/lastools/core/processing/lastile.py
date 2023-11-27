@@ -32,14 +32,14 @@ from ..algo import LastoolsAlgorithm
 
 
 class LasTile(LastoolsAlgorithm):
-    TOOL_INFO = ('lasintensity', 'LasIntensity')
+    TOOL_INFO = ('lastile', 'LasTile')
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     REVERSIBLE = "REVERSIBLE"
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterNumber(
             LasTile.TILE_SIZE, "tile size (side length of square tile)",
@@ -59,7 +59,7 @@ class LasTile(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, LasTile.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -104,20 +104,19 @@ class LasTile(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class LasTilePro(LastoolsAlgorithm):
-    TOOL_INFO = ('lasintensity', 'LasIntensity')
+    TOOL_INFO = ('lastile', 'LasTilePro')
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
     EXTRA_PASS = "EXTRA_PASS"
     BASE_NAME = "BASE_NAME"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
@@ -140,11 +139,11 @@ class LasTilePro(LastoolsAlgorithm):
         ))
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
@@ -196,6 +195,5 @@ class LasTilePro(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

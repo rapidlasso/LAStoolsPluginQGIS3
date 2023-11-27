@@ -38,7 +38,7 @@ class LasOverage(LastoolsAlgorithm):
     OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_horizontal_feet_gui()
         self.add_parameters_files_are_flightlines_gui()
@@ -54,7 +54,7 @@ class LasOverage(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasoverage")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_horizontal_feet_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
@@ -99,9 +99,8 @@ class LasOverage(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class LasOveragePro(LastoolsAlgorithm):
@@ -126,11 +125,11 @@ class LasOveragePro(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasoverage")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_horizontal_feet_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
@@ -178,6 +177,5 @@ class LasOveragePro(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

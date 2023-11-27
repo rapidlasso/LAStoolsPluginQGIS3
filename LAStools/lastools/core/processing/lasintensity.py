@@ -39,8 +39,8 @@ class LasIntensity(LastoolsAlgorithm):
     OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
 
     def initAlgorithm(self, config=None):
-        # input verbose ans gui
-        self.add_parameters_verbose_gui()
+        # input verbose and 64 bit exe
+        self.add_parameters_verbose_64()
         # input las file
         self.add_parameters_point_input_gui()
         # Scanner Height
@@ -71,8 +71,8 @@ class LasIntensity(LastoolsAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasintensity64")]
-        # append -v and -gui
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        # append -v and -cpu64
+        self.add_parameters_verbose_64_commands(parameters, context, commands)
         # append -i
         commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append -scanner_height
@@ -114,9 +114,8 @@ class LasIntensity(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class LasIntensityAttenuationFactor(LastoolsAlgorithm):
@@ -127,8 +126,8 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
     OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
 
     def initAlgorithm(self, config=None):
-        # input verbose ans gui
-        self.add_parameters_verbose_gui()
+        # input verbose and 64 bit exe
+        self.add_parameters_verbose_64()
         # input las file
         self.add_parameters_point_input_gui()
         # Scanner Height
@@ -154,8 +153,8 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasintensity64")]
-        # append -v and -gui
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        # append -v and -cpu64
+        self.add_parameters_verbose_64_commands(parameters, context, commands)
         # append -i
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append -scanner_height
@@ -195,6 +194,5 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

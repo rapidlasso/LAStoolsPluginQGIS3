@@ -56,7 +56,6 @@ class LasPublish(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(
             LasPublish.MATERIAL, "default material colors on start-up", LasPublish.MATERIALS, False, 0
         ))
-        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterEnum(
             LasPublish.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)",
             LasPublish.COPY_OR_MOVE_OPTIONS, False, 2
@@ -67,11 +66,12 @@ class LasPublish(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"))
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_DESCRIPTION, "portal description", ""))
+        self.add_parameters_output_directory_gui(optional_value=False)
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laspublish")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublish.MODE, context)
         if mode == 0:
@@ -137,9 +137,8 @@ class LasPublish(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class LasPublishPro(LastoolsAlgorithm):
@@ -170,7 +169,6 @@ class LasPublishPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(
             LasPublishPro.MATERIAL, "default material colors on start-up", LasPublishPro.MATERIALS, False, 0
         ))
-        self.add_parameters_output_directory_gui()
         self.addParameter(QgsProcessingParameterEnum(
             LasPublishPro.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)",
             LasPublishPro.COPY_OR_MOVE_OPTIONS, False, 2
@@ -183,11 +181,12 @@ class LasPublishPro(LastoolsAlgorithm):
         self.addParameter(
             QgsProcessingParameterString(LasPublishPro.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublishPro.PORTAL_DESCRIPTION, "portal description", ""))
+        self.add_parameters_output_directory_gui(optional_value=False)
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laspublish")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublishPro.MODE, context)
         if mode == 0:
@@ -253,6 +252,5 @@ class LasPublishPro(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

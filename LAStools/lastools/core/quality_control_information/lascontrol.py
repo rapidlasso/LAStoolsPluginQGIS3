@@ -39,7 +39,7 @@ class LasControl(LastoolsAlgorithm):
     ADJUST_Z = "ADJUST_Z"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui()
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui(
             "ASCII text file of control points", "csv", False
@@ -57,9 +57,9 @@ class LasControl(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lascontrol")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
-        self.addParametersGenericInputCommandsfile(parameters, context, commands, "-cp")
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-cp")
         parse = self.parameterAsString(parameters, LasControl.PARSE_STRING, context)
         if parse != "":
             commands.append("-parse")
@@ -107,6 +107,5 @@ class LasControl(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

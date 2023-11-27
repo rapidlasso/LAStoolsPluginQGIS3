@@ -37,7 +37,7 @@ class LasDiff(LastoolsAlgorithm):
     SHUTUP_AFTER = ["5", "10", "50", "100", "1000", "10000", "50000"]
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("other input LAS/LAZ file", "laz", False)
         self.addParameter(QgsProcessingParameterEnum(
@@ -54,7 +54,7 @@ class LasDiff(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasdiff.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasdiff")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         shutup = self.parameterAsInt(parameters, LasDiff.SHUTUP, context)
@@ -94,6 +94,5 @@ class LasDiff(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

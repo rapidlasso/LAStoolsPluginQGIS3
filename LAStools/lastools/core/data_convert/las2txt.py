@@ -35,7 +35,7 @@ class Las2txt(LastoolsAlgorithm):
     PARSE = "PARSE"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterString(Las2txt.PARSE, "parse string", "xyz"))
         self.add_parameters_generic_output_gui("Output ASCII file", "txt", False)
@@ -46,7 +46,7 @@ class Las2txt(LastoolsAlgorithm):
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, Las2txt.PARSE, context)
         if parse != "xyz":
@@ -84,9 +84,8 @@ class Las2txt(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class Las2txtPro(LastoolsAlgorithm):
@@ -100,14 +99,14 @@ class Las2txtPro(LastoolsAlgorithm):
         self.add_parameters_output_appendix_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui64()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt")]
-        self.add_parameters_verbose_commands64(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, Las2txtPro.PARSE, context)
         if parse != "xyz":
@@ -148,6 +147,5 @@ class Las2txtPro(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

@@ -65,7 +65,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToCHMFirstReturn.TILE_SIZE, context)
@@ -87,7 +87,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*.laz")
         method = self.parameterAsInt(parameters, FlightLinesToCHMFirstReturn.TERRAIN, context)
@@ -109,7 +109,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
         )
@@ -124,7 +124,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 
         # then we rasterize the normalized tiles into CHMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_gh.laz"
         )
@@ -167,9 +167,8 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
@@ -213,7 +212,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToCHMHighestReturn.TILE_SIZE, context)
@@ -235,7 +234,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*.laz")
         method = self.parameterAsInt(parameters, FlightLinesToCHMHighestReturn.TERRAIN, context)
@@ -257,7 +256,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*_g.laz")
         commands.append("-replace_z")
@@ -271,7 +270,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*_gh.laz")
         beam_width = self.parameterAsDouble(parameters, FlightLinesToCHMHighestReturn.BEAM_WIDTH, context)
@@ -292,7 +291,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
         # then we rasterize the normalized tiles into CHMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*_ght.laz")
         self.add_parameters_step_commands(parameters, context, commands)
@@ -334,9 +333,8 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")
 
 
 class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
@@ -389,7 +387,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         # first we tile the data
 
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToCHMSpikeFree.TILE_SIZE, context)
@@ -411,7 +409,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*.laz"
         )
@@ -435,7 +433,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         # then we height-normalize the tiles
 
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
         )
@@ -450,7 +448,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*_gh.laz")
         beam_width = self.parameterAsDouble(parameters, FlightLinesToCHMSpikeFree.BEAM_WIDTH, context)
@@ -471,7 +469,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         # then we rasterize the normalized tiles into CHMs
 
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
                                                                         base_name + "*_ght.laz")
         self.add_parameters_step_commands(parameters, context, commands)
@@ -519,6 +517,5 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
 
     def icon(self):
-        img_path = 'licenced.png' \
-            if descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence"] else 'open_source.png'
-        return QIcon(f"{paths['img']}{img_path}")
+        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
+        return QIcon(f"{paths['img']}{licence_icon_path}")

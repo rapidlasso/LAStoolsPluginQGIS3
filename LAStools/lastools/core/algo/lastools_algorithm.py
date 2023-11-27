@@ -129,28 +129,37 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.VERBOSE, "verbose", False))
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.GUI, "open LAStools GUI", False))
 
-    def add_parameters_verbose_commands(self, parameters, context, commands):
+    def add_parameters_verbose_gui_commands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LastoolsAlgorithm.VERBOSE, context):
             commands.append("-v")
         if self.parameterAsBool(parameters, LastoolsAlgorithm.GUI, context):
             commands.append("-gui")
 
-    def add_parameters_verbose_gui64(self):
+    def add_parameters_verbose_gui_64(self):
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.VERBOSE, "verbose", False))
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.CPU64, "run new 64 bit executable", False))
         self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.GUI, "open LAStools GUI", False))
 
-    def add_parameters_verbose_commands64(self, parameters, context, commands):
+    def add_parameters_verbose_gui_64_commands(self, parameters, context, commands):
         if self.parameterAsBool(parameters, LastoolsAlgorithm.VERBOSE, context):
             commands.append("-v")
         if self.parameterAsBool(parameters, LastoolsAlgorithm.CPU64, context):
             commands.append("-cpu64")
-        if self.parameterAsBool(parameters, LastoolsAlgorithm.GUI, context):
-            commands.append("-gui")
+
+    def add_parameters_verbose_64(self):
+        self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.VERBOSE, "verbose", False))
+        self.addParameter(QgsProcessingParameterBoolean(LastoolsAlgorithm.CPU64, "run new 64 bit executable", False))
+
+    def add_parameters_verbose_64_commands(self, parameters, context, commands):
+        if self.parameterAsBool(parameters, LastoolsAlgorithm.VERBOSE, context):
+            commands.append("-v")
+        if self.parameterAsBool(parameters, LastoolsAlgorithm.CPU64, context):
+            commands.append("-cpu64")
 
     def add_parameters_cores_gui(self):
-        self.addParameter(QgsProcessingParameterNumber(LastoolsAlgorithm.CORES, "number of cores",
-                                                       QgsProcessingParameterNumber.Integer, 4, False, 1, 32))
+        self.addParameter(QgsProcessingParameterNumber(
+            LastoolsAlgorithm.CORES, "number of cores", QgsProcessingParameterNumber.Integer, 4, False, 1, 32
+        ))
 
     def add_parameters_cores_commands(self, parameters, context, commands):
         cores = self.parameterAsInt(parameters, LastoolsAlgorithm.CORES, context)
@@ -159,11 +168,9 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
             commands.append(str(cores))
 
     def add_parameters_generic_input_gui(self, description, extension, optional):
-        self.addParameter(
-            QgsProcessingParameterFile(LastoolsAlgorithm.INPUT_GENERIC, description,
-                                       QgsProcessingParameterFile.File,
-                                       extension, None, optional)
-        )
+        self.addParameter(QgsProcessingParameterFile(
+            LastoolsAlgorithm.INPUT_GENERIC, description, QgsProcessingParameterFile.File, extension, None, optional
+        ))
 
     def add_parameters_generic_input_commands(self, parameters, context, commands, switch):
         input_generic = self.parameterAsString(parameters, LastoolsAlgorithm.INPUT_GENERIC, context)
@@ -348,9 +355,9 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         format_output_vector = self.parameterAsInt(parameters, LastoolsAlgorithm.OUTPUT_VECTOR_FORMAT, context)
         commands.append("-o" + LastoolsAlgorithm.OUTPUT_VECTOR_FORMATS[format_output_vector])
 
-    def add_parameters_output_directory_gui(self):
+    def add_parameters_output_directory_gui(self, optional_value=True):
         self.addParameter(QgsProcessingParameterFolderDestination(
-            LastoolsAlgorithm.OUTPUT_DIRECTORY, "output directory", None, True)
+            LastoolsAlgorithm.OUTPUT_DIRECTORY, "output directory", None, optional_value)
         )
 
     def add_parameters_output_directory_commands(self, parameters, context, commands):
@@ -459,7 +466,7 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         ))
         self.addParameter(QgsProcessingParameterString(
             LastoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG,
-            "value for second filter (by coordinate, intensity, GPS time, ...)"
+            "value for second filter (by coordinate, intensity, GPS time, ...)", optional=True
         ))
 
     def add_parameters_filter2_coords_intensity_commands(self, parameters, context, commands):
