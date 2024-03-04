@@ -2,7 +2,7 @@
 name=LAStools
 qgisMinimumVersion=3.2
 description=tools for processing point clouds in LAS, LAZ, and ASCII formats
-version=2.0.1
+version=2.1.0
 author=rapidlasso GmbH
 email=info@rapidlasso.de
 icon=lastools/assets/img/lastools.png
@@ -26,8 +26,11 @@ about=
 
 
 changelog=
-    Here you can find a list of the most important updates in the 2.0.1 version of LAStools.
-
+    2.1.0:
+    - help/documentation redesign
+    - parameter unification
+    - remove redundancy
+    2.0.1:
     - add las3dpoly and lasintensity tools
     - add help option and description panel
     - restructuring the tool groups based on https://rapidlasso.de/product-overview/

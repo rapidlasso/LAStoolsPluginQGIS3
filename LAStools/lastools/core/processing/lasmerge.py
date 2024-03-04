@@ -17,21 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterFile
 
-from ..utils import LastoolsUtils, descript_processing as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasMerge(LastoolsAlgorithm):
-    TOOL_INFO = ('lasmerge', 'LasMerge')
+    TOOL_NAME = "LasMerge"
+    LASTOOL = "lasmerge"
+    LICENSE = "c"
+    LASGROUP = 3
     FILE2 = "FILE2"
     FILE3 = "FILE3"
     FILE4 = "FILE4"
@@ -40,151 +43,150 @@ class LasMerge(LastoolsAlgorithm):
     FILE7 = "FILE7"
 
     def initAlgorithm(self, config):
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_point_input_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
-        self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterFile(
-            LasMerge.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True
-        ))
-        self.addParameter(QgsProcessingParameterFile(
-            LasMerge.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True
-        ))
-        self.addParameter(QgsProcessingParameterFile(
-            LasMerge.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True
-        ))
-        self.addParameter(QgsProcessingParameterFile(
-            LasMerge.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True
-        ))
-        self.addParameter(QgsProcessingParameterFile(
-            LasMerge.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True
-        ))
-        self.addParameter(QgsProcessingParameterFile(
-            LasMerge.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True
-        ))
-        self.add_parameters_point_output_gui()
+        self.addParameter(
+            QgsProcessingParameterFile(LasMerge.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True)
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(LasMerge.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True)
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(LasMerge.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True)
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(LasMerge.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True)
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(LasMerge.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True)
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(LasMerge.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True)
+        )
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         file2 = self.parameterAsString(parameters, LasMerge.FILE2, context)
-        if file2 != '':
+        if file2 != "":
             commands.append("-i")
             commands.append(file2)
         file3 = self.parameterAsString(parameters, LasMerge.FILE3, context)
-        if file3 != '':
+        if file3 != "":
             commands.append("-i")
             commands.append(file3)
         file4 = self.parameterAsString(parameters, LasMerge.FILE4, context)
-        if file4 != '':
+        if file4 != "":
             commands.append("-i")
             commands.append(file4)
         file5 = self.parameterAsString(parameters, LasMerge.FILE5, context)
-        if file5 != '':
+        if file5 != "":
             commands.append("-i")
             commands.append(file5)
         file6 = self.parameterAsString(parameters, LasMerge.FILE6, context)
-        if file6 != '':
+        if file6 != "":
             commands.append("-i")
             commands.append(file6)
         file7 = self.parameterAsString(parameters, LasMerge.FILE7, context)
-        if file7 != '':
+        if file7 != "":
             commands.append("-i")
             commands.append(file7)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
-        self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasMerge()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasMergePro(LastoolsAlgorithm):
-    TOOL_INFO = ('lasmerge', 'LasMergePro')
+    TOOL_NAME = "LasMergePro"
+    LASTOOL = "lasmerge"
+    LICENSE = "c"
+    LASGROUP = 3
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
-        self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
-        self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasMergePro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

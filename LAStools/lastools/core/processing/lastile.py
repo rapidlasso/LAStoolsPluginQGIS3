@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
@@ -27,39 +27,54 @@ from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterNumber
 
-from ..utils import LastoolsUtils, descript_processing as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasTile(LastoolsAlgorithm):
-    TOOL_INFO = ('lastile', 'LasTile')
+    TOOL_NAME = "LasTile"
+    LASTOOL = "lastile"
+    LICENSE = "c"
+    LASGROUP = 3
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     REVERSIBLE = "REVERSIBLE"
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            LasTile.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 4.0, 10000.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasTile.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasTile.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasTile.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False
-        ))
-        self.add_parameters_point_output_gui()
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasTile.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                4.0,
+                10000.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasTile.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                LasTile.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                LasTile.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False
+            )
+        )
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, LasTile.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -72,44 +87,46 @@ class LasTile(LastoolsAlgorithm):
             commands.append("-flag_as_withheld")
         if self.parameterAsBool(parameters, LasTile.REVERSIBLE, context):
             commands.append("-reversible")
-        self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasTile()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasTilePro(LastoolsAlgorithm):
-    TOOL_INFO = ('lastile', 'LasTilePro')
+    TOOL_NAME = "LasTilePro"
+    LASTOOL = "lastile"
+    LICENSE = "c"
+    LASGROUP = 3
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
@@ -120,30 +137,47 @@ class LasTilePro(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            LasTilePro.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 4.0, 10000.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasTilePro.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasTilePro.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasTilePro.EXTRA_PASS, "more than 2000 output tiles", False
-        ))
-        self.add_parameters_output_directory_gui()
-        self.addParameter(QgsProcessingParameterString(
-            LasTilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)", ""
-        ))
-        self.add_parameters_point_output_format_gui()
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasTilePro.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                4.0,
+                10000.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasTilePro.BUFFER,
+                "buffer around each tile",
+                QgsProcessingParameterNumber.Double,
+                30.0,
+                False,
+                0.0,
+                100.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                LasTilePro.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
+            )
+        )
+        self.addParameter(QgsProcessingParameterBoolean(LasTilePro.EXTRA_PASS, "more than 2000 output tiles", False))
+        self.addParameter(
+            QgsProcessingParameterString(
+                LasTilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)", ""
+            )
+        )
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
@@ -163,37 +197,37 @@ class LasTilePro(LastoolsAlgorithm):
         if base_name != "":
             commands.append("-o")
             commands.append('"' + base_name + '"')
-        self.add_parameters_point_output_format_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasTilePro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

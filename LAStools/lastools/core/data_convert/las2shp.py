@@ -17,40 +17,47 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber
 
-from ..utils import LastoolsUtils, descript_data_convert as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class Las2Shp(LastoolsAlgorithm):
-    TOOL_INFO = ('las2shp', 'Las2Shp')
+    TOOL_NAME = "Las2Shp"
+    LASTOOL = "las2shp"
+    LICENSE = "c"
+    LASGROUP = 2
     POINT_Z = "POINT_Z"
     RECORD_SIZE = "RECORD_SIZE"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui()
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterBoolean(
-            Las2Shp.POINT_Z, "use PointZ instead of MultiPointZ", False
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            Las2Shp.RECORD_SIZE, "number of points per record",
-            QgsProcessingParameterNumber.Integer, 1024, False, 0, 65536
-        ))
-        self.add_parameters_generic_output_gui("Output SHP file", "shp", True)
+        self.addParameter(QgsProcessingParameterBoolean(Las2Shp.POINT_Z, "use PointZ instead of MultiPointZ", False))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                Las2Shp.RECORD_SIZE,
+                "number of points per record",
+                QgsProcessingParameterNumber.Integer,
+                1024,
+                False,
+                0,
+                65536,
+            )
+        )
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
+        self.add_parameters_generic_output_gui("Output SHP file", "shp", True)
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2shp")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, Las2Shp.POINT_Z, context):
             commands.append("-single_points")
@@ -58,36 +65,36 @@ class Las2Shp(LastoolsAlgorithm):
         if record_size != 1024:
             commands.append("-record_size")
             commands.append(str(record_size))
-        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return Las2Shp()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

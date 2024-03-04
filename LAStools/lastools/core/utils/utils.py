@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "September 2023"
+__copyright__ = "(C) 2023, rapidlasso GmbH"
 
 import os
 import subprocess
@@ -29,7 +29,6 @@ from processing.tools.system import isWindows
 
 
 class LastoolsUtils:
-
     @staticmethod
     def has_wine():
         wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
@@ -54,6 +53,12 @@ class LastoolsUtils:
         feedback.pushConsoleInfo("LAStools command line")
         feedback.pushConsoleInfo(commandline)
         feedback.pushConsoleInfo("LAStools console output")
-        output = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),
-                                  stderr=subprocess.STDOUT, universal_newlines=False).communicate()[0]
+        output = subprocess.Popen(
+            commandline,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stdin=open(os.devnull),
+            stderr=subprocess.STDOUT,
+            universal_newlines=False,
+        ).communicate()[0]
         feedback.pushConsoleInfo(output.decode("utf-8"))

@@ -5,7 +5,7 @@
     laszip.py
     ---------------------
     Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Copyright            : (C) 2024 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -17,35 +17,38 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean
 
-from ..utils import LastoolsUtils, descript_data_compression as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasZip(LastoolsAlgorithm):
-    TOOL_INFO = ('laszip', 'LasZip')
+    TOOL_NAME = "LasZip"
+    LASTOOL = "laszip"
+    LICENSE = "o"
+    LASGROUP = 1
     REPORT_SIZE = "REPORT_SIZE"
     CREATE_LAX = "CREATE_LAX"
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasZip.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasZip.CREATE_LAX, "create spatial indexing file (*.lax)", False
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(LasZip.APPEND_LAX, "append *.lax into *.laz file", False))
         self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasZip.REPORT_SIZE, "only report size", False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(LasZip.CREATE_LAX, "create spatial indexing file (*.lax)", False)
+        )
+        self.addParameter(QgsProcessingParameterBoolean(LasZip.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
@@ -71,50 +74,53 @@ class LasZip(LastoolsAlgorithm):
         return LasZip()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasZipPro(LastoolsAlgorithm):
-    TOOL_INFO = ('laszip', 'LasZipPro')
+    TOOL_NAME = "LasZipPro"
+    LASTOOL = "laszip"
+    LICENSE = "o"
+    LASGROUP = 1
     REPORT_SIZE = "REPORT_SIZE"
     CREATE_LAX = "CREATE_LAX"
     APPEND_LAX = "APPEND_LAX"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasZipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.APPEND_LAX, "append *.lax into *.laz file", False))
-        self.add_parameters_output_directory_gui()
+        self.add_parameters_point_output_format_gui(1)
         self.add_parameters_output_appendix_gui()
-        self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
+        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.REPORT_SIZE, "only report size", False))
+        self.addParameter(
+            QgsProcessingParameterBoolean(LasZipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False)
+        )
+        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.APPEND_LAX, "append *.lax into *.laz file", False))
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
@@ -143,26 +149,26 @@ class LasZipPro(LastoolsAlgorithm):
         return LasZipPro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

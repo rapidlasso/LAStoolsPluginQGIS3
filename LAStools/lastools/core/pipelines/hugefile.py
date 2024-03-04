@@ -17,21 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber, QgsProcessingParameterEnum
 
-from ..utils import LastoolsUtils, descript_pipelines as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class HugeFileClassify(LastoolsAlgorithm):
-    TOOL_INFO = ('hugefile', 'HugeFileClassify')
+    TOOL_NAME = "HugeFileClassify"
+    LASTOOL = "hugefile"
+    LICENSE = "c"
+    LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     AIRBORNE = "AIRBORNE"
@@ -42,29 +45,41 @@ class HugeFileClassify(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            HugeFileClassify.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            HugeFileClassify.BUFFER, "buffer around tiles (avoids edge artifacts)",
-            QgsProcessingParameterNumber.Double, 25.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            HugeFileClassify.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(QgsProcessingParameterEnum(
-            HugeFileClassify.TERRAIN, "terrain type", HugeFileClassify.TERRAINS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            HugeFileClassify.GRANULARITY, "preprocessing", HugeFileClassify.GRANULARITIES, False, 1
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                HugeFileClassify.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                HugeFileClassify.BUFFER,
+                "buffer around tiles (avoids edge artifacts)",
+                QgsProcessingParameterNumber.Double,
+                25.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(QgsProcessingParameterBoolean(HugeFileClassify.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(
+            QgsProcessingParameterEnum(HugeFileClassify.TERRAIN, "terrain type", HugeFileClassify.TERRAINS, False, 2)
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                HugeFileClassify.GRANULARITY, "preprocessing", HugeFileClassify.GRANULARITIES, False, 1
+            )
+        )
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
@@ -151,33 +166,36 @@ class HugeFileClassify(LastoolsAlgorithm):
         return HugeFileClassify()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class HugeFileGroundClassify(LastoolsAlgorithm):
-    TOOL_INFO = ('hugefile', 'HugeFileGroundClassify')
+    TOOL_NAME = "HugeFileGroundClassify"
+    LASTOOL = "hugefile"
+    LICENSE = "c"
+    LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     AIRBORNE = "AIRBORNE"
@@ -188,32 +206,43 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            HugeFileGroundClassify.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            HugeFileGroundClassify.BUFFER, "buffer around tiles (avoids edge artifacts)",
-            QgsProcessingParameterNumber.Double, 25.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            HugeFileGroundClassify.AIRBORNE, "airborne LiDAR", True
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            HugeFileGroundClassify.TERRAIN, "terrain type",
-            HugeFileGroundClassify.TERRAINS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            HugeFileGroundClassify.GRANULARITY, "preprocessing",
-            HugeFileGroundClassify.GRANULARITIES, False, 1
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                HugeFileGroundClassify.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                HugeFileGroundClassify.BUFFER,
+                "buffer around tiles (avoids edge artifacts)",
+                QgsProcessingParameterNumber.Double,
+                25.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(QgsProcessingParameterBoolean(HugeFileGroundClassify.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                HugeFileGroundClassify.TERRAIN, "terrain type", HugeFileGroundClassify.TERRAINS, False, 2
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                HugeFileGroundClassify.GRANULARITY, "preprocessing", HugeFileGroundClassify.GRANULARITIES, False, 1
+            )
+        )
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
@@ -272,33 +301,36 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
         return HugeFileGroundClassify()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class HugeFileNormalize(LastoolsAlgorithm):
-    TOOL_INFO = ('hugefile', 'HugeFileNormalize')
+    TOOL_NAME = "HugeFileNormalize"
+    LASTOOL = "hugefile"
+    LICENSE = "c"
+    LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     AIRBORNE = "AIRBORNE"
@@ -309,29 +341,41 @@ class HugeFileNormalize(LastoolsAlgorithm):
 
     def initAlgorithm(self, config):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            HugeFileNormalize.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            HugeFileNormalize.BUFFER, "buffer around tiles (avoids edge artifacts)",
-            QgsProcessingParameterNumber.Double, 25.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            HugeFileNormalize.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(QgsProcessingParameterEnum(
-            HugeFileNormalize.TERRAIN, "terrain type", HugeFileNormalize.TERRAINS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            HugeFileNormalize.GRANULARITY, "preprocessing", HugeFileNormalize.GRANULARITIES, False, 1
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                HugeFileNormalize.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                HugeFileNormalize.BUFFER,
+                "buffer around tiles (avoids edge artifacts)",
+                QgsProcessingParameterNumber.Double,
+                25.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(QgsProcessingParameterBoolean(HugeFileNormalize.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(
+            QgsProcessingParameterEnum(HugeFileNormalize.TERRAIN, "terrain type", HugeFileNormalize.TERRAINS, False, 2)
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                HugeFileNormalize.GRANULARITY, "preprocessing", HugeFileNormalize.GRANULARITIES, False, 1
+            )
+        )
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
@@ -405,26 +449,26 @@ class HugeFileNormalize(LastoolsAlgorithm):
         return HugeFileNormalize()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

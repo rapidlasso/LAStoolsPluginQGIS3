@@ -17,75 +17,81 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterNumber, QgsProcessingParameterFileDestination, QgsProcessingParameterString
 
-from ..utils import LastoolsUtils, descript_processing as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasIntensity(LastoolsAlgorithm):
-    TOOL_INFO = ('lasintensity', 'LasIntensity')
+    TOOL_NAME = "LasIntensity"
+    LASTOOL = "lasintensity"
+    LICENSE = "c"
+    LASGROUP = 3
     SCANNER_HEIGHT = "SCANNER_HEIGHT"
     ATMOSPHERIC_VISIBILITY_RANGE = "ATMOSPHERIC_VISIBILITY_RANGE"
     LASER_WAVELENGTH = "LASER_WAVELENGTH"
-    ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
-    OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
+    ADDITIONAL_PARAM = "ADDITIONAL_PARAM"
 
     def initAlgorithm(self, config=None):
-        # input verbose and 64 bit exe
-        self.add_parameters_verbose_64()
-        # input las file
         self.add_parameters_point_input_gui()
         # Scanner Height
-        self.addParameter(QgsProcessingParameterNumber(
-            LasIntensity.SCANNER_HEIGHT, "Scanner Altitude in [km]",
-            QgsProcessingParameterNumber.Double, 3.0, False, 0.0, 10000.0)
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasIntensity.SCANNER_HEIGHT,
+                "scanner altitude in [km]",
+                QgsProcessingParameterNumber.Double,
+                3.0,
+                False,
+                0.0,
+                10000.0,
+            )
         )
         # atmospheric visibility range
-        self.addParameter(QgsProcessingParameterNumber(
-            LasIntensity.ATMOSPHERIC_VISIBILITY_RANGE, "Atmospheric Visibility Range in [km]",
-            QgsProcessingParameterNumber.Double, 10.0, False, 0.0, 10000.0)
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasIntensity.ATMOSPHERIC_VISIBILITY_RANGE,
+                "atmospheric visibility range in [km]",
+                QgsProcessingParameterNumber.Double,
+                10.0,
+                False,
+                0.0,
+                10000.0,
+            )
         )
         # Laser Wavelength
-        self.addParameter(QgsProcessingParameterNumber(
-            LasIntensity.LASER_WAVELENGTH, "Laser Wavelength in [µm]",
-            QgsProcessingParameterNumber.Double, 0.905, False, 0.0, 10000.0)
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasIntensity.LASER_WAVELENGTH,
+                "laser wavelength in [µm]",
+                QgsProcessingParameterNumber.Double,
+                0.905,
+                False,
+                0.0,
+                10000.0,
+            )
         )
-        # output las path
-        self.addParameter(QgsProcessingParameterFileDestination(
-            LasIntensity.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False)
-        )
-        # additional parameters
-        self.addParameter(QgsProcessingParameterString(
-            LasIntensity.ADDITIONAL_PARAM, "additional command line parameter(s)", ' ', False, False
-        ))
-        self.helpUrl()
+        self.add_parameters_additional_gui()
+        self.add_parameters_verbose_64()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasintensity64")]
-        # append -v and -cpu64
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
-        # append -i
-        commands.append(f"-i {parameters['INPUT_LASLAZ']}")
-        # append -scanner_height
+        self.add_parameters_point_input_commands(parameters, context, commands)
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
-        # append -av
         commands.append(f"-av {parameters['ATMOSPHERIC_VISIBILITY_RANGE']} ")
-        # append -w
         commands.append(f"-w {parameters['LASER_WAVELENGTH']} ")
-        # append -o
-        if parameters["OUTPUT_LAS_PATH"] != 'TEMPORARY_OUTPUT':
-            commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
-        # append extra params
-        commands.append(parameters['ADDITIONAL_PARAM'])
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"command": commands}
 
@@ -93,79 +99,98 @@ class LasIntensity(LastoolsAlgorithm):
         return LasIntensity()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasIntensityAttenuationFactor(LastoolsAlgorithm):
-    TOOL_INFO = ('lasintensity', 'LasIntensityAttenuationFactor')
+    TOOL_NAME = "LasIntensityAttenuationFactor"
+    LASTOOL = "lasintensity"
+    LICENSE = "c"
+    LASGROUP = 3
     SCANNER_HEIGHT = "SCANNER_HEIGHT"
     ATTENUATION_COEFFICIENT = "ATTENUATION_COEFFICIENT"
-    ADDITIONAL_PARAM = 'ADDITIONAL_PARAM'
-    OUTPUT_LAS_PATH = 'OUTPUT_LAS_PATH'
+    ADDITIONAL_PARAM = "ADDITIONAL_PARAM"
+    OUTPUT_LAS_PATH = "OUTPUT_LAS_PATH"
 
     def initAlgorithm(self, config=None):
-        # input verbose and 64 bit exe
-        self.add_parameters_verbose_64()
-        # input las file
         self.add_parameters_point_input_gui()
         # Scanner Height
-        self.addParameter(QgsProcessingParameterNumber(
-            LasIntensityAttenuationFactor.SCANNER_HEIGHT, "Scanner Altitude in [km]",
-            QgsProcessingParameterNumber.Double, 3.0, False, 0.0, 10000.0)
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasIntensityAttenuationFactor.SCANNER_HEIGHT,
+                "scanner altitude in [km]",
+                QgsProcessingParameterNumber.Double,
+                3.0,
+                False,
+                0.0,
+                10000.0,
+            )
         )
         # Attenuation Coefficient factor
-        self.addParameter(QgsProcessingParameterNumber(
-            LasIntensityAttenuationFactor.ATTENUATION_COEFFICIENT, "Attenuation Coefficient in [km^-1]",
-            QgsProcessingParameterNumber.Double, 0.0, False, 0.0, 10000.0)
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasIntensityAttenuationFactor.ATTENUATION_COEFFICIENT,
+                "attenuation coefficient in [km^-1]",
+                QgsProcessingParameterNumber.Double,
+                0.0,
+                False,
+                0.0,
+                10000.0,
+            )
         )
         # output las path
-        self.addParameter(QgsProcessingParameterFileDestination(
-            LasIntensityAttenuationFactor.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False)
+        self.addParameter(
+            QgsProcessingParameterFileDestination(
+                LasIntensityAttenuationFactor.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False
+            )
         )
         # additional parameters
-        self.addParameter(QgsProcessingParameterString(
-            LasIntensityAttenuationFactor.ADDITIONAL_PARAM, "additional command line parameter(s)", ' ', False, False
-        ))
-        self.helpUrl()
+        self.addParameter(
+            QgsProcessingParameterString(
+                LasIntensityAttenuationFactor.ADDITIONAL_PARAM,
+                "additional command line arguments",
+                " ",
+                False,
+                False,
+            )
+        )
+        self.add_parameters_additional_gui()
+        self.add_parameters_verbose_64()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasintensity64")]
-        # append -v and -cpu64
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
-        # append -i
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append -scanner_height
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         # append -a
         commands.append(f"-a {parameters['ATTENUATION_COEFFICIENT']}")
-        # append -o
-        if parameters["OUTPUT_LAS_PATH"] != 'TEMPORARY_OUTPUT':
-            commands.append(f"-o {parameters['OUTPUT_LAS_PATH']}")
-        # append extra params
-        commands.append(parameters['ADDITIONAL_PARAM'])
+        self.add_parameters_additional_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"command": commands}
 
@@ -173,26 +198,26 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
         return LasIntensityAttenuationFactor()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

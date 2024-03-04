@@ -17,21 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterNumber, QgsProcessingParameterEnum
 
-from ..utils import LastoolsUtils, descript_visualization_colorization as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasView(LastoolsAlgorithm):
-    TOOL_INFO = ('lasview', 'LasView')
+    TOOL_NAME = "LasView"
+    LASTOOL = "lasview"
+    LICENSE = "c"
+    LASGROUP = 8
     POINTS = "POINTS"
     SIZE = "SIZE"
     SIZES = ["1024 768", "800 600", "1200 900", "1200 400", "1550 900", "1550 1150"]
@@ -39,17 +42,24 @@ class LasView(LastoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui()
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            LasView.POINTS, "max number of points sampled",
-            QgsProcessingParameterNumber.Integer, 5000000, False, 100000, 20000000
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasView.POINTS,
+                "max number of points sampled",
+                QgsProcessingParameterNumber.Integer,
+                5000000,
+                False,
+                100000,
+                20000000,
+            )
+        )
         self.addParameter(QgsProcessingParameterEnum(LasView.COLORING, "color by", LasView.COLORINGS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasView.SIZE, "window size (x y) in pixels", LasView.SIZES, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterEnum(LasView.SIZE, "window size (x y) in pixels", LasView.SIZES, False, 0)
+        )
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasview")]
@@ -64,42 +74,43 @@ class LasView(LastoolsAlgorithm):
         if size != 0:
             commands.append("-win " + LasView.SIZES[size])
         self.add_parameters_additional_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasView()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasViewPro(LastoolsAlgorithm):
-    TOOL_INFO = ('lasview', 'LasViewPro')
+    TOOL_NAME = "LasViewPro"
+    LASTOOL = "lasview"
+    LICENSE = "c"
+    LASGROUP = 8
     POINTS = "POINTS"
     SIZE = "SIZE"
     SIZES = ["1024 768", "800 600", "1200 900", "1200 400", "1550 900", "1550 1150"]
@@ -109,14 +120,21 @@ class LasViewPro(LastoolsAlgorithm):
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            LasViewPro.POINTS, "max number of points sampled",
-            QgsProcessingParameterNumber.Integer, 5000000, False, 100000, 20000000
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasViewPro.POINTS,
+                "max number of points sampled",
+                QgsProcessingParameterNumber.Integer,
+                5000000,
+                False,
+                100000,
+                20000000,
+            )
+        )
         self.addParameter(QgsProcessingParameterEnum(LasViewPro.COLORING, "color by", LasViewPro.COLORINGS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasViewPro.SIZE, "window size (x y) in pixels", LasViewPro.SIZES, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterEnum(LasViewPro.SIZE, "window size (x y) in pixels", LasViewPro.SIZES, False, 0)
+        )
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui()
 
@@ -134,35 +152,33 @@ class LasViewPro(LastoolsAlgorithm):
         if size != 0:
             commands.append("-win " + LasViewPro.SIZES[size])
         self.add_parameters_additional_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"": None}
 
     def createInstance(self):
         return LasViewPro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

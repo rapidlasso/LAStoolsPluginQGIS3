@@ -17,21 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterNumber, QgsProcessingParameterEnum, QgsProcessingParameterString
 
-from ..utils import LastoolsUtils, descript_pipelines as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
-    TOOL_INFO = ('flightlines2chm', 'FlightLinesToCHMFirstReturn')
+    TOOL_NAME = "FlightLinesToCHMFirstReturn"
+    LASTOOL = "flightlines2chm"
+    LICENSE = "c"
+    LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     TERRAIN = "TERRAIN"
@@ -40,29 +43,46 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMFirstReturn.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMFirstReturn.BUFFER, "buffer around tiles (avoids edge artifacts)",
-            QgsProcessingParameterNumber.Double, 25.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            FlightLinesToCHMFirstReturn.TERRAIN, "terrain type", FlightLinesToCHMFirstReturn.TERRAINS, False, 2))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMFirstReturn.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMFirstReturn.BUFFER,
+                "buffer around tiles (avoids edge artifacts)",
+                QgsProcessingParameterNumber.Double,
+                25.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                FlightLinesToCHMFirstReturn.TERRAIN, "terrain type", FlightLinesToCHMFirstReturn.TERRAINS, False, 2
+            )
+        )
         self.add_parameters_step_gui()
         self.add_parameters_temporary_directory_gui()
-        self.add_parameters_output_directory_gui()
-        self.addParameter(QgsProcessingParameterString(
-            FlightLinesToCHMFirstReturn.BASE_NAME, "tile base name (using 'sydney' creates sydney_274000_4714000...)",
-            "tile"
-        ))
-        self.add_parameters_raster_output_format_gui()
+        self.addParameter(
+            QgsProcessingParameterString(
+                FlightLinesToCHMFirstReturn.BASE_NAME,
+                "tile base name (using 'sydney' creates sydney_274000_4714000...)",
+                "tile",
+            )
+        )
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui()
+        self.add_parameters_raster_output_format_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
@@ -82,14 +102,14 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         commands.append("-o")
         commands.append(base_name)
         commands.append("-olaz")
-
         LastoolsUtils.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*.laz"
+        )
         method = self.parameterAsInt(parameters, FlightLinesToCHMFirstReturn.TERRAIN, context)
         if method != 2:
             commands.append("-" + FlightLinesToCHMFirstReturn.TERRAINS[method])
@@ -137,42 +157,43 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         commands.append("_chm_fr")
         self.add_parameters_raster_output_format_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return FlightLinesToCHMFirstReturn()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
-    TOOL_INFO = ('flightlines2chm', 'FlightLinesToCHMHighestReturn')
+    TOOL_NAME = "FlightLinesToCHMHighestReturn"
+    LASTOOL = "flightlines2chm"
+    LICENSE = "c"
+    LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     TERRAIN = "TERRAIN"
@@ -182,34 +203,56 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMHighestReturn.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMHighestReturn.BUFFER, "buffer around tiles (avoids edge artifacts)",
-            QgsProcessingParameterNumber.Double, 25.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            FlightLinesToCHMHighestReturn.TERRAIN, "terrain type", FlightLinesToCHMHighestReturn.TERRAINS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMHighestReturn.BEAM_WIDTH, "laser beam width (diameter of laser footprint)",
-            QgsProcessingParameterNumber.Double, 0.2, False, 0.0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMHighestReturn.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMHighestReturn.BUFFER,
+                "buffer around tiles (avoids edge artifacts)",
+                QgsProcessingParameterNumber.Double,
+                25.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                FlightLinesToCHMHighestReturn.TERRAIN, "terrain type", FlightLinesToCHMHighestReturn.TERRAINS, False, 2
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMHighestReturn.BEAM_WIDTH,
+                "laser beam width (diameter of laser footprint)",
+                QgsProcessingParameterNumber.Double,
+                0.2,
+                False,
+                0.0,
+            )
+        )
         self.add_parameters_step_gui()
         self.add_parameters_temporary_directory_gui()
-        self.add_parameters_output_directory_gui()
-        self.addParameter(QgsProcessingParameterString(
-            FlightLinesToCHMHighestReturn.BASE_NAME,
-            "tile base name (using 'sydney' creates sydney_274000_4714000...)", "tile"
-        ))
+        self.addParameter(
+            QgsProcessingParameterString(
+                FlightLinesToCHMHighestReturn.BASE_NAME,
+                "tile base name (using 'sydney' creates sydney_274000_4714000...)",
+                "tile",
+            )
+        )
         self.add_parameters_raster_output_format_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
@@ -235,8 +278,9 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*.laz"
+        )
         method = self.parameterAsInt(parameters, FlightLinesToCHMHighestReturn.TERRAIN, context)
         if method != 2:
             commands.append("-" + FlightLinesToCHMHighestReturn.TERRAINS[method])
@@ -257,8 +301,9 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*_g.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*_g.laz"
+        )
         commands.append("-replace_z")
         self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
         commands.append("-odix")
@@ -271,8 +316,9 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*_gh.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*_gh.laz"
+        )
         beam_width = self.parameterAsDouble(parameters, FlightLinesToCHMHighestReturn.BEAM_WIDTH, context)
         if beam_width != 0.0:
             commands.append("-subcircle")
@@ -292,8 +338,9 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         # then we rasterize the normalized tiles into CHMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*_ght.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*_ght.laz"
+        )
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-use_tile_bb")
         self.add_parameters_output_directory_commands(parameters, context, commands)
@@ -312,33 +359,36 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         return FlightLinesToCHMHighestReturn()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
-    TOOL_INFO = ('flightlines2chm', 'FlightLinesToCHMSpikeFree')
+    TOOL_NAME = "FlightLinesToCHMSpikeFree"
+    LASTOOL = "flightlines2chm"
+    LICENSE = "c"
+    LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
     TERRAIN = "TERRAIN"
@@ -349,37 +399,66 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMSpikeFree.TILE_SIZE, "tile size (side length of square tile)",
-            QgsProcessingParameterNumber.Double, 1000.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMSpikeFree.BUFFER, "buffer around tiles (avoids edge artifacts)",
-            QgsProcessingParameterNumber.Double, 25.0, False, 0.0
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            FlightLinesToCHMSpikeFree.TERRAIN, "terrain type", FlightLinesToCHMSpikeFree.TERRAINS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMSpikeFree.BEAM_WIDTH, "laser beam width (diameter of laser footprint)",
-            QgsProcessingParameterNumber.Double, 0.2, False, 0.0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMSpikeFree.TILE_SIZE,
+                "tile size (side length of square tile)",
+                QgsProcessingParameterNumber.Double,
+                1000.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMSpikeFree.BUFFER,
+                "buffer around tiles (avoids edge artifacts)",
+                QgsProcessingParameterNumber.Double,
+                25.0,
+                False,
+                0.0,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                FlightLinesToCHMSpikeFree.TERRAIN, "terrain type", FlightLinesToCHMSpikeFree.TERRAINS, False, 2
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMSpikeFree.BEAM_WIDTH,
+                "laser beam width (diameter of laser footprint)",
+                QgsProcessingParameterNumber.Double,
+                0.2,
+                False,
+                0.0,
+            )
+        )
         self.add_parameters_step_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            FlightLinesToCHMSpikeFree.FREEZE_VALUE, "spike-free freeze value (by default 3 times step)",
-            QgsProcessingParameterNumber.Double, 0.0, False, 0.0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                FlightLinesToCHMSpikeFree.FREEZE_VALUE,
+                "spike-free freeze value (by default 3 times step)",
+                QgsProcessingParameterNumber.Double,
+                0.0,
+                False,
+                0.0,
+            )
+        )
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_output_directory_gui()
-        self.addParameter(QgsProcessingParameterString(
-            FlightLinesToCHMSpikeFree.BASE_NAME,
-            "tile base name (using 'sydney' creates sydney_274000_4714000...)", "tile"))
+        self.addParameter(
+            QgsProcessingParameterString(
+                FlightLinesToCHMSpikeFree.BASE_NAME,
+                "tile base name (using 'sydney' creates sydney_274000_4714000...)",
+                "tile",
+            )
+        )
         self.add_parameters_raster_output_format_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-
         # needed for thinning and spike-free
 
         step = self.get_parameters_step_value(parameters, context)
@@ -449,8 +528,9 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*_gh.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*_gh.laz"
+        )
         beam_width = self.parameterAsDouble(parameters, FlightLinesToCHMSpikeFree.BEAM_WIDTH, context)
         if beam_width != 0.0:
             commands.append("-subcircle")
@@ -470,8 +550,9 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
-        self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands,
-                                                                        base_name + "*_ght.laz")
+        self.add_parameters_temporary_directory_as_input_files_commands(
+            parameters, context, commands, base_name + "*_ght.laz"
+        )
         self.add_parameters_step_commands(parameters, context, commands)
         freeze_value = self.parameterAsDouble(parameters, FlightLinesToCHMSpikeFree.FREEZE_VALUE, context)
         commands.append("-spike_free")
@@ -496,26 +577,26 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         return FlightLinesToCHMSpikeFree()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

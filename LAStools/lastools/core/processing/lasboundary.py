@@ -21,9 +21,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
@@ -32,12 +32,15 @@ from qgis.core import QgsProcessingParameterEnum
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingParameterNumber
 
-from ..utils import LastoolsUtils, descript_processing as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasBoundary(LastoolsAlgorithm):
-    TOOL_INFO = ('lasboundary', 'LasBoundary')
+    TOOL_NAME = "LasBoundary"
+    LASTOOL = "lasboundary"
+    LICENSE = "c"
+    LASGROUP = 3
     MODE = "MODE"
     MODES = ["points", "spatial index (the *.lax file)", "bounding box", "tile bounding box"]
     CONCAVITY = "CONCAVITY"
@@ -46,24 +49,25 @@ class LasBoundary(LastoolsAlgorithm):
     LABELS = "LABELS"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
-        self.addParameter(QgsProcessingParameterEnum(
-            LasBoundary.MODE, "compute boundary based on", LasBoundary.MODES, False, 0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasBoundary.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
-        ))
+        self.addParameter(
+            QgsProcessingParameterEnum(LasBoundary.MODE, "compute boundary based on", LasBoundary.MODES, False, 0)
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasBoundary.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
+            )
+        )
         self.addParameter(QgsProcessingParameterBoolean(LasBoundary.HOLES, "interior holes", False))
         self.addParameter(QgsProcessingParameterBoolean(LasBoundary.DISJOINT, "disjoint polygon", False))
         self.addParameter(QgsProcessingParameterBoolean(LasBoundary.LABELS, "produce labels", False))
-        self.add_parameters_vector_output_gui()
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
+        self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasboundary")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasBoundary.MODE, context)
@@ -84,44 +88,46 @@ class LasBoundary(LastoolsAlgorithm):
                 commands.append("-disjoint")
             if self.parameterAsBool(parameters, LasBoundary.LABELS, context):
                 commands.append("-labels")
-        self.add_parameters_vector_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_vector_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"command": commands}
 
     def createInstance(self):
         return LasBoundary()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasBoundaryPro(LastoolsAlgorithm):
-    TOOL_INFO = ('lasboundary', 'LasBoundaryPro')
+    TOOL_NAME = "LasBoundaryPro"
+    LASTOOL = "lasboundary"
+    LICENSE = "c"
+    LASGROUP = 3
     MODE = "MODE"
     MODES = ["points", "spatial index (the *.lax file)", "bounding box", "tile bounding box"]
     CONCAVITY = "CONCAVITY"
@@ -132,25 +138,26 @@ class LasBoundaryPro(LastoolsAlgorithm):
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_filter1_return_class_flags_gui()
-        self.addParameter(QgsProcessingParameterEnum(
-            LasBoundaryPro.MODE, "compute boundary based on", LasBoundaryPro.MODES, False, 0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasBoundaryPro.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
-        ))
+        self.addParameter(
+            QgsProcessingParameterEnum(LasBoundaryPro.MODE, "compute boundary based on", LasBoundaryPro.MODES, False, 0)
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasBoundaryPro.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
+            )
+        )
         self.addParameter(QgsProcessingParameterBoolean(LasBoundaryPro.HOLES, "interior holes", False))
         self.addParameter(QgsProcessingParameterBoolean(LasBoundaryPro.DISJOINT, "disjoint polygon", False))
         self.addParameter(QgsProcessingParameterBoolean(LasBoundaryPro.LABELS, "produce labels", False))
-        self.add_parameters_output_directory_gui()
-        self.add_parameters_output_appendix_gui()
-        self.add_parameters_vector_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_vector_output_format_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasboundary")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasBoundaryPro.MODE, context)
@@ -171,40 +178,39 @@ class LasBoundaryPro(LastoolsAlgorithm):
                 commands.append("-disjoint")
             if self.parameterAsBool(parameters, LasBoundaryPro.LABELS, context):
                 commands.append("-labels")
-        self.add_parameters_output_directory_commands(parameters, context, commands)
-        self.add_parameters_output_appendix_commands(parameters, context, commands)
-        self.add_parameters_vector_output_format_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_vector_output_format_commands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"command": commands}
 
     def createInstance(self):
         return LasBoundaryPro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

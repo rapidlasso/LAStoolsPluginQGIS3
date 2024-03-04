@@ -17,53 +17,78 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber, QgsProcessingParameterEnum
 
-from ..utils import LastoolsUtils, descript_quality_control_information as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasInfo(LastoolsAlgorithm):
-    TOOL_INFO = ('lasinfo', 'LasInfo')
+    TOOL_NAME = "LasInfo"
+    LASTOOL = "lasinfo"
+    LICENSE = "o"
+    LASGROUP = 6
     COMPUTE_DENSITY = "COMPUTE_DENSITY"
     REPAIR_BB = "REPAIR_BB"
     REPAIR_COUNTERS = "REPAIR_COUNTERS"
     HISTO1 = "HISTO1"
     HISTO2 = "HISTO2"
     HISTO3 = "HISTO3"
-    HISTOGRAM = ["---", "x", "y", "z", "intensity", "classification", "scan_angle", "user_data", "point_source",
-                 "gps_time", "X", "Y", "Z", "attribute0", "attribute1", "attribute2"]
+    HISTOGRAM = [
+        "---",
+        "x",
+        "y",
+        "z",
+        "intensity",
+        "classification",
+        "scan_angle",
+        "user_data",
+        "point_source",
+        "gps_time",
+        "X",
+        "Y",
+        "Z",
+        "attribute0",
+        "attribute1",
+        "attribute2",
+    ]
     HISTO1_BIN = "HISTO1_BIN"
     HISTO2_BIN = "HISTO2_BIN"
     HISTO3_BIN = "HISTO3_BIN"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(LasInfo.COMPUTE_DENSITY, "compute density", False))
         self.addParameter(QgsProcessingParameterBoolean(LasInfo.REPAIR_BB, "repair bounding box", False))
         self.addParameter(QgsProcessingParameterBoolean(LasInfo.REPAIR_COUNTERS, "repair counters", False))
         self.addParameter(QgsProcessingParameterEnum(LasInfo.HISTO1, "histogram", LasInfo.HISTOGRAM, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasInfo.HISTO1_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasInfo.HISTO1_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
+            )
+        )
         self.addParameter(QgsProcessingParameterEnum(LasInfo.HISTO2, "histogram", LasInfo.HISTOGRAM, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasInfo.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasInfo.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
+            )
+        )
         self.addParameter(QgsProcessingParameterEnum(LasInfo.HISTO3, "histogram", LasInfo.HISTOGRAM, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasInfo.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasInfo.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
+            )
+        )
         self.add_parameters_generic_output_gui("Output ASCII file", "txt", True)
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
@@ -95,50 +120,67 @@ class LasInfo(LastoolsAlgorithm):
             commands.append(str(self.parameterAsDouble(parameters, LasInfo.HISTO3_BIN, context)))
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasInfo()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasInfoPro(LastoolsAlgorithm):
-    TOOL_INFO = ('lasinfo', 'LasInfoPro')
+    TOOL_NAME = "LasInfoPro"
+    LASTOOL = "lasinfo"
+    LICENSE = "o"
+    LASGROUP = 6
     COMPUTE_DENSITY = "COMPUTE_DENSITY"
     REPAIR_BB = "REPAIR_BB"
     REPAIR_COUNTERS = "REPAIR_COUNTERS"
     HISTO1 = "HISTO1"
     HISTO2 = "HISTO2"
     HISTO3 = "HISTO3"
-    HISTOGRAM = ["---", "x", "y", "z", "intensity", "classification", "scan_angle", "user_data", "point_source",
-                 "gps_time", "X", "Y", "Z", "attribute0", "attribute1", "attribute2"]
+    HISTOGRAM = [
+        "---",
+        "x",
+        "y",
+        "z",
+        "intensity",
+        "classification",
+        "scan_angle",
+        "user_data",
+        "point_source",
+        "gps_time",
+        "X",
+        "Y",
+        "Z",
+        "attribute0",
+        "attribute1",
+        "attribute2",
+    ]
     HISTO1_BIN = "HISTO1_BIN"
     HISTO2_BIN = "HISTO2_BIN"
     HISTO3_BIN = "HISTO3_BIN"
@@ -149,22 +191,28 @@ class LasInfoPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(LasInfoPro.REPAIR_BB, "repair bounding box", False))
         self.addParameter(QgsProcessingParameterBoolean(LasInfoPro.REPAIR_COUNTERS, "repair counters", False))
         self.addParameter(QgsProcessingParameterEnum(LasInfoPro.HISTO1, "histogram", LasInfoPro.HISTOGRAM, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasInfoPro.HISTO1_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasInfoPro.HISTO1_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
+            )
+        )
         self.addParameter(QgsProcessingParameterEnum(LasInfoPro.HISTO2, "histogram", LasInfoPro.HISTOGRAM, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasInfoPro.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
-        ))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasInfoPro.HISTO2_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
+            )
+        )
         self.addParameter(QgsProcessingParameterEnum(LasInfoPro.HISTO3, "histogram", LasInfoPro.HISTOGRAM, False, 0))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasInfoPro.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
-        ))
-        self.add_parameters_output_directory_gui()
-        self.add_parameters_output_appendix_gui()
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasInfoPro.HISTO3_BIN, "bin size", QgsProcessingParameterNumber.Double, 1.0, False, 0
+            )
+        )
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
@@ -199,35 +247,33 @@ class LasInfoPro(LastoolsAlgorithm):
         commands.append("-otxt")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasInfoPro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

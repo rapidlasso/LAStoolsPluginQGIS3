@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
@@ -27,37 +27,63 @@ from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterNumber
 from qgis.core import QgsProcessingParameterEnum
 
-from ..utils import LastoolsUtils, descript_processing as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasSplit(LastoolsAlgorithm):
-    TOOL_INFO = ('lassplit', 'LasSplit')
+    TOOL_NAME = "LasSplit"
+    LASTOOL = "lassplit"
+    LICENSE = "c"
+    LASGROUP = 3
     DIGITS = "DIGITS"
     OPERATION = "OPERATION"
-    OPERATIONS = ["by_flightline", "by_classification", "by_gps_time_interval", "by_intensity_interval",
-                  "by_x_interval", "by_y_interval", "by_z_interval", "by_scan_angle_interval", "by_user_data_interval",
-                  "every_x_points", "recover_flightlines"]
+    OPERATIONS = [
+        "by_flightline",
+        "by_classification",
+        "by_gps_time_interval",
+        "by_intensity_interval",
+        "by_x_interval",
+        "by_y_interval",
+        "by_z_interval",
+        "by_scan_angle_interval",
+        "by_user_data_interval",
+        "every_x_points",
+        "recover_flightlines",
+    ]
     INTERVAL = "INTERVAL"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterNumber(
-            LasSplit.DIGITS, "number of digits for file names", QgsProcessingParameterNumber.Integer, 5, False, 2, 10
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasSplit.OPERATION, "how to split", LasSplit.OPERATIONS, False, 0
-        ))
-        self.addParameter(QgsProcessingParameterNumber(
-            LasSplit.INTERVAL, "interval or number", QgsProcessingParameterNumber.Double, 5.0, False, 0.00001, 100000.0
-        ))
-        self.add_parameters_point_output_gui()
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasSplit.DIGITS,
+                "number of digits for file names",
+                QgsProcessingParameterNumber.Integer,
+                5,
+                False,
+                2,
+                10,
+            )
+        )
+        self.addParameter(QgsProcessingParameterEnum(LasSplit.OPERATION, "how to split", LasSplit.OPERATIONS, False, 0))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                LasSplit.INTERVAL,
+                "interval or number",
+                QgsProcessingParameterNumber.Double,
+                5.0,
+                False,
+                0.00001,
+                100000.0,
+            )
+        )
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lassplit")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         digits = self.parameterAsInt(parameters, LasSplit.DIGITS, context)
         if digits != 5:
@@ -72,37 +98,36 @@ class LasSplit(LastoolsAlgorithm):
         if 1 < operation < 10:
             interval = self.parameterAsDouble(parameters, LasSplit.INTERVAL, context)
             commands.append(str(interval))
-        self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasSplit()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

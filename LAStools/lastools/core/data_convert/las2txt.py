@@ -17,135 +17,137 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterString
 
-from ..utils import LastoolsUtils, descript_data_convert as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class Las2txt(LastoolsAlgorithm):
-    TOOL_INFO = ('las2txt', 'Las2txt')
+    TOOL_NAME = "Las2txt"
+    LASTOOL = "las2txt"
+    LICENSE = "o"
+    LASGROUP = 2
     PARSE = "PARSE"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterString(Las2txt.PARSE, "parse string", "xyz"))
-        self.add_parameters_generic_output_gui("Output ASCII file", "txt", False)
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui_64()
+        self.add_parameters_generic_output_gui("Output ASCII file", "txt", False)
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, Las2txt.PARSE, context)
         if parse != "xyz":
             commands.append("-parse")
             commands.append(parse)
-        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return Las2txt()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class Las2txtPro(LastoolsAlgorithm):
-    TOOL_INFO = ('las2txt', 'Las2txtPro')
+    TOOL_NAME = "Las2txtPro"
+    LASTOOL = "las2txt"
+    LICENSE = "o"
+    LASGROUP = 2
     PARSE = "PARSE"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterString(Las2txtPro.PARSE, "parse string", "xyz"))
-        self.add_parameters_output_directory_gui()
-        self.add_parameters_output_appendix_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         if LastoolsUtils.has_wine():
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt.exe")]
         else:
             commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2txt")]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, Las2txtPro.PARSE, context)
         if parse != "xyz":
             commands.append("-parse")
             commands.append(parse)
-        self.add_parameters_output_directory_commands(parameters, context, commands)
-        self.add_parameters_output_appendix_commands(parameters, context, commands)
         commands.append("-otxt")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return Las2txtPro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")

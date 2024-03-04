@@ -17,21 +17,24 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingParameterEnum, QgsProcessingParameterBoolean, QgsProcessingParameterString
 
-from ..utils import LastoolsUtils, descript_publishing as descript_info, paths
+from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
 class LasPublish(LastoolsAlgorithm):
-    TOOL_INFO = ('laspublish', 'LasPublish')
+    TOOL_NAME = "LasPublish"
+    LASTOOL = "laspublish"
+    LICENSE = "c"
+    LASGROUP = 7
     MODE = "MODE"
     MODES = ["3D only", "3D + download map", "download map only"]
     DIR = "DIR"
@@ -48,26 +51,33 @@ class LasPublish(LastoolsAlgorithm):
     PORTAL_DESCRIPTION = "PORTAL_DESCRIPTION"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui()
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterEnum(LasPublish.MODE, "type of portal", LasPublish.MODES, False, 1))
         self.addParameter(QgsProcessingParameterBoolean(LasPublish.USE_EDL, "use Eye Dome Lighting (EDL)", True))
         self.addParameter(QgsProcessingParameterBoolean(LasPublish.SHOW_SKYBOX, "show Skybox", True))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasPublish.MATERIAL, "default material colors on start-up", LasPublish.MATERIALS, False, 0
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasPublish.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)",
-            LasPublish.COPY_OR_MOVE_OPTIONS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasPublish.OVERWRITE_EXISTING, "overwrite existing files", True
-        ))
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                LasPublish.MATERIAL, "default material colors on start-up", LasPublish.MATERIALS, False, 0
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                LasPublish.COPY_OR_MOVE,
+                "copy or move source LiDAR files into portal (only for download portals)",
+                LasPublish.COPY_OR_MOVE_OPTIONS,
+                False,
+                2,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(LasPublish.OVERWRITE_EXISTING, "overwrite existing files", True)
+        )
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"))
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_DESCRIPTION, "portal description", ""))
-        self.add_parameters_output_directory_gui(optional_value=False)
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laspublish")]
@@ -107,42 +117,43 @@ class LasPublish(LastoolsAlgorithm):
             commands.append('"' + description + '"')
         commands.append("-olaz")
         self.add_parameters_additional_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasPublish()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
 
 
 class LasPublishPro(LastoolsAlgorithm):
-    TOOL_INFO = ('laspublish', 'LasPublishPro')
+    TOOL_NAME = "LasPublishPro"
+    LASTOOL = "laspublish"
+    LICENSE = "c"
+    LASGROUP = 7
     MODE = "MODE"
     MODES = ["3D only", "3D + download map", "download map only"]
     DIR = "DIR"
@@ -159,30 +170,37 @@ class LasPublishPro(LastoolsAlgorithm):
     PORTAL_DESCRIPTION = "PORTAL_DESCRIPTION"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_verbose_gui()
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterEnum(
-            LasPublishPro.MODE, "type of portal", LasPublishPro.MODES, False, 1
-        ))
+        self.addParameter(
+            QgsProcessingParameterEnum(LasPublishPro.MODE, "type of portal", LasPublishPro.MODES, False, 1)
+        )
         self.addParameter(QgsProcessingParameterBoolean(LasPublishPro.USE_EDL, "use Eye Dome Lighting (EDL)", True))
         self.addParameter(QgsProcessingParameterBoolean(LasPublishPro.SHOW_SKYBOX, "show Skybox", True))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasPublishPro.MATERIAL, "default material colors on start-up", LasPublishPro.MATERIALS, False, 0
-        ))
-        self.addParameter(QgsProcessingParameterEnum(
-            LasPublishPro.COPY_OR_MOVE, "copy or move source LiDAR files into portal (only for download portals)",
-            LasPublishPro.COPY_OR_MOVE_OPTIONS, False, 2
-        ))
-        self.addParameter(QgsProcessingParameterBoolean(
-            LasPublishPro.OVERWRITE_EXISTING, "overwrite existing files", True))
-        self.addParameter(QgsProcessingParameterString(
-            LasPublishPro.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"
-        ))
         self.addParameter(
-            QgsProcessingParameterString(LasPublishPro.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
+            QgsProcessingParameterEnum(
+                LasPublishPro.MATERIAL, "default material colors on start-up", LasPublishPro.MATERIALS, False, 0
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                LasPublishPro.COPY_OR_MOVE,
+                "copy or move source LiDAR files into portal (only for download portals)",
+                LasPublishPro.COPY_OR_MOVE_OPTIONS,
+                False,
+                2,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(LasPublishPro.OVERWRITE_EXISTING, "overwrite existing files", True)
+        )
+        self.addParameter(
+            QgsProcessingParameterString(LasPublishPro.PORTAL_HTML_PAGE, "portal HTML page", "portal.html")
+        )
+        self.addParameter(QgsProcessingParameterString(LasPublishPro.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublishPro.PORTAL_DESCRIPTION, "portal description", ""))
-        self.add_parameters_output_directory_gui(optional_value=False)
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_gui()
+        self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laspublish")]
@@ -222,35 +240,33 @@ class LasPublishPro(LastoolsAlgorithm):
             commands.append('"' + description + '"')
         commands.append("-olaz")
         self.add_parameters_additional_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
         return LasPublishPro()
 
     def name(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["name"]
+        return self.TOOL_NAME
 
     def displayName(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["display_name"]
+        return lastool_info[self.TOOL_NAME]["disp"]
 
     def group(self):
-        return descript_info["info"]["group"]
+        return lasgroup_info[self.LASGROUP]["group"]
 
     def groupId(self):
-        return descript_info["info"]["group_id"]
+        return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["url_path"]
+        return readme_url(self.LASTOOL)
 
     def shortHelpString(self):
-        return self.tr(descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_help_string"])
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
-        return descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["short_description"]
+        return lastool_info[self.TOOL_NAME]["desc"]
 
     def icon(self):
-        licence_icon_path = descript_info["items"][self.TOOL_INFO[0]][self.TOOL_INFO[1]]["licence_icon_path"]
-        return QIcon(f"{paths['img']}{licence_icon_path}")
+        icon_file = licence[self.LICENSE]["path"]
+        return QIcon(f"{paths['img']}{icon_file}")
