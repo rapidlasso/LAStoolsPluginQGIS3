@@ -74,7 +74,7 @@ class LasTile(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, LasTile.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -177,7 +177,7 @@ class LasTilePro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)

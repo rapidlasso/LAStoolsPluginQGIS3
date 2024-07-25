@@ -80,7 +80,7 @@ class LasPublish(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laspublish")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublish.MODE, context)
@@ -203,7 +203,7 @@ class LasPublishPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laspublish")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublishPro.MODE, context)

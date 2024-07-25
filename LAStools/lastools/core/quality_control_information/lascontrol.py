@@ -67,7 +67,7 @@ class LasControl(LastoolsAlgorithm):
         self.add_parameters_verbose_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lascontrol")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-cp")

@@ -91,10 +91,7 @@ class LasInfo(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasinfo.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasinfo")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasInfo.COMPUTE_DENSITY, context):
@@ -215,10 +212,7 @@ class LasInfoPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasinfo.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasinfo")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasInfoPro.COMPUTE_DENSITY, context):

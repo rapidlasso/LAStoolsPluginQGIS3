@@ -51,10 +51,7 @@ class LasZip(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasZip.REPORT_SIZE, context):
@@ -123,10 +120,7 @@ class LasZipPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "laszip")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasZipPro.REPORT_SIZE, context):

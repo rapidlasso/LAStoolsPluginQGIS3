@@ -47,7 +47,7 @@ class LasValidate(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasvalidate")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasValidate.ONE_REPORT_PER_FILE, context):
             commands.append("-oxml")
@@ -101,7 +101,7 @@ class LasValidatePro(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasvalidate")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasValidatePro.ONE_REPORT_PER_FILE, context):
             commands.append("-oxml")

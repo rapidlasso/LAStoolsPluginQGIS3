@@ -81,10 +81,7 @@ class Txt2Las(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "self.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "txt2las")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         parse_string = self.parameterAsString(parameters, self.PARSE, context)
         if parse_string != "xyz":
@@ -215,10 +212,7 @@ class Txt2LasPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "self.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "txt2las")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         # TODO: check the output and use f string
         self.add_parameters_generic_input_folder_commands(parameters, context, commands)
         parse_string = self.parameterAsString(parameters, self.PARSE, context)

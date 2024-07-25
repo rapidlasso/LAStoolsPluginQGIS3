@@ -35,6 +35,13 @@ class LastoolsUtils:
         return (wine_folder is not None) and (wine_folder != "")
 
     @staticmethod
+    def command_ext():
+        if LastoolsUtils.has_wine():
+            return ".exe"
+        else:
+            return ""
+
+    @staticmethod
     def lastools_path():
         lastools_folder = ProcessingConfig.getSetting("LASTOOLS_FOLDER")
         if isWindows():

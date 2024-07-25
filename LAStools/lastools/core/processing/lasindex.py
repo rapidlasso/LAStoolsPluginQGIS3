@@ -49,10 +49,7 @@ class LasIndex(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasIndex.APPEND_LAX, context):
             commands.append("-append")
@@ -118,10 +115,7 @@ class LasIndexPro(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasindex")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasIndexPro.APPEND_LAX, context):
             commands.append("-append")

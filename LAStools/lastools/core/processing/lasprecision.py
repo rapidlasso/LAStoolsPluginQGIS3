@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "September 2023"
+__copyright__ = "(C) 2023, rapidlasso GmbH"
 
 import os
 
@@ -28,6 +28,7 @@ from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
 
 class lasprecision(LastoolsAlgorithm):
+    LASTOOL = "lasprecision"
 
     def initAlgorithm(self, config):
         self.add_parameters_verbose_gui()
@@ -36,7 +37,7 @@ class lasprecision(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasprecision")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
@@ -47,16 +48,16 @@ class lasprecision(LastoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'lasprecision'
+        return self.LASTOOL
 
     def displayName(self):
-        return 'lasprecision'
+        return self.LASTOOL
 
     def group(self):
-        return 'file - checking quality'
+        return "file - checking quality"
 
     def groupId(self):
-        return 'file - checking quality'
+        return "file - checking quality"
 
     def createInstance(self):
         return lasprecision()

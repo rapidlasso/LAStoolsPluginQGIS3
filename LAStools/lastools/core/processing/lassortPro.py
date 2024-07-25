@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "September 2023"
+__copyright__ = "(C) 2023, rapidlasso GmbH"
 
 import os
 from qgis.core import QgsProcessingParameterBoolean
@@ -29,6 +29,7 @@ from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
 
 class lassortPro(LastoolsAlgorithm):
+    LASTOOL = "lassort"
     BY_GPS_TIME = "BY_GPS_TIME"
     BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
@@ -38,7 +39,8 @@ class lassortPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_GPS_TIME, "sort by GPS time", False))
         self.addParameter(QgsProcessingParameterBoolean(lassortPro.BY_RETURN_NUMBER, "sort by return number", False))
         self.addParameter(
-            QgsProcessingParameterBoolean(lassortPro.BY_POINT_SOURCE_ID, "sort by point source ID", False))
+            QgsProcessingParameterBoolean(lassortPro.BY_POINT_SOURCE_ID, "sort by point source ID", False)
+        )
         self.add_parameters_output_directory_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
@@ -47,14 +49,14 @@ class lassortPro(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lassort")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
-        if (self.parameterAsBool(parameters, lassortPro.BY_GPS_TIME, context)):
+        if self.parameterAsBool(parameters, lassortPro.BY_GPS_TIME, context):
             commands.append("-gps_time")
-        if (self.parameterAsBool(parameters, lassortPro.BY_RETURN_NUMBER, context)):
+        if self.parameterAsBool(parameters, lassortPro.BY_RETURN_NUMBER, context):
             commands.append("-return_number")
-        if (self.parameterAsBool(parameters, lassortPro.BY_POINT_SOURCE_ID, context)):
+        if self.parameterAsBool(parameters, lassortPro.BY_POINT_SOURCE_ID, context):
             commands.append("-point_source")
         self.add_parameters_output_directory_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
@@ -67,16 +69,16 @@ class lassortPro(LastoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'lassortPro'
+        return "lassortPro"
 
     def displayName(self):
-        return 'lassortPro'
+        return "lassortPro"
 
     def group(self):
-        return 'folder - processing points'
+        return "folder - processing points"
 
     def groupId(self):
-        return 'folder - processing points'
+        return "folder - processing points"
 
     def createInstance(self):
         return lassortPro()

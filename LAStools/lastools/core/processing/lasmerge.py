@@ -69,10 +69,7 @@ class LasMerge(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_commands(parameters, context, commands)
         file2 = self.parameterAsString(parameters, LasMerge.FILE2, context)
         if file2 != "":
@@ -150,10 +147,7 @@ class LasMergePro(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        if LastoolsUtils.has_wine():
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge.exe")]
-        else:
-            commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasmerge")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)

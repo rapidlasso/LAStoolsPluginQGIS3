@@ -65,7 +65,7 @@ class Shp2Las(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "shp2las")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         scale_factor_xy = self.parameterAsDouble(parameters, Shp2Las.SCALE_FACTOR_XY, context)
         scale_factor_z = self.parameterAsInt(parameters, Shp2Las.SCALE_FACTOR_Z, context)

@@ -151,7 +151,9 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las3dpoly64")]
+        commands = [
+            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append poly
         commands.append(f"-poly {parameters['INPUT_POLYLINE_PATH']}")
@@ -341,7 +343,9 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las3dpoly64")]
+        commands = [
+            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
+        ]
         # append -i
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append -i

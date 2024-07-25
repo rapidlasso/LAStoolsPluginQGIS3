@@ -84,7 +84,9 @@ class LasIntensity(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasintensity64")]
+        commands = [
+            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         commands.append(f"-av {parameters['ATMOSPHERIC_VISIBILITY_RANGE']} ")
@@ -182,7 +184,9 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasintensity64")]
+        commands = [
+            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append -scanner_height
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")

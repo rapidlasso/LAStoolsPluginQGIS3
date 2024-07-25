@@ -87,7 +87,7 @@ class LasThin(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
@@ -208,7 +208,7 @@ class LasThinPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)

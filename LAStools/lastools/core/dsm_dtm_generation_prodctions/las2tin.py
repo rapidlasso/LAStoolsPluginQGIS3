@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "September 2023"
+__copyright__ = "(C) 2023, rapidlasso GmbH"
 
 import os
 from lastools.core.utils.utils import LastoolsUtils
@@ -27,6 +27,7 @@ from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
 
 class las2tin(LastoolsAlgorithm):
+    LASTOOL = "las2tin"
 
     def initAlgorithm(self, config):
         self.add_parameters_verbose_gui_64()
@@ -36,7 +37,7 @@ class las2tin(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2tin")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
@@ -48,16 +49,16 @@ class las2tin(LastoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'las2tin'
+        return self.LASTOOL
 
     def displayName(self):
-        return 'las2tin'
+        return self.LASTOOL
 
     def group(self):
-        return 'file - vector derivatives'
+        return "file - vector derivatives"
 
     def groupId(self):
-        return 'file - vector derivatives'
+        return "file - vector derivatives"
 
     def createInstance(self):
         return las2tin()

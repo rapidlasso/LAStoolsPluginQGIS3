@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "September 2023"
+__copyright__ = "(C) 2023, rapidlasso GmbH"
 
 import os
 from qgis.core import QgsProcessingParameterBoolean
@@ -29,6 +29,7 @@ from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 
 
 class lassort(LastoolsAlgorithm):
+    LASTOOL = "lassort"
     BY_GPS_TIME = "BY_GPS_TIME"
     BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
@@ -43,14 +44,14 @@ class lassort(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lassort")]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if (self.parameterAsBool(parameters, lassort.BY_GPS_TIME, context)):
+        if self.parameterAsBool(parameters, lassort.BY_GPS_TIME, context):
             commands.append("-gps_time")
-        if (self.parameterAsBool(parameters, lassort.BY_RETURN_NUMBER, context)):
+        if self.parameterAsBool(parameters, lassort.BY_RETURN_NUMBER, context):
             commands.append("-return_number")
-        if (self.parameterAsBool(parameters, lassort.BY_POINT_SOURCE_ID, context)):
+        if self.parameterAsBool(parameters, lassort.BY_POINT_SOURCE_ID, context):
             commands.append("-point_source")
         self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
@@ -60,16 +61,16 @@ class lassort(LastoolsAlgorithm):
         return {"": None}
 
     def name(self):
-        return 'lassort'
+        return self.LASTOOL
 
     def displayName(self):
-        return 'lassort'
+        return self.LASTOOL
 
     def group(self):
-        return 'file - processing points'
+        return "file - processing points"
 
     def groupId(self):
-        return 'file - processing points'
+        return "file - processing points"
 
     def createInstance(self):
         return lassort()
