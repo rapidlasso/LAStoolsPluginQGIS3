@@ -2,7 +2,7 @@
 name=LAStools
 qgisMinimumVersion=3.2
 description=tools for processing point clouds in LAS, LAZ, and ASCII formats
-version=2.1.0
+version=2.1.1
 author=rapidlasso GmbH
 email=info@rapidlasso.de
 icon=lastools/assets/img/lastools.png
@@ -26,6 +26,8 @@ about=
 
 
 changelog=
+    2.1.1:
+    - include ".exe" at wine commands
     2.1.0:
     - help/documentation redesign
     - parameter unification
