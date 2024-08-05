@@ -1,7 +1,7 @@
 [general]
 name=LAStools
 qgisMinimumVersion=3.2
-description=tools for processing point clouds in LAS, LAZ, and ASCII formats
+description=batch-scriptable, multicore command-line tools for processing point clouds in LAS, LAZ, and ASCII formats
 version=2.1.1
 author=rapidlasso GmbH
 email=info@rapidlasso.de
@@ -22,7 +22,7 @@ tags=LAS,LAZ,LiDAR,PhoDAR,pointclouds,points,pointcloud,DEM,DTM,DSM,CHM,contours
 
 
 about=
-    LAStools, the flagship product of rapidlasso GmbH, is a collection of 50+ highly efficient, batch-scriptable, multicore command line tools for processing lidar. The software combines robust algorithms with efficient I/O and memory-efficient management to achieve high throughput for datasets containing billions of points. LAStools was first developed by Dr. Martin Isenburg, who was also the creator of the popular LAZ format. This plugin exposes the capabilities of LAStools within QGIS using the processing framework. You also need to download the LAStools software from https://rapidlasso.de/. Instructions on how to install this plugin can also be found in the user manual https://rapidlasso.de/lastools-as-qgis-plugin/.
+    LAStools is a collection of 50+ highly efficient, batch-scriptable, multicore command line tools for processing lidar. The software combines robust algorithms with efficient I/O and memory-efficient management to achieve high throughput for datasets containing billions of points. LAStools was first developed by Dr. Martin Isenburg, the creator of the popular LAZ format. This plugin exposes the capabilities of LAStools within QGIS using the processing framework. You also need to download the LAStools software from https://rapidlasso.de/. Instructions on how to install this plugin can be found in the user manual https://rapidlasso.de/lastools-as-qgis-plugin/.
 
 
 changelog=
