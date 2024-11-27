@@ -33,7 +33,7 @@ from ..algo import LastoolsAlgorithm
 class LasMerge(LastoolsAlgorithm):
     TOOL_NAME = "LasMerge"
     LASTOOL = "lasmerge"
-    LICENSE = "c"
+    LICENSE = "o"
     LASGROUP = 3
     FILE2 = "FILE2"
     FILE3 = "FILE3"
