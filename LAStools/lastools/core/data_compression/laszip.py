@@ -4,8 +4,8 @@
 ***************************************************************************
     laszip.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2024 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -43,28 +43,30 @@ class LasZip(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasZip.REPORT_SIZE, "only report size", False))
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasZip.CREATE_LAX, "create spatial indexing file (*.lax)", False)
-        )
-        self.addParameter(QgsProcessingParameterBoolean(LasZip.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.REPORT_SIZE, "only report size", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.CREATE_LAX, "create spatial indexing file (*.lax)", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.APPEND_LAX, "append *.lax into *.laz file", False))
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasZip.REPORT_SIZE, context):
+        if self.parameterAsBool(parameters, self.REPORT_SIZE, context):
             commands.append("-size")
-        if self.parameterAsBool(parameters, LasZip.CREATE_LAX, context):
+        if self.parameterAsBool(parameters, self.CREATE_LAX, context):
             commands.append("-lax")
-        if self.parameterAsBool(parameters, LasZip.APPEND_LAX, context):
+        if self.parameterAsBool(parameters, self.APPEND_LAX, context):
             commands.append("-append")
         self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
         LastoolsUtils.run_lastools(commands, feedback)
-
         return {"commands": commands}
 
     def createInstance(self):
@@ -110,24 +112,28 @@ class LasZipPro(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui(1)
         self.add_parameters_output_appendix_gui()
         self.add_parameters_additional_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasZipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False)
-        )
-        self.addParameter(QgsProcessingParameterBoolean(LasZipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.REPORT_SIZE, "only report size", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.CREATE_LAX, "create spatial indexing file (*.lax)", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.APPEND_LAX, "append *.lax into *.laz file", False))
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasZipPro.REPORT_SIZE, context):
+        if self.parameterAsBool(parameters, self.REPORT_SIZE, context):
             commands.append("-size")
-        if self.parameterAsBool(parameters, LasZipPro.CREATE_LAX, context):
+        if self.parameterAsBool(parameters, self.CREATE_LAX, context):
             commands.append("-lax")
-        if self.parameterAsBool(parameters, LasZipPro.APPEND_LAX, context):
+        if self.parameterAsBool(parameters, self.APPEND_LAX, context):
             commands.append("-append")
         self.add_parameters_output_directory_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)

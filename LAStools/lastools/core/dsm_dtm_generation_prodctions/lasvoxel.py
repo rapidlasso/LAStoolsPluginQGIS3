@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    las2iso.py
+    lasvoxel.py
     ---------------------
     Date                 : January 2025
     Copyright            : (c) 2025 by rapidlasso GmbH
@@ -24,77 +24,75 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 import os
 
 from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterNumber
+from qgis.core import QgsProcessingParameterNumber, QgsProcessingParameterBoolean
 
 from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
-class Las2Iso(LastoolsAlgorithm):
-    TOOL_NAME = "Las2Iso"
-    LASTOOL = "las2iso"
+class LasVoxel(LastoolsAlgorithm):
+    TOOL_NAME = "LasVoxel"
+    LASTOOL = "lasvoxel"
     LICENSE = "c"
     LASGROUP = 5
-    SMOOTH = "SMOOTH"
-    ISO_EVERY = "ISO_EVERY"
-    SIMPLIFY_LENGTH = "SIMPLIFY_LENGTH"
-    SIMPLIFY_AREA = "SIMPLIFY_AREA"
-    CLEAN = "CLEAN"
+
+    ARG_COMPUTE_MEAN_XYZ = "ARG_COMPUTE_MEAN_XYZ"
+    ARG_EMPTY_VOXELS = "ARG_EMPTY_VOXELS"
+    ARG_MAX_COUNT = "ARG_MAX_COUNT"
+    ARG_STEP = "ARG_STEP"
+    ARG_STORE_IDS_IN_INTENSITY = "ARG_STORE_IDS_IN_INTENSITY"
+    ARG_STORE_IDS_IN_POINT_SOURCE = "ARG_STORE_IDS_IN_POINT_SOURCE"
+
+    ARG_COMPUTE_MEAN_XYZ = "ARG_COMPUTE_MEAN_XYZ"
+    ARG_EMPTY_VOXELS = "ARG_EMPTY_VOXELS"
+    ARG_STORE_IDS_IN_INTENSITY = "ARG_STORE_IDS_IN_INTENSITY"
+    ARG_STORE_IDS_IN_POINT_SOURCE = "ARG_STORE_IDS_IN_POINT_SOURCE"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                self.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10
+                self.ARG_STEP,
+                "grid size",
+                QgsProcessingParameterNumber.Double,
+                1,
+                True,
+                0.001,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                self.ISO_EVERY,
-                "extract isoline with a spacing of",
-                QgsProcessingParameterNumber.Double,
-                10.0,
+                self.ARG_MAX_COUNT,
+                "maximum point count per voxel",
+                QgsProcessingParameterNumber.Integer,
+                0,
                 False,
-                0.05,
-                1000.0,
             )
         )
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.CLEAN,
-                "clean isolines shorter than (0 = do not clean)",
-                QgsProcessingParameterNumber.Double,
-                0.0,
-                False,
-                0.0,
-                100.0,
+            QgsProcessingParameterBoolean(self.ARG_COMPUTE_MEAN_XYZ, "compute averaged coordinate each voxel", False)
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.ARG_EMPTY_VOXELS, "output voxels without returns as intensity zero", False
             )
         )
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.SIMPLIFY_LENGTH,
-                "simplify segments shorter than (0 = do not simplify)",
-                QgsProcessingParameterNumber.Double,
-                0.0,
-                False,
-                0.0,
-                100.0,
+            QgsProcessingParameterBoolean(
+                self.ARG_STORE_IDS_IN_INTENSITY, "store voxel IDs into " "intensity" "", False
             )
         )
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.SIMPLIFY_AREA,
-                "simplify segments pairs with area less than (0 = do not simplify)",
-                QgsProcessingParameterNumber.Double,
-                0.0,
-                False,
-                0.0,
-                100.0,
+            QgsProcessingParameterBoolean(
+                self.ARG_STORE_IDS_IN_POINT_SOURCE, "store voxel IDs into " "point source" "", False
             )
         )
+        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
+        self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
-        self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [
@@ -105,32 +103,30 @@ class Las2Iso(LastoolsAlgorithm):
             )
         ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        smooth = self.parameterAsInt(parameters, self.SMOOTH, context)
-        if smooth != 0:
-            commands.append("-smooth")
-            commands.append(str(smooth))
-        commands.append("-iso_every")
-        commands.append(str(self.parameterAsDouble(parameters, self.ISO_EVERY, context)))
-        clean = self.parameterAsDouble(parameters, self.CLEAN, context)
-        if clean != 0:
-            commands.append("-clean")
-            commands.append(str(clean))
-        simplify_length = self.parameterAsDouble(parameters, self.SIMPLIFY_LENGTH, context)
-        if simplify_length != 0:
-            commands.append("-simplify_length")
-            commands.append(str(simplify_length))
-        simplify_area = self.parameterAsDouble(parameters, self.SIMPLIFY_AREA, context)
-        if simplify_area != 0:
-            commands.append("-simplify_area")
-            commands.append(str(simplify_area))
+        step = self.parameterAsDouble(parameters, self.ARG_STEP, context)
+        commands.append("-step")
+        commands.append(str(step))
+        count = self.parameterAsInt(parameters, self.ARG_MAX_COUNT, context)
+        commands.append("-max_count")
+        commands.append(str(count))
+        if self.parameterAsBool(parameters, self.ARG_COMPUTE_MEAN_XYZ, context):
+            commands.append("-compute_mean_xyz")
+        if self.parameterAsBool(parameters, self.ARG_EMPTY_VOXELS, context):
+            commands.append("-empty_voxels")
+        if self.parameterAsBool(parameters, self.ARG_STORE_IDS_IN_INTENSITY, context):
+            commands.append("-store_IDs_in_intensity")
+        if self.parameterAsBool(parameters, self.ARG_STORE_IDS_IN_POINT_SOURCE, context):
+            commands.append("-store_IDs_in_point_source")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        self.add_parameters_vector_output_commands(parameters, context, commands)
+        self.add_parameters_point_output_commands(parameters, context, commands)
+        self.add_parameters_output_appendix_commands(parameters, context, commands)
+        self.add_parameters_point_output_format_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
-        return Las2Iso()
+        return LasVoxel()
 
     def name(self):
         return self.TOOL_NAME

@@ -10,6 +10,7 @@ from .las2txt import Las2txt, Las2txtPro
 from .txt2las import Txt2Las, Txt2LasPro
 from .las2shp import Las2Shp
 from .shp2las import Shp2Las
+from .e572las import e572las
 
 __all__ = [
     Las2txt,
@@ -24,4 +25,5 @@ __all__ = [
     Las2LasProTransform,
     Las2Shp,
     Shp2Las,
+    e572las,
 ]

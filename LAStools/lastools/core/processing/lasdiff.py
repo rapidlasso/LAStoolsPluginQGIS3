@@ -5,7 +5,7 @@
     lasdiff.py
     ---------------------
     Date                 : May 2016 and August 2018
-    Copyright            : (C) 2024 by rapidlasso GmbH
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -44,12 +44,12 @@ class LasDiff(LastoolsAlgorithm):
         self.add_parameters_generic_input_gui("other input LAS/LAZ file", "laz", False)
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasDiff.SHUTUP, "stop reporting difference after this many points", LasDiff.SHUTUP_AFTER, False, 0
+                self.SHUTUP, "stop reporting difference after this many points", self.SHUTUP_AFTER, False, 0
             )
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasDiff.CREATE_DIFFERENCE_FILE,
+                self.CREATE_DIFFERENCE_FILE,
                 "create elevation difference file (if points are in the same order)",
                 False,
             )
@@ -59,16 +59,22 @@ class LasDiff(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
-        shutup = self.parameterAsInt(parameters, LasDiff.SHUTUP, context)
+        shutup = self.parameterAsInt(parameters, self.SHUTUP, context)
         if shutup != 0:
             commands.append("-shutup")
-            commands.append(LasDiff.SHUTUP_AFTER[shutup])
+            commands.append(self.SHUTUP_AFTER[shutup])
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasDiff.CREATE_DIFFERENCE_FILE, context):
+        if self.parameterAsBool(parameters, self.CREATE_DIFFERENCE_FILE, context):
             self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"commands": commands}

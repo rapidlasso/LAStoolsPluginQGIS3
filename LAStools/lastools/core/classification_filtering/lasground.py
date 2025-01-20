@@ -4,8 +4,8 @@
 ***************************************************************************
     lasground.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -47,36 +47,40 @@ class LasGround(LastoolsAlgorithm):
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_horizontal_and_vertical_feet_gui()
         self.addParameter(
-            QgsProcessingParameterBoolean(LasGround.NO_BULGE, "no triangle bulging during TIN refinement", False)
+            QgsProcessingParameterBoolean(self.NO_BULGE, "no triangle bulging during TIN refinement", False)
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasGround.BY_FLIGHTLINE, "classify flightlines separately (needs point source IDs populated)", False
+                self.BY_FLIGHTLINE, "classify flightlines separately (needs point source IDs populated)", False
             )
         )
-        self.addParameter(QgsProcessingParameterEnum(LasGround.TERRAIN, "terrain type", LasGround.TERRAINS, False, 2))
-        self.addParameter(
-            QgsProcessingParameterEnum(LasGround.GRANULARITY, "preprocessing", LasGround.GRANULARITIES, False, 1)
-        )
+        self.addParameter(QgsProcessingParameterEnum(self.TERRAIN, "terrain type", self.TERRAINS, False, 2))
+        self.addParameter(QgsProcessingParameterEnum(self.GRANULARITY, "preprocessing", self.GRANULARITIES, False, 1))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasGround.NO_BULGE, context):
+        if self.parameterAsBool(parameters, self.NO_BULGE, context):
             commands.append("-no_bulge")
-        if self.parameterAsBool(parameters, LasGround.BY_FLIGHTLINE, context):
+        if self.parameterAsBool(parameters, self.BY_FLIGHTLINE, context):
             commands.append("-by_flightline")
-        method = self.parameterAsInt(parameters, LasGround.TERRAIN, context)
+        method = self.parameterAsInt(parameters, self.TERRAIN, context)
         if method != 2:
-            commands.append("-" + LasGround.TERRAINS[method])
-        granularity = self.parameterAsInt(parameters, LasGround.GRANULARITY, context)
+            commands.append("-" + self.TERRAINS[method])
+        granularity = self.parameterAsInt(parameters, self.GRANULARITY, context)
         if granularity != 1:
-            commands.append("-" + LasGround.GRANULARITIES[granularity])
+            commands.append("-" + self.GRANULARITIES[granularity])
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
@@ -128,19 +132,15 @@ class LasGroundPro(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_horizontal_and_vertical_feet_gui()
         self.addParameter(
-            QgsProcessingParameterBoolean(LasGroundPro.NO_BULGE, "no triangle bulging during TIN refinement", False)
+            QgsProcessingParameterBoolean(self.NO_BULGE, "no triangle bulging during TIN refinement", False)
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasGroundPro.BY_FLIGHTLINE, "classify flightlines separately (needs point source IDs populated)", False
+                self.BY_FLIGHTLINE, "classify flightlines separately (needs point source IDs populated)", False
             )
         )
-        self.addParameter(
-            QgsProcessingParameterEnum(LasGroundPro.TERRAIN, "terrain type", LasGroundPro.TERRAINS, False, 2)
-        )
-        self.addParameter(
-            QgsProcessingParameterEnum(LasGroundPro.GRANULARITY, "preprocessing", LasGroundPro.GRANULARITIES, False, 1)
-        )
+        self.addParameter(QgsProcessingParameterEnum(self.TERRAIN, "terrain type", self.TERRAINS, False, 2))
+        self.addParameter(QgsProcessingParameterEnum(self.GRANULARITY, "preprocessing", self.GRANULARITIES, False, 1))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
@@ -149,19 +149,25 @@ class LasGroundPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasGroundPro.NO_BULGE, context):
+        if self.parameterAsBool(parameters, self.NO_BULGE, context):
             commands.append("-no_bulge")
-        if self.parameterAsBool(parameters, LasGroundPro.BY_FLIGHTLINE, context):
+        if self.parameterAsBool(parameters, self.BY_FLIGHTLINE, context):
             commands.append("-by_flightline")
-        method = self.parameterAsInt(parameters, LasGroundPro.TERRAIN, context)
+        method = self.parameterAsInt(parameters, self.TERRAIN, context)
         if method != 2:
-            commands.append("-" + LasGroundPro.TERRAINS[method])
-        granularity = self.parameterAsInt(parameters, LasGroundPro.GRANULARITY, context)
+            commands.append("-" + self.TERRAINS[method])
+        granularity = self.parameterAsInt(parameters, self.GRANULARITY, context)
         if granularity != 1:
-            commands.append("-" + LasGroundPro.GRANULARITIES[granularity])
+            commands.append("-" + self.GRANULARITIES[granularity])
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)

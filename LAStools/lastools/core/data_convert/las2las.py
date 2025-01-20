@@ -4,8 +4,8 @@
 ***************************************************************************
     las2las.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -48,7 +48,13 @@ class Las2LasFilter(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_filter2_return_class_flags_commands(parameters, context, commands)
@@ -148,7 +154,13 @@ class Las2LasProject(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, self.SOURCE_PROJECTION, context)
         if source_projection != 0:
@@ -270,13 +282,19 @@ class Las2LasTransform(LastoolsAlgorithm):
                 0,
             )
         )
-        self.addParameter(QgsProcessingParameterString(self.OPERATIONARG, "argument for operation"))
+        self.addParameter(QgsProcessingParameterString(self.OPERATIONARG, "argument for operation", "", False, True))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_transform1_coordinate_commands(parameters, context, commands)
         self.add_parameters_transform2_coordinate_commands(parameters, context, commands)
@@ -341,11 +359,17 @@ class Las2LasProFilter(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
-        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_directory_gui(False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
-        self.add_parameters_point_input_commands(parameters, context, commands)
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
+        self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_filter2_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_filter1_coords_intensity_commands(parameters, context, commands)
@@ -447,10 +471,16 @@ class Las2LasProProject(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
-        self.add_parameters_output_directory_gui()
+        self.add_parameters_output_directory_gui(False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         source_projection = self.parameterAsInt(parameters, self.SOURCE_PROJECTION, context)
         if source_projection != 0:
@@ -576,7 +606,7 @@ class Las2LasProTransform(LastoolsAlgorithm):
                 0,
             )
         )
-        self.addParameter(QgsProcessingParameterString(self.OPERATIONARG, "argument for operation"))
+        self.addParameter(QgsProcessingParameterString(self.OPERATIONARG, "argument for operation", "", False, True))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
@@ -585,7 +615,13 @@ class Las2LasProTransform(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_transform1_coordinate_commands(parameters, context, commands)
         self.add_parameters_transform2_coordinate_commands(parameters, context, commands)

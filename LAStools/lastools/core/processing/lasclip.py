@@ -49,13 +49,13 @@ class LasClip(LastoolsAlgorithm):
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("input polygon(s)", "shp", False)
-        self.addParameter(QgsProcessingParameterBoolean(LasClip.INTERIOR, "interior", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.INTERIOR, "interior", False))
         self.addParameter(
-            QgsProcessingParameterEnum(LasClip.OPERATION, "what to do with points", LasClip.OPERATIONS, False, 0)
+            QgsProcessingParameterEnum(self.OPERATION, "what to do with points", self.OPERATIONS, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasClip.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 12, False, 0, 255
+                self.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 12, False, 0, 255
             )
         )
         self.add_parameters_additional_gui()
@@ -63,15 +63,21 @@ class LasClip(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
-        if self.parameterAsBool(parameters, LasClip.INTERIOR, context):
+        if self.parameterAsBool(parameters, self.INTERIOR, context):
             commands.append("-interior")
-        operation = self.parameterAsInt(parameters, LasClip.OPERATION, context)
+        operation = self.parameterAsInt(parameters, self.OPERATION, context)
         if operation != 0:
             commands.append("-classify")
-            classify_as = self.parameterAsInt(parameters, LasClip.CLASSIFY_AS, context)
+            classify_as = self.parameterAsInt(parameters, self.CLASSIFY_AS, context)
             commands.append(str(classify_as))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)

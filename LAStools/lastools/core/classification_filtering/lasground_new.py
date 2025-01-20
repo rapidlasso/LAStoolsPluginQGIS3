@@ -4,8 +4,8 @@
 ***************************************************************************
     lasground_new.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,9 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
+
 import os
 
 from PyQt5.QtGui import QIcon
@@ -48,15 +49,11 @@ class LasGroundNew(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_horizontal_and_vertical_feet_gui()
-        self.addParameter(
-            QgsProcessingParameterEnum(LasGroundNew.TERRAIN, "terrain type", LasGroundNew.TERRAINS, False, 3)
-        )
-        self.addParameter(
-            QgsProcessingParameterEnum(LasGroundNew.GRANULARITY, "preprocessing", LasGroundNew.GRANULARITIES, False, 2)
-        )
+        self.addParameter(QgsProcessingParameterEnum(self.TERRAIN, "terrain type", self.TERRAINS, False, 3))
+        self.addParameter(QgsProcessingParameterEnum(self.GRANULARITY, "preprocessing", self.GRANULARITIES, False, 2))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundNew.STEP,
+                self.STEP,
                 "step (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 25.0,
@@ -67,7 +64,7 @@ class LasGroundNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundNew.BULGE,
+                self.BULGE,
                 "bulge (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 2.0,
@@ -78,7 +75,7 @@ class LasGroundNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundNew.SPIKE,
+                self.SPIKE,
                 "spike (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -89,7 +86,7 @@ class LasGroundNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundNew.DOWN_SPIKE,
+                self.DOWN_SPIKE,
                 "down spike (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -100,7 +97,7 @@ class LasGroundNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundNew.OFFSET,
+                self.OFFSET,
                 "offset (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 0.05,
@@ -114,27 +111,33 @@ class LasGroundNew(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
-        method = self.parameterAsInt(parameters, LasGroundNew.TERRAIN, context)
+        method = self.parameterAsInt(parameters, self.TERRAIN, context)
         if method == 5:
             commands.append("-step")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundNew.STEP, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.STEP, context)))
             commands.append("-bulge")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundNew.BULGE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.BULGE, context)))
             commands.append("-spike")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundNew.SPIKE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.SPIKE, context)))
             commands.append("-spike_down")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundNew.DOWN_SPIKE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.DOWN_SPIKE, context)))
             commands.append("-offset")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundNew.OFFSET, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.OFFSET, context)))
         else:
-            commands.append("-" + LasGroundNew.TERRAINS[method])
-        granularity = self.parameterAsInt(parameters, LasGroundNew.GRANULARITY, context)
+            commands.append("-" + self.TERRAINS[method])
+        granularity = self.parameterAsInt(parameters, self.GRANULARITY, context)
         if granularity != 1:
-            commands.append("-" + LasGroundNew.GRANULARITIES[granularity])
+            commands.append("-" + self.GRANULARITIES[granularity])
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
@@ -189,17 +192,11 @@ class LasGroundProNew(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_horizontal_and_vertical_feet_gui()
-        self.addParameter(
-            QgsProcessingParameterEnum(LasGroundProNew.TERRAIN, "terrain type", LasGroundProNew.TERRAINS, False, 3)
-        )
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                LasGroundProNew.GRANULARITY, "preprocessing", LasGroundProNew.GRANULARITIES, False, 2
-            )
-        )
+        self.addParameter(QgsProcessingParameterEnum(self.TERRAIN, "terrain type", self.TERRAINS, False, 3))
+        self.addParameter(QgsProcessingParameterEnum(self.GRANULARITY, "preprocessing", self.GRANULARITIES, False, 2))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundProNew.STEP,
+                self.STEP,
                 "step (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 25.0,
@@ -210,7 +207,7 @@ class LasGroundProNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundProNew.BULGE,
+                self.BULGE,
                 "bulge (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 2.0,
@@ -221,7 +218,7 @@ class LasGroundProNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundProNew.SPIKE,
+                self.SPIKE,
                 "spike (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -232,7 +229,7 @@ class LasGroundProNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundProNew.DOWN_SPIKE,
+                self.DOWN_SPIKE,
                 "down spike (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -243,7 +240,7 @@ class LasGroundProNew(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasGroundProNew.OFFSET,
+                self.OFFSET,
                 "offset (for 'custom' terrain only)",
                 QgsProcessingParameterNumber.Double,
                 0.05,
@@ -260,27 +257,33 @@ class LasGroundProNew(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
-        method = self.parameterAsInt(parameters, LasGroundProNew.TERRAIN, context)
+        method = self.parameterAsInt(parameters, self.TERRAIN, context)
         if method == 5:
             commands.append("-step")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundProNew.STEP, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.STEP, context)))
             commands.append("-bulge")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundProNew.BULGE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.BULGE, context)))
             commands.append("-spike")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundProNew.SPIKE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.SPIKE, context)))
             commands.append("-spike_down")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundProNew.DOWN_SPIKE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.DOWN_SPIKE, context)))
             commands.append("-offset")
-            commands.append(str(self.parameterAsDouble(parameters, LasGroundProNew.OFFSET, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.OFFSET, context)))
         else:
-            commands.append("-" + LasGroundProNew.TERRAINS[method])
-        granularity = self.parameterAsInt(parameters, LasGroundProNew.GRANULARITY, context)
+            commands.append("-" + self.TERRAINS[method])
+        granularity = self.parameterAsInt(parameters, self.GRANULARITY, context)
         if granularity != 1:
-            commands.append("-" + LasGroundProNew.GRANULARITIES[granularity])
+            commands.append("-" + self.GRANULARITIES[granularity])
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)

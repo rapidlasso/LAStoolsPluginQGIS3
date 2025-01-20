@@ -4,8 +4,8 @@
 ***************************************************************************
     las2dem.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -45,29 +45,33 @@ class Las2Dem(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.add_parameters_step_gui()
-        self.addParameter(QgsProcessingParameterEnum(Las2Dem.ATTRIBUTE, "attribute", Las2Dem.ATTRIBUTES, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(Las2Dem.PRODUCT, "method", Las2Dem.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.ATTRIBUTE, "attribute", self.ATTRIBUTES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT, "method", self.PRODUCTS, False, 0))
         self.addParameter(
-            QgsProcessingParameterBoolean(
-                Las2Dem.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False
-            )
+            QgsProcessingParameterBoolean(self.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False)
         )
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_raster_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_step_commands(parameters, context, commands)
-        attribute = self.parameterAsInt(parameters, Las2Dem.ATTRIBUTE, context)
+        attribute = self.parameterAsInt(parameters, self.ATTRIBUTE, context)
         if attribute != 0:
-            commands.append("-" + Las2Dem.ATTRIBUTES[attribute])
-        product = self.parameterAsInt(parameters, Las2Dem.PRODUCT, context)
+            commands.append("-" + self.ATTRIBUTES[attribute])
+        product = self.parameterAsInt(parameters, self.PRODUCT, context)
         if product != 0:
-            commands.append("-" + Las2Dem.PRODUCTS[product])
-        if self.parameterAsBool(parameters, Las2Dem.USE_TILE_BB, context):
+            commands.append("-" + self.PRODUCTS[product])
+        if self.parameterAsBool(parameters, self.USE_TILE_BB, context):
             commands.append("-use_tile_bb")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -119,14 +123,10 @@ class Las2DemPro(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.add_parameters_step_gui()
+        self.addParameter(QgsProcessingParameterEnum(self.ATTRIBUTE, "Attribute", self.ATTRIBUTES, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT, "Product", self.PRODUCTS, False, 0))
         self.addParameter(
-            QgsProcessingParameterEnum(Las2DemPro.ATTRIBUTE, "Attribute", Las2DemPro.ATTRIBUTES, False, 0)
-        )
-        self.addParameter(QgsProcessingParameterEnum(Las2DemPro.PRODUCT, "Product", Las2DemPro.PRODUCTS, False, 0))
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                Las2DemPro.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False
-            )
+            QgsProcessingParameterBoolean(self.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False)
         )
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
@@ -136,17 +136,23 @@ class Las2DemPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         self.add_parameters_step_commands(parameters, context, commands)
-        attribute = self.parameterAsInt(parameters, Las2DemPro.ATTRIBUTE, context)
+        attribute = self.parameterAsInt(parameters, self.ATTRIBUTE, context)
         if attribute != 0:
-            commands.append("-" + Las2DemPro.ATTRIBUTES[attribute])
-        product = self.parameterAsInt(parameters, Las2DemPro.PRODUCT, context)
+            commands.append("-" + self.ATTRIBUTES[attribute])
+        product = self.parameterAsInt(parameters, self.PRODUCT, context)
         if product != 0:
-            commands.append("-" + Las2DemPro.PRODUCTS[product])
-        if self.parameterAsBool(parameters, Las2DemPro.USE_TILE_BB, context):
+            commands.append("-" + self.PRODUCTS[product])
+        if self.parameterAsBool(parameters, self.USE_TILE_BB, context):
             commands.append("-use_tile_bb")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)

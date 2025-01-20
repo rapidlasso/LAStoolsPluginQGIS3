@@ -4,8 +4,8 @@
 ***************************************************************************
     shp2las.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -42,7 +42,7 @@ class Shp2Las(LastoolsAlgorithm):
         self.add_parameters_generic_input_gui("input polygon(s)", "shp", False)
         self.addParameter(
             QgsProcessingParameterNumber(
-                Shp2Las.SCALE_FACTOR_XY,
+                self.SCALE_FACTOR_XY,
                 "resolution of x and y coordinate",
                 QgsProcessingParameterNumber.Double,
                 0.01,
@@ -52,7 +52,7 @@ class Shp2Las(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Shp2Las.SCALE_FACTOR_Z,
+                self.SCALE_FACTOR_Z,
                 "resolution of z coordinate",
                 QgsProcessingParameterNumber.Double,
                 0.01,
@@ -61,19 +61,25 @@ class Shp2Las(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_gui_64()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
-        scale_factor_xy = self.parameterAsDouble(parameters, Shp2Las.SCALE_FACTOR_XY, context)
-        scale_factor_z = self.parameterAsInt(parameters, Shp2Las.SCALE_FACTOR_Z, context)
+        scale_factor_xy = self.parameterAsDouble(parameters, self.SCALE_FACTOR_XY, context)
+        scale_factor_z = self.parameterAsInt(parameters, self.SCALE_FACTOR_Z, context)
         if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
             commands.append("-set_scale")
             commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"commands": commands}

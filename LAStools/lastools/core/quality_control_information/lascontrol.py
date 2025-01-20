@@ -4,8 +4,8 @@
 ***************************************************************************
     lascontrol.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -50,32 +50,38 @@ class LasControl(LastoolsAlgorithm):
         self.add_parameters_generic_input_gui("ASCII text file of control points", "csv", False)
         self.addParameter(
             QgsProcessingParameterString(
-                LasControl.PARSE_STRING, "parse string marking which columns are xyz (use 's' for skip)", "sxyz"
+                self.PARSE_STRING, "parse string marking which columns are xyz (use 's' for skip)", "sxyz"
             )
         )
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasControl.USE_POINTS, "which points to use for elevation checks", LasControl.USE_POINTS_LIST, False, 0
+                self.USE_POINTS, "which points to use for elevation checks", self.USE_POINTS_LIST, False, 0
             )
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasControl.ADJUST_Z, "adjust z elevation by translating away the average error", False
+                self.ADJUST_Z, "adjust z elevation by translating away the average error", False
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-cp")
-        parse = self.parameterAsString(parameters, LasControl.PARSE_STRING, context)
+        parse = self.parameterAsString(parameters, self.PARSE_STRING, context)
         if parse != "":
             commands.append("-parse")
             commands.append(parse)
-        use_point = self.parameterAsInt(parameters, LasControl.USE_POINTS, context)
+        use_point = self.parameterAsInt(parameters, self.USE_POINTS, context)
         if use_point > 0:
             commands.append("-keep_class")
             commands.append(str(2))
@@ -83,7 +89,7 @@ class LasControl(LastoolsAlgorithm):
                 commands.append(str(8))
                 if use_point > 2:
                     commands.append(str(6))
-        if self.parameterAsBool(parameters, LasControl.ADJUST_Z, context):
+        if self.parameterAsBool(parameters, self.ADJUST_Z, context):
             commands.append("-adjust_z")
             commands.append("-odix _adjusted")
             commands.append("-olaz")

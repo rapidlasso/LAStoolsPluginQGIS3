@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    las2shp.py
+    lasplanes.py
     ---------------------
     Date                 : January 2025
     Copyright            : (c) 2025 by rapidlasso GmbH
@@ -24,37 +24,23 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 import os
 
 from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber
+from qgis.core import QgsProcessingParameterNumber
 
 from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
-class Las2Shp(LastoolsAlgorithm):
-    TOOL_NAME = "Las2Shp"
-    LASTOOL = "las2shp"
+class LasPlanes(LastoolsAlgorithm):
+    TOOL_NAME = "LasPlanes"
+    LASTOOL = "lasplanes"
     LICENSE = "c"
-    LASGROUP = 2
-    POINT_Z = "POINT_Z"
-    RECORD_SIZE = "RECORD_SIZE"
+    LASGROUP = 5
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterBoolean(self.POINT_Z, "use PointZ instead of MultiPointZ", False))
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.RECORD_SIZE,
-                "number of points per record",
-                QgsProcessingParameterNumber.Integer,
-                1024,
-                False,
-                0,
-                65536,
-            )
-        )
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
-        self.add_parameters_generic_output_gui("Output SHP file", "shp", True)
+        self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [
@@ -65,20 +51,14 @@ class Las2Shp(LastoolsAlgorithm):
             )
         ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, self.POINT_Z, context):
-            commands.append("-single_points")
-        record_size = self.parameterAsInt(parameters, self.RECORD_SIZE, context)
-        if record_size != 1024:
-            commands.append("-record_size")
-            commands.append(str(record_size))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_vector_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
-        return Las2Shp()
+        return LasPlanes()
 
     def name(self):
         return self.TOOL_NAME

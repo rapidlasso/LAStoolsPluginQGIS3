@@ -4,8 +4,8 @@
 ***************************************************************************
     lascanopy.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -95,92 +95,94 @@ class LasCanopy(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasCanopy.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0
+                self.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasCanopy.HEIGHT_CUTOFF,
+                self.HEIGHT_CUTOFF,
                 "height cutoff / breast height",
                 QgsProcessingParameterNumber.Double,
                 1.37,
                 False,
             )
         )
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT1, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT2, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT3, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT4, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT5, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT6, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT7, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT8, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopy.PRODUCT9, "create", LasCanopy.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterString(LasCanopy.COUNTS, "count rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT1, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT2, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT3, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT4, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT5, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT6, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT7, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT8, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT9, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterString(self.COUNTS, "count rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
+        self.addParameter(QgsProcessingParameterString(self.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
         self.addParameter(
-            QgsProcessingParameterString(LasCanopy.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", "")
+            QgsProcessingParameterBoolean(self.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False)
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                LasCanopy.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False
-            )
-        )
-        self.addParameter(QgsProcessingParameterBoolean(LasCanopy.FILES_ARE_PLOTS, "input file is single plot", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.FILES_ARE_PLOTS, "input file is single plot", False))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_raster_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        plot_size = self.parameterAsDouble(parameters, LasCanopy.PLOT_SIZE, context)
+        plot_size = self.parameterAsDouble(parameters, self.PLOT_SIZE, context)
         if plot_size != 20.0:
             commands.append("-step")
             commands.append(str(plot_size))
-        height_cutoff = self.parameterAsDouble(parameters, LasCanopy.HEIGHT_CUTOFF, context)
+        height_cutoff = self.parameterAsDouble(parameters, self.HEIGHT_CUTOFF, context)
         if height_cutoff != 1.37:
             commands.append("-height_cutoff")
             commands.append(str(height_cutoff))
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT1, context)
+        product = self.parameterAsInt(parameters, self.PRODUCT1, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT2, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT2, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT3, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT3, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT4, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT4, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT5, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT5, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT6, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT6, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT7, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT7, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT8, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT8, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopy.PRODUCT9, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT9, context)
         if product != 0:
-            commands.append("-" + LasCanopy.PRODUCTS[product])
-        array = self.parameterAsString(parameters, LasCanopy.COUNTS, context).split()
+            commands.append("-" + self.PRODUCTS[product])
+        array = self.parameterAsString(parameters, self.COUNTS, context).split()
         if len(array) > 1:
             commands.append("-c")
             for a in array:
                 commands.append(a)
-        array = self.parameterAsString(parameters, LasCanopy.DENSITIES, context).split()
+        array = self.parameterAsString(parameters, self.DENSITIES, context).split()
         if len(array) > 1:
             commands.append("-d")
             for a in array:
                 commands.append(a)
-        if self.parameterAsBool(parameters, LasCanopy.USE_TILE_BB, context):
+        if self.parameterAsBool(parameters, self.USE_TILE_BB, context):
             commands.append("-use_tile_bb")
-        if self.parameterAsBool(parameters, LasCanopy.FILES_ARE_PLOTS, context):
+        if self.parameterAsBool(parameters, self.FILES_ARE_PLOTS, context):
             commands.append("-files_are_plots")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -278,41 +280,33 @@ class LasCanopyPro(LastoolsAlgorithm):
         self.add_parameters_point_input_merged_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasCanopyPro.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0
+                self.PLOT_SIZE, "square plot size", QgsProcessingParameterNumber.Double, 20.0, False, 0.0
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasCanopyPro.HEIGHT_CUTOFF,
+                self.HEIGHT_CUTOFF,
                 "height cutoff / breast height",
                 QgsProcessingParameterNumber.Double,
                 1.37,
                 False,
             )
         )
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT1, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT2, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT3, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT4, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT5, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT6, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT7, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT8, "create", LasCanopyPro.PRODUCTS, False, 0))
-        self.addParameter(QgsProcessingParameterEnum(LasCanopyPro.PRODUCT9, "create", LasCanopyPro.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT1, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT2, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT3, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT4, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT5, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT6, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT7, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT8, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.PRODUCT9, "create", self.PRODUCTS, False, 0))
+        self.addParameter(QgsProcessingParameterString(self.COUNTS, "count rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
+        self.addParameter(QgsProcessingParameterString(self.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
         self.addParameter(
-            QgsProcessingParameterString(LasCanopyPro.COUNTS, "count rasters (e.g. 2.0 5.0 10.0 20.0)", "")
+            QgsProcessingParameterBoolean(self.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False)
         )
-        self.addParameter(
-            QgsProcessingParameterString(LasCanopyPro.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", "")
-        )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                LasCanopyPro.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasCanopyPro.FILES_ARE_PLOTS, "input files are single plots", False)
-        )
+        self.addParameter(QgsProcessingParameterBoolean(self.FILES_ARE_PLOTS, "input files are single plots", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
@@ -322,57 +316,63 @@ class LasCanopyPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_point_input_merged_commands(parameters, context, commands)
-        plot_size = self.parameterAsDouble(parameters, LasCanopyPro.PLOT_SIZE, context)
+        plot_size = self.parameterAsDouble(parameters, self.PLOT_SIZE, context)
         if plot_size != 20.0:
             commands.append("-step")
             commands.append(str(plot_size))
-        height_cutoff = self.parameterAsDouble(parameters, LasCanopyPro.HEIGHT_CUTOFF, context)
+        height_cutoff = self.parameterAsDouble(parameters, self.HEIGHT_CUTOFF, context)
         if height_cutoff != 1.37:
             commands.append("-height_cutoff")
             commands.append(str(height_cutoff))
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT1, context)
+        product = self.parameterAsInt(parameters, self.PRODUCT1, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT2, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT2, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT3, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT3, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT4, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT4, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT5, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT5, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT6, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT6, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT7, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT7, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT8, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT8, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        product = self.parameterAsInt(parameters, LasCanopyPro.PRODUCT9, context)
+            commands.append("-" + self.PRODUCTS[product])
+        product = self.parameterAsInt(parameters, self.PRODUCT9, context)
         if product != 0:
-            commands.append("-" + LasCanopyPro.PRODUCTS[product])
-        array = self.parameterAsString(parameters, LasCanopyPro.COUNTS, context).split()
+            commands.append("-" + self.PRODUCTS[product])
+        array = self.parameterAsString(parameters, self.COUNTS, context).split()
         if len(array) > 1:
             commands.append("-c")
             for a in array:
                 commands.append(a)
-        array = self.parameterAsString(parameters, LasCanopyPro.DENSITIES, context).split()
+        array = self.parameterAsString(parameters, self.DENSITIES, context).split()
         if len(array) > 1:
             commands.append("-d")
             for a in array:
                 commands.append(a)
-        if self.parameterAsBool(parameters, LasCanopyPro.USE_TILE_BB, context):
+        if self.parameterAsBool(parameters, self.USE_TILE_BB, context):
             commands.append("-use_tile_bb")
-        if self.parameterAsBool(parameters, LasCanopyPro.FILES_ARE_PLOTS, context):
+        if self.parameterAsBool(parameters, self.FILES_ARE_PLOTS, context):
             commands.append("-files_are_plots")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)

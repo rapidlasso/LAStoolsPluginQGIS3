@@ -4,8 +4,8 @@
 ***************************************************************************
     lasthin.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -49,7 +49,7 @@ class LasThin(LastoolsAlgorithm):
         self.add_parameters_ignore_class2_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasThin.THIN_STEP,
+                self.THIN_STEP,
                 "size of grid used for thinning",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -58,13 +58,11 @@ class LasThin(LastoolsAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasThin.OPERATION, "keep particular point per cell", LasThin.OPERATIONS, False, 0
-            )
+            QgsProcessingParameterEnum(self.OPERATION, "keep particular point per cell", self.OPERATIONS, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasThin.THRESHOLD_OR_INTERVAL_OR_PERCENTILE,
+                self.THRESHOLD_OR_INTERVAL_OR_PERCENTILE,
                 "adaptive threshold, contour intervals, or percentile",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -73,13 +71,11 @@ class LasThin(LastoolsAlgorithm):
                 100.0,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasThin.WITHHELD, "mark thinned-away points as withheld", False)
-        )
-        self.addParameter(QgsProcessingParameterBoolean(LasThin.CLASSIFY_AS, "classify surviving points as", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.WITHHELD, "mark thinned-away points as withheld", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLASSIFY_AS, "classify surviving points as", False))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasThin.CLASSIFY_AS_CLASS, "classification code", QgsProcessingParameterNumber.Integer, 8, False, 0, 255
+                self.CLASSIFY_AS_CLASS, "classification code", QgsProcessingParameterNumber.Integer, 8, False, 0, 255
             )
         )
         self.add_parameters_additional_gui()
@@ -87,26 +83,30 @@ class LasThin(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        step = self.parameterAsDouble(parameters, LasThin.THIN_STEP, context)
+        step = self.parameterAsDouble(parameters, self.THIN_STEP, context)
         if step != 1.0:
             commands.append("-step")
             commands.append(str(step))
-        operation = self.parameterAsInt(parameters, LasThin.OPERATION, context)
+        operation = self.parameterAsInt(parameters, self.OPERATION, context)
         if operation != 0:
             commands.append("-" + self.OPERATIONS[operation])
         if operation >= 4:
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasThin.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context))
-            )
-        if self.parameterAsBool(parameters, LasThin.WITHHELD, context):
+            commands.append(str(self.parameterAsDouble(parameters, self.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context)))
+        if self.parameterAsBool(parameters, self.WITHHELD, context):
             commands.append("-withheld")
-        if self.parameterAsBool(parameters, LasThin.CLASSIFY_AS, context):
+        if self.parameterAsBool(parameters, self.CLASSIFY_AS, context):
             commands.append("-classify_as")
-            commands.append(str(self.parameterAsInt(parameters, LasThin.CLASSIFY_AS_CLASS, context)))
+            commands.append(str(self.parameterAsInt(parameters, self.CLASSIFY_AS_CLASS, context)))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
@@ -161,7 +161,7 @@ class LasThinPro(LastoolsAlgorithm):
         self.add_parameters_ignore_class2_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasThinPro.THIN_STEP,
+                self.THIN_STEP,
                 "size of grid used for thinning",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -170,13 +170,11 @@ class LasThinPro(LastoolsAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasThinPro.OPERATION, "keep particular point per cell", LasThinPro.OPERATIONS, False, 0
-            )
+            QgsProcessingParameterEnum(self.OPERATION, "keep particular point per cell", self.OPERATIONS, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasThinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE,
+                self.THRESHOLD_OR_INTERVAL_OR_PERCENTILE,
                 "adaptive threshold, contour intervals, or percentile",
                 QgsProcessingParameterNumber.Double,
                 1.0,
@@ -185,13 +183,11 @@ class LasThinPro(LastoolsAlgorithm):
                 100.0,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasThinPro.WITHHELD, "mark thinned-away points as withheld", False)
-        )
-        self.addParameter(QgsProcessingParameterBoolean(LasThinPro.CLASSIFY_AS, "classify surviving points as", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.WITHHELD, "mark thinned-away points as withheld", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLASSIFY_AS, "classify surviving points as", False))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasThinPro.CLASSIFY_AS_CLASS,
+                self.CLASSIFY_AS_CLASS,
                 "classification code",
                 QgsProcessingParameterNumber.Integer,
                 8,
@@ -208,26 +204,30 @@ class LasThinPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        step = self.parameterAsDouble(parameters, LasThinPro.THIN_STEP, context)
+        step = self.parameterAsDouble(parameters, self.THIN_STEP, context)
         if step != 1.0:
             commands.append("-step")
             commands.append(str(step))
-        operation = self.parameterAsInt(parameters, LasThinPro.OPERATION, context)
+        operation = self.parameterAsInt(parameters, self.OPERATION, context)
         if operation != 0:
             commands.append("-" + self.OPERATIONS[operation])
         if operation >= 4:
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasThinPro.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context))
-            )
-        if self.parameterAsBool(parameters, LasThinPro.WITHHELD, context):
+            commands.append(str(self.parameterAsDouble(parameters, self.THRESHOLD_OR_INTERVAL_OR_PERCENTILE, context)))
+        if self.parameterAsBool(parameters, self.WITHHELD, context):
             commands.append("-withheld")
-        if self.parameterAsBool(parameters, LasThinPro.CLASSIFY_AS, context):
+        if self.parameterAsBool(parameters, self.CLASSIFY_AS, context):
             commands.append("-classify_as")
-            commands.append(str(self.parameterAsInt(parameters, LasThinPro.CLASSIFY_AS_CLASS, context)))
+            commands.append(str(self.parameterAsInt(parameters, self.CLASSIFY_AS_CLASS, context)))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)

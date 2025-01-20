@@ -2,7 +2,7 @@
 name=LAStools
 qgisMinimumVersion=3.2
 description=batch-scriptable, multicore command-line tools for processing point clouds in LAS, LAZ, and ASCII formats
-version=2.1.1
+version=2.2.0
 author=rapidlasso GmbH
 email=info@rapidlasso.de
 icon=lastools/assets/img/lastools.png
@@ -18,7 +18,7 @@ tracker=http://github.com/rapidlasso/LAStoolsPluginQGIS3/issues
 repository=http://github.com/rapidlasso/LAStoolsPluginQGIS3
 
 
-tags=LAS,LAZ,LiDAR,PhoDAR,pointclouds,points,pointcloud,DEM,DTM,DSM,CHM,contours,LAStools
+tags=LAS, LAZ, LiDAR, PhoDAR, pointclouds, points, pointcloud, DEM, DTM, DSM, CHM, contours, LAStools, processing, classification, pre-processing, point cloud, filtering
 
 
 about=
@@ -26,6 +26,13 @@ about=
 
 
 changelog=
+    2.2.0:
+    - new tools: lascopy, lasdistance, lasduplicate, lasoptimize, lasplanes, lasprecision, lasprobe, lasreturn, lassort, lasvoxel, e572las
+    - run in 64bit mode by default
+    - blast2dem64 support
+    - las2txt: Option to write column header into output file
+    - lasinfo: Option to output informations as JSON
+    - link all tools to new online reference
     2.1.1:
     - include ".exe" at wine commands
     2.1.0:

@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    las2shp.py
+    lasoptimize.py
     ---------------------
     Date                 : January 2025
-    Copyright            : (c) 2025 by rapidlasso GmbH
+    Copyright            : (C) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -19,42 +19,44 @@
 
 __author__ = "rapidlasso"
 __date__ = "January 2025"
-__copyright__ = "(c) 2025, rapidlasso GmbH"
+__copyright__ = "(C) 2025, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber
+
+# QgsProcessingParameterNumber, QgsProcessingParameterString, QgsProcessingParameterEnum,
+from qgis.core import QgsProcessingParameterBoolean
 
 from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
-class Las2Shp(LastoolsAlgorithm):
-    TOOL_NAME = "Las2Shp"
-    LASTOOL = "las2shp"
-    LICENSE = "c"
+class LasOptimize(LastoolsAlgorithm):
+    TOOL_NAME = "LasOptimize"
+    LASTOOL = "lasoptimize"
+    LICENSE = "f"
     LASGROUP = 2
-    POINT_Z = "POINT_Z"
-    RECORD_SIZE = "RECORD_SIZE"
+    ARGAPPEND = "ARGAPPEND"
+    ARGNOLAX = "ARGNOLAX"
+    ARGNOFLU = "ARGNOFLU"
+    ARGNOMEVL = "ARGNOMEVL"
+    ARGNOREPA = "ARGNOREPA"
+    ARGNOOFFS = "ARGNOOFFS"
+    ARGNOZUD = "ARGNOZUD"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterBoolean(self.POINT_Z, "use PointZ instead of MultiPointZ", False))
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.RECORD_SIZE,
-                "number of points per record",
-                QgsProcessingParameterNumber.Integer,
-                1024,
-                False,
-                0,
-                65536,
-            )
-        )
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGAPPEND, "append LAX index to existing file", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGNOLAX, "do not create index file", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGNOFLU, "do not eliminate point scale fluff", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGNOMEVL, "do not move EVLRs", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGNOREPA, "do not remove padding", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGNOOFFS, "do not auto reoffset", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.ARGNOZUD, "do not zero user data", False))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
-        self.add_parameters_generic_output_gui("Output SHP file", "shp", True)
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         commands = [
@@ -65,20 +67,28 @@ class Las2Shp(LastoolsAlgorithm):
             )
         ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, self.POINT_Z, context):
-            commands.append("-single_points")
-        record_size = self.parameterAsInt(parameters, self.RECORD_SIZE, context)
-        if record_size != 1024:
-            commands.append("-record_size")
-            commands.append(str(record_size))
+        if self.parameterAsBool(parameters, self.ARGAPPEND, context):
+            commands.append("-append")
+        if self.parameterAsBool(parameters, self.ARGNOLAX, context):
+            commands.append("-do_not_create_lax")
+        if self.parameterAsBool(parameters, self.ARGNOFLU, context):
+            commands.append("-do_not_eliminate_fluff")
+        if self.parameterAsBool(parameters, self.ARGNOMEVL, context):
+            commands.append("-do_not_move_EVLRs")
+        if self.parameterAsBool(parameters, self.ARGNOREPA, context):
+            commands.append("-do_not_remove_padding")
+        if self.parameterAsBool(parameters, self.ARGNOOFFS, context):
+            commands.append("-do_not_set_nice_offset")
+        if self.parameterAsBool(parameters, self.ARGNOZUD, context):
+            commands.append("-do_not_zero_user_data")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
+        self.add_parameters_point_output_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
-        return Las2Shp()
+        return LasOptimize()
 
     def name(self):
         return self.TOOL_NAME

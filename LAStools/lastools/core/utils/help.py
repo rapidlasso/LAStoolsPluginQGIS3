@@ -35,7 +35,7 @@ licence = {
 
 
 def readme_url(lastool):
-    return f"https://downloads.rapidlasso.de/readme/{lastool}_README.md"
+    return f"https://downloads.rapidlasso.de/html/{lastool}_README.html"
 
 
 def readme_link(lastool):
@@ -152,16 +152,24 @@ txt_las2txt_intro = f"""
 {txt_las2txt_short}.<br>This can be used to modify lidar data external and convert them back to LAS/LAZ using txt2las.
 """
 txt_txt2las_short = f"Converts ASCII files to binary LAS or compressed LAZ file"
-txt_txt2las_intro = f"""{txt_txt2las_short}.<br>Use the parse string to define the ascii content or use the column headers in the file.
+txt_txt2las_intro = f"""{txt_txt2las_short}.<br>Use the parse string to define the ascii content or use the column headers in the file."""
+txt_e572las_short = f"Converts 3D point files in E57 format to binary LAS/LAZ format"
+txt_e572las_intro = f"""{txt_e572las_short}.<br>By default all scans contained in the E57 file are merged into one output with all invalid points being omitted. The points of different scans are given different point source IDs so that the information which points belong to one scan is preserved.  It's possible to request '-split_scans' and '-include_invalid' to put points from different scans into separate files and/or to include invalid points as well.<br>Sample data can be found at <a href="http://www.libe57.org/data.html">libe57.org</a>.
+By default the tool will apply transformations and/or rotations that it find stored in the pose of each scan. You can ask the tool not to apply those with '-no_pose'. To selevtively suppress only transformation or rotation use '-no_transformation' or '-no_rotation'<br>This tool does not support multiple file input. Batch conversion can be done using a batch file like
+{fop}:: convert all *.e57 files to *.laz<br>for %%f in (*.e57) do if not exist %%~nf.laz e572las -i %%f -olaz{fcc}
 """
 txt_las2shp_short = f"Converts LIDAR from LAS/LAZ/ASCII to ESRI’s Shapefile format by grouping consecutive points into MultiPointZ records"
-txt_shp2las_short = f"Converts from points from ESRI’s Shapefile to LAS/LAZ/ASCII format, given the input, contains Points or MultiPoints."
+txt_shp2las_short = f"Converts from points from ESRI’s Shapefile to LAS/LAZ/ASCII format, given the input, contains Points or MultiPoints"
+txt_lasplanes_short = f"Finds sufficiently planar patches of LAS/LAZ points"
+txt_shp2las_short = f"Converts from points from ESRI’s Shapefile to LAS/LAZ/ASCII format, given the input, contains Points or MultiPoints"
 txt_las3dpoly_rad_short = f"Modifies points within a certain radial distance of 3D polylines"
 txt_las3dpoly_xy_short = f"Modifies points within a certain horizontal and vertical distance of 3D polylines"
 txt_las3dpoly_intro = f"""
 This tool modifies points within a certain distance of polylines. As an input take, for example, a LAS/LAZ/TXT file and a SHP/TXT file with one or many polylines (e.g. powerlines) by specify a radial distance to the 3D polygon. Affected points can be classified, clipped, or flagged.<br>The input SHP/TXT file must contain clean polygons or polylines that are free of self-intersections, duplicate points, and/or overlaps and they must all form closed loops (e.g. the last and first point should be identical).
-An input 'line.csv' may look like-10,0,0<br>10,0,0<br>0,0,0<br>0,-10,0<br>0,10,0<br>
-"""
+An input 'line.csv' may look like-10,0,0<br>10,0,0<br>0,0,0<br>0,-10,0<br>0,10,0"""
+txt_lasdistance_short = f"Classifies, flags, or remove points within a specified distance of polygonal segments"
+txt_lasdistance_intro = f"""
+The distance is calculated on a grid with a spacing of 0.5 meters by default. With '-step_xy 1.0' the granularity of this grid can be adjusted up or down."""
 txt_lasintensity_short = f"corrects the intensity attenuation due to atmospheric absorption"
 txt_lasintensity_intro = f"""
 {txt_lasintensity_short}.
@@ -172,6 +180,9 @@ txt_lasindex_short = "Creates an index file (*.lax) about a LAS/LAZ file"
 txt_index_intro = f"""
 {txt_lasindex_short}. The file contains spatial indexing information. When this LAX file is present it will be used to speed up access to the relevant areas of the LAS/LAZ file.                   
 """
+txt_lasprobe_short = (
+    f"Probes the elevation of the LIDAR for a given x and y location and reports it to a text file or to stdout"
+)
 txt_merge_short = f"Merge multiple LiDAR files into one"
 txt_merge_intro = f"""
 This is a handy tool to merge multiple LiDAR files into one. However, we usually discourage this practice as this can also be achieved on-the-fly with the ‘-merged’ option in any of the other LAStools without creating a second copy on disk. In addition this tools allows splitting larger files into smaller subsets each containing a user-specified number of points.
@@ -180,96 +191,85 @@ txt_lasoverage_short = f"Finds “overage” points that get covered by more tha
 txt_lasoverage_intro = f"""
 Reads LiDAR points of an airborne collect and finds the “overage” points that get covered by more than a single flightline. It either marks these overage points or removes them from the output files. The tool requires that the files either have the flightline information stored for each point in the point source ID field (e.g. for tiles containing overlapping flightlines) or that there are multiple files where each corresponds to a flight line (‘-files_are_flightlines’). It is also required that the scan angle field of each point is properly populated.
 """
-txt_lasboundary_short = f"Computes a boundary polygon that encloses LIDAR points."
-txt_lasboundary_intro = f"""
-{txt_lasboundary_short}.
-Reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”.
-    """
+txt_lasboundary_short = f"Computes a boundary polygon that encloses LIDAR points"
+txt_lasboundary_intro = f"""{txt_lasboundary_short}.
+Reads LIDAR from LAS/LAZ/ASCII files and computes a boundary polygon that encloses the points. By default this is a joint concave hull where “islands of points” are connected by edges that are traversed in each direction once. Optionally a disjoint concave hull is computed with the ‘-disjoint’ flag. This can lead to multiple hulls in case of islands. Note that tiny islands of the size of one or two LIDAR points that are too small to form a triangle will be “lost”."""
 txt_lasclip_short = f"Clip LIDAR data by polygons"
+txt_lasreturn_short = f"Reports geometric returns statistics and repairs ‘number of returns’ field"
+txt_lasreturn_intro = f"""Reports geometric return statistics for multi-return pulses and repairs the 'number of returns' field based on GPS times. Note that input files need (currently) to be sorted based on their GPS time stamp. It can also compute the 3D distance (or gaps) between subsequent returns of the same pulse. It can also check for missing or duplicate returns per laser shot and create output files where the problematic groups of returns are marked."""
+txt_lassort_short = f"Sorts LIDAR data by elevation, gps_time or point_source"
+txt_lassort_intro = f"""sorts the points of a LAS file into z-order arranged cells of a square quad tree and saves them into LAS or LAZ format. This is useful to bucket together returns from different swaths or to merge first and last returns that were stored in separate files.For standard LAS/LAZ files one simply chooses a -bucket_size to specify the resolution of finest quad tree cell. A bucket size of, for example, 5 creates 5x5 unit buckets. The z-order traversal of the quad tree creates implicit "finalization tags" that can later be used for streaming processing.<br>For LAS/LAZ files that are part of a tiling that was created with lastile it is beneficial to specify the resolution via the number of -levels of subtiling this tile. This has the advantage that both the tiling and the subtiling can be used during streaming processing.<br>Another option is -average to coarsen the resolution of the quadtree until the average number of points per cell is as specified.<br>The square quad tree used by lassort can (eventually) be exploited by "streaming TIN" generation code to seamlessly Delaunay triangulate large LAS/LAZ files (or large amounts of LAS/LAZ tiles) in a highly memory-efficient fashion. For that purpose, lassort either adds (or updates) a small VLR to the header the generated LAS/LAZ file.<br>Large amounts of LAS data should first be sorted into tiles with lastile - which operates out-of-core - because lassort does its bucket sort in memory.<br>Alternatively lassort can sort a LAS/LAZ file in GPS time order or in a point source ID order (or first sort by point source IDs and then by time)."""
 txt_lastile_short = f"Tiles LIDAR points into tiles"
-txt_lastile_intro = f"""
-Tiles a potentially very large amount of LAS/LAZ/ASCII points from one  or many files into square non-overlapping tiles of a specified size and save them into LAS or LAZ format. Optionally the tool can also create a small ‘-buffer 10’ around every tile where the parameter 10 specifies the number of units each tile is (temporarily) grown in each direction. It is possible to remove the buffer from a tile by running with ‘-remove_buffer’ option. You may also flag the points that fall into the buffer with the new ‘-flag_as_withheld’ or ‘-flag_as_synthetic’ options. If you spatially index your input files using lasindex you may also run lastile on multiple processors with the ‘-cores 4’ option.
-"""
+txt_lastile_intro = f"""Tiles a potentially very large amount of LAS/LAZ/ASCII points from one  or many files into square non-overlapping tiles of a specified size and save them into LAS or LAZ format. Optionally the tool can also create a small ‘-buffer 10’ around every tile where the parameter 10 specifies the number of units each tile is (temporarily) grown in each direction. It is possible to remove the buffer from a tile by running with ‘-remove_buffer’ option. You may also flag the points that fall into the buffer with the new ‘-flag_as_withheld’ or ‘-flag_as_synthetic’ options. If you spatially index your input files using lasindex you may also run lastile on multiple processors with the ‘-cores 4’ option."""
 txt_lassplit_short = f"Splits LAS or LAZ files into multiple files"
-txt_lassplit_intro = f"""
-{txt_lassplit_short} based on some criteria. By default it splits the points into separate files based on the ‘point source ID’ field that usually contains the flightline ID.
-"""
-txt_lasnoise_short = f"Flags or removes noise points in LAS or LAZ files."
-txt_lasnoise_intro = f"""
-This tool flags or removes noise points in LAS/LAZ/BIN/ASCII files. The tool looks for isolated points according to certain criteria that can be modified via ‘-step 3’ and ‘-isolated 3’ as needed. The default for step is 4 and for isolated is 5. It is possible to specify the xy and the z size of the 27 cells separately with ‘-step_xy 2’ and ‘-step_z 0.3’ which would create cells of size 2 by 2 by 0.3 units.
+txt_lassplit_intro = f"""{txt_lassplit_short} based on some criteria. By default it splits the points into separate files based on the ‘point source ID’ field that usually contains the flightline ID."""
+txt_lasnoise_short = f"Flags or removes noise points in LAS or LAZ files"
+txt_lasnoise_intro = f"""{txt_lasnoise_short}. The tool looks for isolated points according to certain criteria that can be modified via ‘-step 3’ and ‘-isolated 3’ as needed. The default for step is 4 and for isolated is 5. It is possible to specify the xy and the z size of the 27 cells separately with ‘-step_xy 2’ and ‘-step_z 0.3’ which would create cells of size 2 by 2 by 0.3 units.
 The tool tries to find points that have only few other points in their surrounding 3 by 3 by 3 grid of cells with the cell the respective point falls into being in the center. The size of each of the 27 cells is set with the ‘-step 5’ parameter. The maximal number of few other points in the 3 by 3 by 3 grid still designating a point as isolated is set with ‘-isolated 6’.
-By default the noise points are given the classification code 7 (low or high noise). Using the ‘-remove_noise’ flag will instead remove them from the output file. Alternatively with the ‘-classify_as 31’ switch a different classification code can be selected. Another option is the ‘-flag_as_withheld’ switch which sets the withheld flag on the points identified as noise.
-"""
+By default the noise points are given the classification code 7 (low or high noise). Using the ‘-remove_noise’ flag will instead remove them from the output file. Alternatively with the ‘-classify_as 31’ switch a different classification code can be selected. Another option is the ‘-flag_as_withheld’ switch which sets the withheld flag on the points identified as noise."""
 txt_lasdiff_short = (
-    f"Compares the LIDAR data of two LAS/LAZ/ASCII files and reports whether they are identical or different."
+    f"Compares the LIDAR data of two LAS/LAZ/ASCII files and reports whether they are identical or different"
 )
 txt_lasground_short = f"Tool for bare-earth extraction"
-txt_lasground_intro = f"""
-{txt_lasground_short}: It classifies the LiDAR points into ground points (class = 2) and non-ground points (class = 1). The tools works very well in natural environments such as mountains, forests, fields, hills, and even steep terrain but also gives excellent results in towns or cities.
-"""
+txt_lasground_intro = f"""{txt_lasground_short}: It classifies the LiDAR points into ground points (class = 2) and non-ground points (class = 1). The tools works very well in natural environments such as mountains, forests, fields, hills, and even steep terrain but also gives excellent results in towns or cities."""
 txt_lasgroundnew_short = f"This is a redesigned tool for bare-earth extraction"
-txt_lasgroundnew_intro = f"""
-{txt_lasgroundnew_short}. It classifies LIDAR points into ground points (class = 2) and non-ground points (class = 1). This is a totally redesigned version of lasground that handles complicated terrain much better where there are steep mountains nearby urban areas with many buildings.
-"""
+txt_lasgroundnew_intro = f"""{txt_lasgroundnew_short}. It classifies LIDAR points into ground points (class = 2) and non-ground points (class = 1). This is a totally redesigned version of lasground that handles complicated terrain much better where there are steep mountains nearby urban areas with many buildings."""
 txt_lasclassify_short = f"Classify buildings and high vegetation"
-txt_lasclassify_intro = f"""
-{txt_lasclassify_short} (i.e. trees) in LAS/LAZ files. This tool requires that the bare-earth points have already been identified (e.g. with lasground) and that the elevation of each point above the ground was already computed with lasheight.
-"""
+txt_lasclassify_intro = f"""{txt_lasclassify_short} (i.e. trees) in LAS/LAZ files. This tool requires that the bare-earth points have already been identified (e.g. with lasground) and that the elevation of each point above the ground was already computed with lasheight."""
 txt_lasthin_short = f"A simple LIDAR thinning algorithm"
-txt_lasthin_intro = f"""
-{txt_lasthin_short} for LAS/LAZ/ASCII. It places a uniform grid over the points and within each grid cell keeps only the point with the lowest (or ‘-highest’) Z coordinate a -random’ point per cell or the most ‘-central’ one. When keeping ‘-random’ points you can in addition specify a ‘-seed 232’ for the random generator. Instead of removing the thinned out points from the output file you can also flag them with ‘-flag_as_withheld’ or ‘-flag_as_keypoint’. Then you can use the standard ‘-drop_withheld’ or ‘-keep_withheld’ filters to get either the thinned points or their complement.
-    """
+txt_lasthin_intro = f"""{txt_lasthin_short} for LAS/LAZ/ASCII. It places a uniform grid over the points and within each grid cell keeps only the point with the lowest (or ‘-highest’) Z coordinate a -random’ point per cell or the most ‘-central’ one. When keeping ‘-random’ points you can in addition specify a ‘-seed 232’ for the random generator. Instead of removing the thinned out points from the output file you can also flag them with ‘-flag_as_withheld’ or ‘-flag_as_keypoint’. Then you can use the standard ‘-drop_withheld’ or ‘-keep_withheld’ filters to get either the thinned points or their complement.    """
 txt_las2dem_short = f"Triangulates LIDAR points from LAS/LAZ to TIN and DEM"
-txt_las2dem_intro = f"""
-{txt_las2dem_short}. Triangulates LIDAR points from the LAS/LAZ format (or some ASCII format) into a temporary TIN and then rasters the TIN to create a DEM. The tool can either raster the ‘-elevation’, the ‘-slope’, the ‘-intensity’, the ‘-rgb’ values, or a ‘-hillshade’ or ‘-gray’ or ‘-false’ coloring. The output is either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format. 
-    """
+txt_las2dem_intro = f"""{txt_las2dem_short}. Triangulates LIDAR points from the LAS/LAZ format (or some ASCII format) into a temporary TIN and then rasters the TIN to create a DEM. The tool can either raster the ‘-elevation’, the ‘-slope’, the ‘-intensity’, the ‘-rgb’ values, or a ‘-hillshade’ or ‘-gray’ or ‘-false’ coloring. The output is either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format."""
 txt_las2iso_short = f"Extracts elevation contours to SHP/KML/WKT/TXT format"
-txt_las2iso_intro = f"""
-{txt_las2iso_short}. The tool reads LIDAR points from LAS/LAZ/ASCII (or rasters from ASC/BIL/DTM format) and extracts a set of particular elevation contours in SHP/KML/WKT/TXT format. The user may specify to extract contours every 5 meters or only for individual elevation values. The contours can be smoothed or simplified on demand and hydro breaklines can be specified as well. las2iso can handle files up to about 20 mio. points.
-"""
+txt_las2iso_intro = f"""{txt_las2iso_short}. The tool reads LIDAR points from LAS/LAZ/ASCII (or rasters from ASC/BIL/DTM format) and extracts a set of particular elevation contours in SHP/KML/WKT/TXT format. The user may specify to extract contours every 5 meters or only for individual elevation values. The contours can be smoothed or simplified on demand and hydro breaklines can be specified as well. las2iso can handle files up to about 20 mio. points."""
 txt_lasgrid_short = f"Raster huge LiDAR collections into grids by elevation, intensity or many other parameters"
-txt_lasgrid_intro = f"""
-{txt_lasgrid_short}. The most important parameter ‘-step n’ specifies the n x n area that of LiDAR points that are gridded on one raster cell (or pixel). The output is either in BIL, ASC, IMG, TIF, PNG, JPG, XYZ, FLT, or DTM format. The tool can raster the ‘-elevation’ or the ‘-intensity’ of each point and stores the ‘-lowest’ or the ‘-highest’, the ‘-average’, or the standard deviation ‘-stddev’. Other gridding options are ‘-scan_angle_abs’, ‘-counter’, ‘-counter_16bit’, ‘-counter_32bit’, ‘-user_data’, ‘-point_source’, and others.
-    """
+txt_lasgrid_intro = f"""{txt_lasgrid_short}. The most important parameter ‘-step n’ specifies the n x n area that of LiDAR points that are gridded on one raster cell (or pixel). The output is either in BIL, ASC, IMG, TIF, PNG, JPG, XYZ, FLT, or DTM format. The tool can raster the ‘-elevation’ or the ‘-intensity’ of each point and stores the ‘-lowest’ or the ‘-highest’, the ‘-average’, or the standard deviation ‘-stddev’. Other gridding options are ‘-scan_angle_abs’, ‘-counter’, ‘-counter_16bit’, ‘-counter_32bit’, ‘-user_data’, ‘-point_source’, and others."""
 txt_lasheight_short = f"Computes the height of each point above the ground"
-txt_lasheight_intro = f"""
-{txt_lasheight_short}. This assumes that grounds points have already been ground-classified (with standard classification 2 or selected with ‘-class 31’ or ‘-classification 8’) so they can be identified to construct a ground TIN. The ground points can also be in an separate file ‘-ground_points ground.las’ or ‘-ground_points dtm.csv -parse ssxyz’. By default the resulting heights are quantized, scaled with a factor of 10, clamped into an unsigned char between 0 and 255, and stored in the “user data” field of each point. Optional other target fields can be defined.
-"""
+txt_lasheight_intro = f"""{txt_lasheight_short}. This assumes that grounds points have already been ground-classified (with standard classification 2 or selected with ‘-class 31’ or ‘-classification 8’) so they can be identified to construct a ground TIN. The ground points can also be in an separate file ‘-ground_points ground.las’ or ‘-ground_points dtm.csv -parse ssxyz’. By default the resulting heights are quantized, scaled with a factor of 10, clamped into an unsigned char between 0 and 255, and stored in the “user data” field of each point. Optional other target fields can be defined."""
 txt_lasheight_class = f"Extra parameters to classify by height above ground."
 txt_lascanopy_short = f"Computes common forestry metrics from height-normalized LiDAR point clouds"
-txt_lascanopy_intro = f"""
-{txt_lascanopy_short}. It can compute canopy density or canopy cover (or gap fractions), height or intensity percentiles, averages, minima, maxima, kurtosis, skewness, standard deviation, and many more.
-"""
+txt_lascanopy_intro = f"""{txt_lascanopy_short}. It can compute canopy density or canopy cover (or gap fractions), height or intensity percentiles, averages, minima, maxima, kurtosis, skewness, standard deviation, and many more."""
 txt_lascolor_short = f"Colors LiDAR points based on imagery that is usually an ortho-photo"
-txt_lascolor_intro = f"""
-{txt_lascolor_short}. The tool computes into which pixel a LAS point is falling and then sets the RGB values accordingly. Currently only the TIF format is supported. The world coordinates need to be either in GeoTIFF tags or in an accompanying *.tfw file.
-"""
+txt_lascolor_intro = f"""{txt_lascolor_short}. The tool computes into which pixel a LAS point is falling and then sets the RGB values accordingly. Currently only the TIF format is supported. The world coordinates need to be either in GeoTIFF tags or in an accompanying *.tfw file."""
 txt_blast2dem_short = (
     f"Rasters billions of LiDAR points via a streaming TIN to elevation, intensity, slope, or RGB grid"
 )
-txt_blast2dem_intro = f"""
-{txt_blast2dem_short}. blast2dem is almost identical to las2dem except that it can process much much larger inputs. While las2dem operates in-core and is therefore limited to a maximum of around 20 million points, blast2dem utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools. 
+txt_blast2dem_intro = f"""{txt_blast2dem_short}. blast2dem is almost identical to las2dem except that it can process much much larger inputs. While las2dem operates in-core and is therefore limited to a maximum of around 20 million points, blast2dem utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools. 
 """
 txt_blast2iso_short = f"Contours billions of LiDAR points via a streaming TIN to isolines in KML or SHP format"
-txt_blast2iso_intro = f"""
-{txt_blast2iso_short}. blast2iso is almost identical to las2iso except that it can extract elevation contours from much much larger inputs. While las2iso operates in-core and is therefore limited to a maximum of around 20 million points, blast2iso utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools.
-"""
+txt_blast2iso_intro = f"""{txt_blast2iso_short}. blast2iso is almost identical to las2iso except that it can extract elevation contours from much much larger inputs. While las2iso operates in-core and is therefore limited to a maximum of around 20 million points, blast2iso utilizes unique “streaming TIN” technology and can seamlessly process up to 2 billion points. This tool is part of the BLAST extension of LAStools."""
 txt_lasinfo_short = f"Report all content of a LAS/LAZ file header"
-txt_lasinfo_intro = f"""
-{txt_lasinfo_short}. This is a handy tool report the contents of the header, the VLRs, and a short summary of the min and max values of the points for LAS/LAZ files. The tool warns when there is a difference between the header information and the point content for counters and bounding box extent. 
-"""
+txt_lasinfo_intro = f"""{txt_lasinfo_short}. This is a handy tool report the contents of the header, the VLRs, and a short summary of the min and max values of the points for LAS/LAZ files. The tool warns when there is a difference between the header information and the point content for counters and bounding box extent."""
 txt_lasoverlap_short = f"Computes the flight line overlap and alignment of LIDAR points"
-txt_lasoverlap_intro = f"""
-{txt_lasoverlap_short}. Reads LIDAR points from LAS/LAZ or ASCII files and computes the flight line overlap and/or the vertical and horizontal alignment. The output rasters can either be a color coded visual illustration of the level of overlap or the differences or the actual values and can be either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format.
-    """
+txt_lasoverlap_intro = f"""{txt_lasoverlap_short}. Reads LIDAR points from LAS/LAZ or ASCII files and computes the flight line overlap and/or the vertical and horizontal alignment. The output rasters can either be a color coded visual illustration of the level of overlap or the differences or the actual values and can be either in BIL, ASC, IMG, FLT, XYZ, DTM, TIF, PNG or JPG format."""
 txt_lascontrol_short = f"Computes the elevation of LiDAR data at specific x/y control points"
-txt_lascontrol_intro = f"""
-{txt_lascontrol_short}. Reports the difference in respect to the control point elevation. The tool reads LiDAR in LAS/LAZ/ASCII format, triangulates the relevant points around the control points into a TIN.
-"""
+txt_lascontrol_intro = f"""{txt_lascontrol_short}. Reports the difference in respect to the control point elevation. The tool reads LiDAR in LAS/LAZ/ASCII format, triangulates the relevant points around the control points into a TIN."""
+txt_lasduplicate_short = f"Removes duplicate LiDAR points with identical x,y and optionally z coordinates"
+txt_lasduplicate_intro = f"""{txt_lasduplicate_short}. In the default mode those are xy-duplicate points that have identical x and y coordinates. The first point survives, all subsequent duplicates are removed. It is also possible to keep the lowest points amongst all xy-duplicates via '-lowest_z'.
+It is also possible to remove only xyz-duplicates points that have all x, y and z coordinates identical via '-unique_xyz'.
+Another option is to identify '-nearby 0.005' points into one so that multiple returns within a specified distance become a single return. Given all pairs of points p1 and p2 (with p1 being before p2 in the file), point p2 will not be part of the output if these three conditions on their quantized coordinates are true
+1. |p1.qx - p2.qx| <= 1
+2. |p1.qy - p2.qy| <= 1
+3. |p1.qz - p2.qz| <= 1
+after quantizing them as follows based on the '-nearby d' value
+  p1.qx = round(p1.x / d)     p2.qx = round(p2.x / d)
+  p1.qy = round(p1.y / d)     p2.qy = round(p2.y / d)
+  p1.qz = round(p1.z / d)     p2.qz = round(p2.z / d)
+The special option '-single_returns' was added particularly to reconstruct the single versus multiple return information for the (unfortunate) case that the LiDAR points were delivered in two separate files with some points appearing in both. These LiDAR points may be split into all first return and all last returns or into all first returns and all ground returns. See the example below how to deal with this case correctly.<br>The removed points can also be recorded to a LAZ file with the option '-record_removed'."""
+txt_lasprecision_short = f"Finds the actual precision of LiDAR points and allows to correct the scaling if necessary"
+txt_lasprecision_intro = f"""{txt_lasprecision_short}. Reads LIDAR data in the LAS/LAZ format and computes statistics that tell us whether the precision "advertised" in the header is really in the data."""
 txt_lasvalidate_short = f"Determine if LAS files conform to the ASPRS LAS specifications"
-txt_lasvalidate_intro = f"""
-A simple tool to validate whether a single or a folder of LAS or LAZ files conform to the LAS specification of the ASPRS.
-"""
+txt_lasvalidate_intro = f"""A simple tool to validate whether a single or a folder of LAS or LAZ files conform to the LAS specification of the ASPRS."""
+txt_lasoptimize_short = f"Optimize, compress and spatially index LiDAR files before distribution"
+txt_lasoptimize_intro = f"""{txt_lasoptimize_short}.
+Optimizes LiDAR stored in binary LAS or LAZ format (1.0 - 1.4) for better compression and spatial coherency. Especially useful prior to distributing LiDAR via data portals to lower bandwidth and storage but also accelerate subsequent exploitation.<br>In the default setting the tool will do the following:<br>- remove fluff in coordinate resolution (i.e. when all X, Y, or Z coordinates are multiples of 10, 100, or 1000).<br>- remove any additional padding in the LAS header or before the point block<br>- set nicely rounded offsets in the LAS header<br>- zero the contents of the user data field<br>- turn (sufficiently small) EVLRs into VLRs (LAS 1.4 only)<br>- rearrange points for better compression and spatial indexing<br>Arguments allows turning off the options."""
+txt_lascopy_short = f"Copies selected point attributes from a reference file to a target file"
+txt_lascopy_intro = f"""{txt_lascopy_short}.
+Merging the data is done by a match key. The key is GPS time and return number by default but can be also other or a combination of fields.
+See the -match... arguments.<br>By default the selected attributes of the source points are copied to all target points if the two share the exact same combination of key values.
+Selecting attributes to be copied is done by adding one or more '-copy_...' arguments. If no selection is made the classifications are copied.
+By default the points from the target file that have no match in the source file remain unchanged unless the option '-zero' is used that set the selected attributes to 0 instead.
+A simpler copy can be activated with option '-unmatched' which does not check for identical GPS-time and return number but simply copies the requested attribute in the order the point are in."""
 txt_laspublish_short = f"Creates a LiDAR portal for 3D visualization (and optionally also for downloading) of LAS and LAZ files in any modern Web browser"
 txt_laspublish_intro = (
     f'{txt_laspublish_short} using the <a href="https://github.com/potree/potree">WebGL Potree</a> from Markus Schuetz.'
@@ -278,6 +278,7 @@ txt_lasview_short = f"Simple and fast LiDAR visualization tool"
 txt_lasview_intro = f"""
 {txt_lasview_short} that has a number of neat little tricks that may surprise you. It can also edit the classification of the points as well as delete them.<br>As an optional viewer see <a href="https://rapidlasso.de/laslook">laslook</a>, the new GUI workbench for LAStools.
 """
+txt_lasvoxel_short = f"Computes various voxelizations for LiDAR point clouds"
 
 # tools
 lastool_info = {
@@ -404,11 +405,9 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
 {txt_verbose}
 {txt_64bit}
 {head_console_examples}
-    {foe}las2las -i in.laz -translate_xyz 1 2 3 -o out.laz{fcc}<br>translate point coordinates by 1 2 3 units.
-    {foe}las2las -i in.laz -rotate_xy 90 50 6000 -o out.laz{fcc}<br>rotate all points by 90 degrees around the z axis center at 50 6000.  
-    {foe}las2las -i in.las -o out.las -scale_rgb_up{fcc}<br>multiplies all rgb values in the file with 256. this is used to scale the rgb values from standard unsigned char range (0 ... 255) to the unsigned short range (0 ... 65535) used in the LAS format.
-    {foe}las2las -i in.laz -o out.laz -scale_rgb_down{fcc}<br>does the opposite with compressed input and output files
-""",
+{foe}las2las -i in.laz -translate_xyz 1 2 3 -o out.laz{fcc}<br>translate point coordinates by 1 2 3 units.
+{foe}las2las -i in.laz -rotate_xy 90 50 6000 -o out.laz{fcc}<br>rotate all points by 90 degrees around the z axis center at 50 6000.{foe}las2las -i in.las -o out.las -scale_rgb_up{fcc}<br>multiplies all rgb values in the file with 256. this is used to scale the rgb values from standard unsigned char range (0 ... 255) to the unsigned short range (0 ... 65535) used in the LAS format.
+{foe}las2las -i in.laz -o out.laz -scale_rgb_down{fcc}<br>does the opposite with compressed input and output files""",
         "desc": f"{txt_las2las_trans}",
     },
     "Las2LasProTransform": {
@@ -425,9 +424,8 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
 {txt_verbose}
 {txt_64bit}
 {head_console_examples}
-    {foe}las2las -i *.laz -translate_xyz 1 2 3 -odir out -olaz{fcc}<br>translate point coordinates of all input files by 1 2 3 units and save the result to the 'out' directory as compressed LAZ files.
-    {foe}las2las -i *.laz -rotate_xy 90 50 6000 -odir out -olaz{fcc}<br>rotate the points of all input files by 90 degrees around the z axis center at 50 6000 and save the result to the 'out' directory as compressed LAZ files.  
-                """,
+{foe}las2las -i *.laz -translate_xyz 1 2 3 -odir out -olaz{fcc}<br>translate point coordinates of all input files by 1 2 3 units and save the result to the 'out' directory as compressed LAZ files.
+{foe}las2las -i *.laz -rotate_xy 90 50 6000 -odir out -olaz{fcc}<br>rotate the points of all input files by 90 degrees around the z axis center at 50 6000 and save the result to the 'out' directory as compressed LAZ files.""",
         "desc": f"{txt_las2las_trans}",
     },
     "Las2Shp": {
@@ -442,10 +440,22 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
 {txt_verbose}
 {txt_64bit}
 {head_console_examples}
-    {foe}las2shp -i lidar.laz -o shapefile.shp -record 2048{fcc}<br>converts the LAZ file 'lidar.las' to ESRI's Shapefile 'shapefile.shp' using MultiPointZ records containing 2048 points each.
-    {foe}las2shp -lof file_list.txt -merged -o lidar.shp -record 2048{fcc}<br>converts the contents of all LAS files listed in 'file_list.txt' to ESRI's Shapefile format 'lidar.shp' using MultiPointZ records containing 2048 points each.
-                """,
+{foe}las2shp -i lidar.laz -o shapefile.shp -record 2048{fcc}<br>converts the LAZ file 'lidar.las' to ESRI's Shapefile 'shapefile.shp' using MultiPointZ records containing 2048 points each.
+{foe}las2shp -lof file_list.txt -merged -o lidar.shp -record 2048{fcc}<br>converts the contents of all LAS files listed in 'file_list.txt' to ESRI's Shapefile format 'lidar.shp' using MultiPointZ records containing 2048 points each.""",
         "desc": f"{txt_las2shp_short}",
+    },
+    "LasPlanes": {
+        "disp": "lasplanes",
+        "help": f"""Finds sufficiently planar patches of LAS/LAZ points fulfilling a number of user-defineable criteria that are output as simple polygons to SHP or RIEGL's PEF format. The tool was originally designed for generating tie planes to match the point clouds of a mobile scan that suffer from errors in the GPS trajectory to accurate terrestrial scans using clean planar patches that are "seen" without obstruction by both scanners.<br>The algorithm divides the input into cells that are n by n by n units big. It then performs an eigen value decomposition of the covariance matrix of the points in each cell that has more than the minimal number of points. The three eigenvalues have to pass the small_eigen_max, middle_eigen_min, eigen_ratio_smallest, and eigen_ratio_largest criteria. And the plane of points must be sufficiently thin and formed by sufficiently many points after removing no more than a certain percentage of them. Then a polygon with a maximal number of points enclosing a subset of the points is formed that is checked for having a minimal size and a maximal off-planar standard deviation. The surviving planes are output (optionally only if they are sufficiently far from another).
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("lasplanes")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasplanes64 -i terrestrial_scan.laz -o planes.pef{fcc}<br>finds all planar patches in the file 'terrestrial_scan.laz' and stores the result in RIEGL's PEF format
+{foe}lasplanes64 -i terrestrial_scan.laz -o planes.shp{fcc}<br>same as above but outputting the SHP format""",
+        "desc": f"{txt_lasplanes_short}",
     },
     "Las2txt": {
         "disp": "las2txt (file)",
@@ -454,6 +464,7 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
 <h3>Parameters</h3>
 {txt_inlazfile}
 {txt_parse}
+{fop}write column description:{fcc} write a header line to the output containing the column description (this enables to omit -parse during import using txt2las)
 {txt_args("las2txt")}
 {txt_verbose}
 {txt_64bit}
@@ -470,6 +481,7 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
 <h3>Parameters</h3>
 {txt_inlazdir}
 {txt_parse}
+{fop}write column description:{fcc} write a header line to the output containing the column description (this enables to omit -parse during import using txt2las)
 {txt_args("las2txt")}
 {txt_cores}
 {txt_verbose}
@@ -532,6 +544,55 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
         """,
         "desc": f"{txt_txt2las_short}",
     },
+    "e572las": {
+        "disp": "e572las",
+        "help": f"""
+{txt_e572las_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("e572las")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+    {foe}e572las -i file.txt -o out.laz{fcc}<br>read the textfile and convert it to a LAZ file. Expect the first row as column headers to identify the target field.
+    {foe}e572las -i file.txt -o out.laz -parse xyzai -scale_scan_angle 57.3 -scale_intensity 65535{fcc}<br>read the textfile with x y z scan angle (multiplied by 57.3; radian to angle) and the 5th entry as the intensity and multiplies it by 65535 (converts range [0.0 .. 1.0] to range [0 .. 65535]. Output as compressed LAZ file.        
+        """,
+        "desc": f"{txt_e572las_short}",
+    },
+    "LasOptimize": {
+        "disp": "lasoptimize",
+        "help": f"""
+{txt_lasoptimize_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("lasoptimize")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+    {foe}lasoptimize64 -i final\*.laz -odir optimized{fcc}<br>optimizes all LAZ files in the 'final' folder to the 'optimized' folder while over-writing any existing file.
+    {foe}lasoptimize64 -i final\*.laz -scanner_channel_in_point_source_ID -odir optimized{fcc}<br>optimizes all LAZ files in the 'final' folder to the 'optimized' folder while over-writing any existing file. The files are from a multi-beam system and the scanner channel is encoded into the flightline number that is stored in the 'pount source ID' field of each point.""",
+        "desc": f"{txt_lasoptimize_short}",
+    },
+    "LasCopy": {
+        "disp": "lascopy",
+        "help": f"""
+{txt_lascopy_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{fop}merge...:{fcc} set merge attributes
+{fop}copy...:{fcc} set copy attributes
+{fop}zero target if not found in source:{fcc} set target copy field to zero if not found in source data
+{fop}copy attributes by point order:{fcc} copy attributes from source to target by point order (no attribute matching)
+More merge and copy arguments see README file.
+{txt_args("lascopy")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lascopy64 -i source.laz -i target.laz -o result.laz{fcc}<br>Copies all classifications from source.laz to target.laz where gps time and return number matches.
+{foe}lascopy64 -i source.laz -i target.laz -o result.laz -match_point_source_id{fcc}<br>Copies all classifications from source.laz to target.laz where gps time and point_source_id matches.
+{foe}lascopy64 -i source.laz -i target.laz -o result.laz -match_xy 0.5 -elevation -zero{fcc}<br>Copies all z-values from source.laz to target.laz where a matching point within 0.5 units in source exists. Set all other z-values to 0.""",
+        "desc": f"{txt_lascopy_short}",
+    },
     "Las3dPolyHorizontalVerticalDistance": {
         "disp": "las3dpoly (horizontal and vertical distance)",
         "help": f"""
@@ -546,8 +607,7 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
 {txt_verbose}
 {txt_64bit}
 {head_console_examples}
-{foe}las3dpoly -i in.laz -poly line.csv -distance 10 20 -o out.laz -remove_points{fcc}<br>clip away all points of in.laz which are less than 10 units vertically and 20 units horizontal from the line specified by line.csv
-                """,
+{foe}las3dpoly -i in.laz -poly line.csv -distance 10 20 -o out.laz -remove_points{fcc}<br>clip away all points of in.laz which are less than 10 units vertically and 20 units horizontal from the line specified by line.csv""",
         "desc": f"{txt_las3dpoly_xy_short}",
     },
     "Las3dPolyRadialDistance": {
@@ -565,6 +625,25 @@ See <a href="https://downloads.rapidlasso.de/readme/lasindex_README.md">lasindex
     {foe}las3dpoly -i in.laz -poly line.shp -o out.laz -distance 10 -classify_as 13 -v{fcc}<br>classify all points within the result file as class 13 if they are within radial distance=10 to the line specified by line.shp and list a verbose report of what has been done. 
                 """,
         "desc": f"{txt_las3dpoly_rad_short}",
+    },
+    "LasDistance": {
+        "disp": "lasdistance",
+        "help": f"""
+{txt_lasdistance_short}
+{txt_lasdistance_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{fop}poly:{fcc} use this file as source for polygonal segments
+{fop}distance_xy:{fcc} use distance from polygons to classify, flag or remove points
+{fop}classify_as:{fcc} classify points within distance as this class instead of clip away
+{txt_args("lasdistance")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasdistance64 -i in.laz -poly breaklines.shp -o out.laz{fcc}
+{foe}lasdistance64 -i in.laz -poly breaklines.shp -distance_xy 5.0 -o out.laz{fcc}
+{foe}lasdistance64 -i in.laz -poly breaklines.shp -distance_xy 0.5 -classify_as 6 -o out.laz{fcc}""",
+        "desc": f"{txt_lasdistance_short}",
     },
     "LasBoundary": {
         "disp": "lasboundary (file)",
@@ -617,6 +696,72 @@ Takes as input a LAS/LAZ/TXT file and a SHP/TXT file with one or many polygons (
                 """,
         "desc": f"{txt_lasclip_short}",
     },
+    "LasReturn": {
+        "disp": "lasreturn (file)",
+        "help": f"""
+{txt_lasreturn_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{fop}print histogram about returns:{fcc} print histogram about missing or duplicate returns  
+{fop}adds attribute 'gap to next return':{fcc} adds an attribute 'gap to next return' as "extra bytes" and stores the 3D distance from the current to the next return of the same pulse for all pulses that have multiple returns  
+{fop}repair invalid number of returns:{fcc} repair invalid number of return values  
+{fop}skip incomplete returns:{fcc} skip incomplete returns  
+{txt_args("lasreturn")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasreturn64 -i lidar.laz -repair_number_of_returns -odix _repaired -olaz{fcc}<br>the 'number of returns' field of every point is set to the highest return number that is found for each set of returns with the same unique GPS time stamp. assumes sorted input (use lassort -gps_time).
+{foe}lasreturn64 -i lidar.laz -compute_gap_to_next_return -odix _gaps -olaz{fcc}<br>adds an additional per point attribute called 'gap to next return [m]' as "extra bytes". it stores the 3D distance from the current to the next return of the same pulse for all pulses that have multiple return in the file. returns belonging to the same pulse are identified via their matching GPS time stamps. the computation assumes sorted input and will exit if this is not the case (use lassort -gps_time).
+{foe}lasreturn64 -i lidar.laz -histo return_distance 0.1{fcc}<br>computes the distances between all subsequent returns from the same pulse and prints a histogram with bin size 0.1 meter. assumes sorted input (use lassort -gps_time).
+{foe}lasreturn64 -i lidar.laz -histo return_distance 0.1 0.0 4.99{fcc}<br>same as before but limits the histogram to the range rfrom 0 to 5""",
+        "desc": f"{txt_lasreturn_short}",
+    },
+    "LasReturnPro": {
+        "disp": "lasreturn (folder)",
+        "help": f"""
+{txt_lasreturn_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{fop}print histogram about returns:{fcc} print histogram about missing or duplicate returns  
+{fop}adds attribute 'gap to next return':{fcc} adds an attribute 'gap to next return' as "extra bytes" and stores the 3D distance from the current to the next return of the same pulse for all pulses that have multiple returns  
+{fop}repair invalid number of returns:{fcc} repair invalid number of return values  
+{fop}skip incomplete returns:{fcc} skip incomplete returns  
+{txt_args("lasreturn")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasreturn64 -i *.laz -repair_number_of_returns -odir repaired -olaz{fcc}<br>the 'number of returns' field of every point in every file is set to the highest return number that is found for each set of returns with the same unique GPS time stamp. assumes sorted input (use lassort -gps_time).""",
+        "desc": f"{txt_lasreturn_short}",
+    },
+    "LasSort": {
+        "disp": "lassort (file)",
+        "help": f"""
+{txt_lassort_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("lassort")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lassort64 *.laz{fcc}<br>z-orders all LAZ files with a default bucket size.""",
+        "desc": f"txt_lassort_short",
+    },
+    "LasSortPro": {
+        "disp": "lassort (folder)",
+        "help": f"""
+{txt_lassort_intro}
+{txt_folder}
+<h3>Parameters</h3>
+{txt_inlazdir}
+{txt_args("lassort")}
+{txt_cores}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lassort64 flight1*.las flight2*.las -gps_time{fcc}<br>sorts all LAS files by their GPS time
+{foe}lassort64 *.las -olaz -point_source{fcc}<br>sorts all LAS files by their point source ID and stores them compressed""",
+        "desc": f"txt_lassort_short",
+    },
     "LasDiff": {
         "disp": "lasdiff",
         "help": f"""
@@ -662,6 +807,27 @@ Takes as input a LAS/LAZ/TXT file and a SHP/TXT file with one or many polygons (
     {foe}lasindex -i *.laz -dont_reindex{fcc}<br>creates a spatial indexing file for all LAZ files that do not yet have a LAX file yet.
                 """,
         "desc": f"txt_lasindex_short",
+    },
+    "LasProbe": {
+        "disp": "lasprobe",
+        "help": f"""
+{txt_lasprobe_short}.
+The tool reads LIDAR in LAS/LAZ/ASCII format, triangulates the relevant points into a TIN. For classified data sets containing a mix of ground and vegetation/building points it is imperative to specify the points which should be used for this calclation (i.e. usually '-keep_class 2' or '-keep_class 2 8').<br>The tool collects all LiDAR points that are within 'step' meters of the probed location. This can be changed with the '-step 2' parameter which would shrink this circle to a radius to 2 meters.<br>If the LiDAR is spatially indexed (i.e. a *.lax file exists) this collection of points will be accelerated significanly. For repeat probing running lasindex before lasprobe is recommended.
+The output report defaults to stdout unless you specify an output file with '-o report.txt'. Standard output is only the z (elevation) value, unless you add '-xyz' to the command line so that all coordinates will be written.
+<h3>Parameters</h3>
+{txt_inlazfile}
+{foe}probe at x pos{fcc}: x position of probe
+{foe}probe at y pos{fcc}: y position of probe
+{foe}step radius{fcc}: step radius to catch points at probe location
+{foe}output xyz value{fcc}: output xyz value instead of only elevation value
+{foe}Result file{fcc}: write result into this file (stdout otherwise)
+{txt_args("lasprobe")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasprobe64 -i ..\data\fusa.laz -probe 277760.00 6122260 52.14{fcc}<br>probes all LiDAR points including buildings, wires and vegetation and outputs the computed elevation "52.14" to stdout
+{foe}lasprobe64 -i ..\data\fusa.laz -probe 277760.00 6122260 -o mist.txt{fcc}<br>probes all LiDAR points including buildings, wires and vegetation and outputs the computed elevation "52.14" to text file 'mist.txt'""",
+        "desc": f"txt_lasprobe_short",
     },
     "LasIntensity": {
         "disp": "lasintensity",
@@ -806,7 +972,7 @@ Takes as input a LAS/LAZ/TXT file and a SHP/TXT file with one or many polygons (
 {txt_verbose}
 {txt_64bit}
 {head_console_examples}
-    {foe}lastile -i large.laz -tile_size 500 -buffer 10 -reversible -o tile.laz{fcc}<br>{foe}lastile -i tile_*.laz -reverse_tiling -o large_reversed.laz{fcc}<br>
+    {foe}lastile -i large.laz -tile_size 500 -buffer 10 -reversible -o tile.laz{fcc}<br>{foe}lastile -i tile_*.laz -reverse_tiling -o large_reversed.laz{fcc}
 tiles file 'large.laz' with tile size 500 and buffer 10 in reversible mode. the second command removes all buffer points, reconstructs the original point order, and stored the result as 'large_reversed.laz'.
                 """,
         "desc": f"{txt_lastile_short}",
@@ -838,8 +1004,8 @@ tiles file 'large.laz' with tile size 500 and buffer 10 in reversible mode. the 
 {txt_verbose}
 {txt_64bit}
 {head_console_examples}
-    {foe}lasground -i lidar.laz -o lidar_with_bare_earth.laz -city{fcc}<br>
-    {foe}lasheight -i lidar_with_bare_earth.laz -o lidar_with_heights.laz{fcc}<br>
+    {foe}lasground -i lidar.laz -o lidar_with_bare_earth.laz -city{fcc}
+    {foe}lasheight -i lidar_with_bare_earth.laz -o lidar_with_heights.laz{fcc}
     {foe}lasclassify -i lidar_with_heights.laz -o lidar_classified.laz{fcc}<br>finds the ground points with lasground, computes the height of each point with lasheight, and classifies buildings and high vegetation with the default settings.
                 """,
         "desc": f"{txt_lasclassify_short}",
@@ -1210,6 +1376,47 @@ tiles file 'large.laz' with tile size 500 and buffer 10 in reversible mode. the 
                 """,
         "desc": f"{txt_lascontrol_short}",
     },
+    "LasDuplicate": {
+        "disp": "lasduplicate (file)",
+        "help": f"""{txt_lasduplicate_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("lasduplicate")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasduplicate64 -i in.laz -nearby 0.005 -o out.laz{fcc}<br>removes all duplicates and nearby points from fulfilling the criteria desribed above from the LAZ file 'in.laz' and stores the result to the LAZ file 'out.laz'.""",
+        "desc": f"{txt_lasduplicate_short}",
+    },
+    "LasDuplicatePro": {
+        "disp": "lasduplicate (folder)",
+        "help": f"""{txt_lasduplicate_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("lasduplicate")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasduplicate64 -i *.las -olaz{fcc}<br>removes all duplicates from all LAS file matching '*.las' and stores each result to a corresponding LAZ file '*.laz'.
+{foe}lasduplicate64 -i *.las -olaz -lowest_z{fcc}<br>same as above but keeps the duplicate with the lowest z coordinate.""",
+        "desc": f"{txt_lasduplicate_short}",
+    },
+    "LasPrecision": {
+        "disp": "lasprecision",
+        "help": f"""
+        {txt_lasprecision_intro}
+<h3>Parameters</h3>
+{txt_inlazfile}
+{txt_args("lasprecision")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+    {foe}lasprecision64 -i in.laz -all{fcc}<br>original scale factors: 0.001 0.001 0.001<br>loading first 8146178 of 8146178 points<br>X differences<br>          0 :    7822346   0<br>         10 :     323326   0.01<br>         20 :        500   0.02<br>         30 :          5   0.03
+Y differences<br>          0 :    7533456   0<br>         10 :     609382   0.01<br>         20 :       3303   0.02<br>         30 :         36   0.03
+Z differences<br>          0 :    8124512   0<br>         10 :      21175   0.01<br>         20 :        346   0.02<br>         30 :         75   0.03<br>         40 :         23   0.04<br>         50 :          7   0.05<br>         60 :          4   0.06<br>...
+This example analyzes all raw integer coordinates of "in.laz" into three separate arrays, sort each array in ascending sorted orders, compute the difference between all neighboring values and output a histogram in textural form. These histograms provide information about the original scale factors and if they are inflated/missleading. Here there is no millimeter precision (=> 0.001) in the data, even if the scale factor tells so. All x, and y, or, z values are either 10, 20, 30, 40, or other multiple of 10 units spaced apart.<br>Hence the true precision is only centimeters (=> 0.01).<br>The scale in the header is set to millimeter - this makes compression inefficient.""",
+        "desc": f"{txt_lasprecision_short}",
+    },
     "LasInfo": {
         "disp": "lasinfo (file)",
         "help": f"""
@@ -1358,6 +1565,24 @@ create ONE textfile with all LAZ file header information.
 {txt_verbose}
                 """,
         "desc": f"{txt_lasview_short}",
+    },
+    "LasVoxel": {
+        "disp": "lasvoxel",
+        "help": f"""This tool computes a voxelization of points. You can specify the xy and the z size of the voxel cells separately with '-step_xy 2' and '-step_z 0.3' which would create cells of size 2 by 2 by 0.3 units or use uniform sized cells of '-step 0.5'. For voxels that are infinite in z direction use option '-step_z_infinite'. The number of returns falling into a voxel is stored as the intensity value of the points in the resulting LAS/LAZ file.<br>By adding '-compute_mean_xyz' to the command line lasvoxel uses the average x, y, z coordinate of all points falling into a voxel instead of the center of the voxel.<br>By adding '-empty_voxels' to the command line lasvoxel will also report all empty voxels that fall within the 3D bounding box but give them an intensity value of zero.
+<h3>Parameters</h3>
+{txt_inlazfile}
+{fop}grid size:{fcc} use a [n]x[n]x[n] uniform grid for finding isolated points  (-step [n])
+{fop}maximum point count per voxel:{fcc} optional define maximum point count [n] per voxel  (-max_count [n])
+{fop}compute averaged coordinate each voxel:{fcc} compute averaged coordinate for output voxels  (-compute_mean_xyz)
+{fop}output voxels without returns as intensity zero:{fcc} also output voxels without returns but give them intensity of zero  (-empty_voxels)
+{fop}store voxel IDs into "intensity":{fcc} store computed voxel IDs into "intensity" field  (-store_IDs_in_intensity)
+{fop}store voxel IDs into "point source":{fcc} store computed voxel IDs into "point source" field  (-store_IDs_in_point_source)
+{txt_args("lasvoxel")}
+{txt_verbose}
+{txt_64bit}
+{head_console_examples}
+{foe}lasvoxel64 -v -i ..\data\france.laz -step 1 -odix _mist -olaz{fcc}<br>voxelizing all points with voxel size of 1, append ""_mist"" extension and save as LAZ file""",
+        "desc": f"{txt_lasvoxel_short}",
     },
     "FlightLinesToCHMFirstReturn": {
         "disp": "Flightlines to CHM - first return",

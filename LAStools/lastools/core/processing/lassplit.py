@@ -4,8 +4,8 @@
 ***************************************************************************
     lassplit.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -57,7 +57,7 @@ class LasSplit(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasSplit.DIGITS,
+                self.DIGITS,
                 "number of digits for file names",
                 QgsProcessingParameterNumber.Integer,
                 5,
@@ -66,10 +66,10 @@ class LasSplit(LastoolsAlgorithm):
                 10,
             )
         )
-        self.addParameter(QgsProcessingParameterEnum(LasSplit.OPERATION, "how to split", LasSplit.OPERATIONS, False, 0))
+        self.addParameter(QgsProcessingParameterEnum(self.OPERATION, "how to split", self.OPERATIONS, False, 0))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasSplit.INTERVAL,
+                self.INTERVAL,
                 "interval or number",
                 QgsProcessingParameterNumber.Double,
                 5.0,
@@ -83,20 +83,26 @@ class LasSplit(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        digits = self.parameterAsInt(parameters, LasSplit.DIGITS, context)
+        digits = self.parameterAsInt(parameters, self.DIGITS, context)
         if digits != 5:
             commands.append("-digits")
             commands.append(str(digits))
-        operation = self.parameterAsInt(parameters, LasSplit.OPERATION, context)
+        operation = self.parameterAsInt(parameters, self.OPERATION, context)
         if operation != 0:
             if operation == 9:
                 commands.append("-split")
             else:
-                commands.append("-" + LasSplit.OPERATIONS[operation])
+                commands.append("-" + self.OPERATIONS[operation])
         if 1 < operation < 10:
-            interval = self.parameterAsDouble(parameters, LasSplit.INTERVAL, context)
+            interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
             commands.append(str(interval))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)

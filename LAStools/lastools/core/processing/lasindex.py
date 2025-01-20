@@ -4,8 +4,8 @@
 ***************************************************************************
     lasindex.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 from PyQt5.QtGui import QIcon
@@ -39,21 +39,27 @@ class LasIndex(LastoolsAlgorithm):
 
     def initAlgorithm(self, config):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasIndex.APPEND_LAX, "append *.lax file to *.laz file", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasIndex.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False
+                self.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False
             )
         )
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasIndex.APPEND_LAX, context):
+        if self.parameterAsBool(parameters, self.APPEND_LAX, context):
             commands.append("-append")
-        if self.parameterAsBool(parameters, LasIndex.MOBILE_OR_TERRESTRIAL, context):
+        if self.parameterAsBool(parameters, self.MOBILE_OR_TERRESTRIAL, context):
             commands.append("-tile_size")
             commands.append("10")
             commands.append("-maximum")
@@ -102,12 +108,10 @@ class LasIndexPro(LastoolsAlgorithm):
 
     def initAlgorithm(self, config):
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasIndexPro.APPEND_LAX, "append *.lax file to *.laz file", False)
-        )
+        self.addParameter(QgsProcessingParameterBoolean(self.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasIndexPro.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False
+                self.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False
             )
         )
         self.add_parameters_additional_gui()
@@ -115,11 +119,17 @@ class LasIndexPro(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasIndexPro.APPEND_LAX, context):
+        if self.parameterAsBool(parameters, self.APPEND_LAX, context):
             commands.append("-append")
-        if self.parameterAsBool(parameters, LasIndexPro.MOBILE_OR_TERRESTRIAL, context):
+        if self.parameterAsBool(parameters, self.MOBILE_OR_TERRESTRIAL, context):
             commands.append("-tile_size")
             commands.append("10")
             commands.append("-maximum")

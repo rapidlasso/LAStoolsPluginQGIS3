@@ -4,8 +4,8 @@
 ***************************************************************************
     lasmerge.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -47,51 +47,57 @@ class LasMerge(LastoolsAlgorithm):
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
         self.addParameter(
-            QgsProcessingParameterFile(LasMerge.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True)
+            QgsProcessingParameterFile(self.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True)
         )
         self.addParameter(
-            QgsProcessingParameterFile(LasMerge.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True)
+            QgsProcessingParameterFile(self.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True)
         )
         self.addParameter(
-            QgsProcessingParameterFile(LasMerge.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True)
+            QgsProcessingParameterFile(self.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True)
         )
         self.addParameter(
-            QgsProcessingParameterFile(LasMerge.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True)
+            QgsProcessingParameterFile(self.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True)
         )
         self.addParameter(
-            QgsProcessingParameterFile(LasMerge.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True)
+            QgsProcessingParameterFile(self.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True)
         )
         self.addParameter(
-            QgsProcessingParameterFile(LasMerge.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True)
+            QgsProcessingParameterFile(self.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True)
         )
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        file2 = self.parameterAsString(parameters, LasMerge.FILE2, context)
+        file2 = self.parameterAsString(parameters, self.FILE2, context)
         if file2 != "":
             commands.append("-i")
             commands.append(file2)
-        file3 = self.parameterAsString(parameters, LasMerge.FILE3, context)
+        file3 = self.parameterAsString(parameters, self.FILE3, context)
         if file3 != "":
             commands.append("-i")
             commands.append(file3)
-        file4 = self.parameterAsString(parameters, LasMerge.FILE4, context)
+        file4 = self.parameterAsString(parameters, self.FILE4, context)
         if file4 != "":
             commands.append("-i")
             commands.append(file4)
-        file5 = self.parameterAsString(parameters, LasMerge.FILE5, context)
+        file5 = self.parameterAsString(parameters, self.FILE5, context)
         if file5 != "":
             commands.append("-i")
             commands.append(file5)
-        file6 = self.parameterAsString(parameters, LasMerge.FILE6, context)
+        file6 = self.parameterAsString(parameters, self.FILE6, context)
         if file6 != "":
             commands.append("-i")
             commands.append(file6)
-        file7 = self.parameterAsString(parameters, LasMerge.FILE7, context)
+        file7 = self.parameterAsString(parameters, self.FILE7, context)
         if file7 != "":
             commands.append("-i")
             commands.append(file7)
@@ -147,7 +153,13 @@ class LasMergePro(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)

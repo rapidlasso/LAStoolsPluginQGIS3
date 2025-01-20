@@ -4,8 +4,8 @@
 ***************************************************************************
     las2txt.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,13 +18,13 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterString
+from qgis.core import QgsProcessingParameterString, QgsProcessingParameterBoolean
 
 from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
@@ -36,21 +36,31 @@ class Las2txt(LastoolsAlgorithm):
     LICENSE = "o"
     LASGROUP = 2
     PARSE = "PARSE"
+    COLDESC = "COLDESC"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterString(Las2txt.PARSE, "parse string", "xyz"))
+        self.addParameter(QgsProcessingParameterString(self.PARSE, "parse string", "xyz"))
+        self.addParameter(QgsProcessingParameterBoolean(self.COLDESC, "write column description"))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_generic_output_gui("Output ASCII file", "txt", False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        parse = self.parameterAsString(parameters, Las2txt.PARSE, context)
+        parse = self.parameterAsString(parameters, self.PARSE, context)
         if parse != "xyz":
             commands.append("-parse")
             commands.append(parse)
+        if self.parameterAsBool(parameters, self.COLDESC, context):
+            commands.append("-coldesc")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
@@ -92,10 +102,12 @@ class Las2txtPro(LastoolsAlgorithm):
     LICENSE = "o"
     LASGROUP = 2
     PARSE = "PARSE"
+    COLDESC = "COLDESC"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
-        self.addParameter(QgsProcessingParameterString(Las2txtPro.PARSE, "parse string", "xyz"))
+        self.addParameter(QgsProcessingParameterString(self.PARSE, "parse string", "xyz"))
+        self.addParameter(QgsProcessingParameterBoolean(self.COLDESC, "write column description"))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
@@ -103,12 +115,20 @@ class Las2txtPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
-        parse = self.parameterAsString(parameters, Las2txtPro.PARSE, context)
+        parse = self.parameterAsString(parameters, self.PARSE, context)
         if parse != "xyz":
             commands.append("-parse")
             commands.append(parse)
+        if self.parameterAsBool(parameters, self.COLDESC, context):
+            commands.append("-coldesc")
         commands.append("-otxt")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)

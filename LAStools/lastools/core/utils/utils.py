@@ -4,8 +4,8 @@
 ***************************************************************************
     utils.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,14 +18,16 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "September 2023"
-__copyright__ = "(C) 2023, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 import subprocess
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
+from qgis.utils import iface
+from qgis.core import Qgis, QgsMessageLog
 
 
 class LastoolsUtils:
@@ -56,6 +58,8 @@ class LastoolsUtils:
 
     @staticmethod
     def run_lastools(commands, feedback):
+        if ("-gui" in commands) and ("-cpu64" in commands):
+            feedback.reportError("Parameters '64 bit' and 'open LAStools GUI' can't be combined")
         commandline = " ".join(commands)
         feedback.pushConsoleInfo("LAStools command line")
         feedback.pushConsoleInfo(commandline)

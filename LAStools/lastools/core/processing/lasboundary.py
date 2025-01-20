@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    LasBoundary.py
+    lasboundary.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -51,26 +51,30 @@ class LasBoundary(LastoolsAlgorithm):
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
-        self.addParameter(
-            QgsProcessingParameterEnum(LasBoundary.MODE, "compute boundary based on", LasBoundary.MODES, False, 0)
-        )
+        self.addParameter(QgsProcessingParameterEnum(self.MODE, "compute boundary based on", self.MODES, False, 0))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasBoundary.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
+                self.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
             )
         )
-        self.addParameter(QgsProcessingParameterBoolean(LasBoundary.HOLES, "interior holes", False))
-        self.addParameter(QgsProcessingParameterBoolean(LasBoundary.DISJOINT, "disjoint polygon", False))
-        self.addParameter(QgsProcessingParameterBoolean(LasBoundary.LABELS, "produce labels", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.HOLES, "interior holes", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.DISJOINT, "disjoint polygon", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.LABELS, "produce labels", False))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
-        mode = self.parameterAsInt(parameters, LasBoundary.MODE, context)
+        mode = self.parameterAsInt(parameters, self.MODE, context)
         if mode != 0:
             if mode == 1:
                 commands.append("-use_lax")
@@ -79,14 +83,14 @@ class LasBoundary(LastoolsAlgorithm):
             else:
                 commands.append("-use_tile_bb")
         else:
-            concavity = self.parameterAsDouble(parameters, LasBoundary.CONCAVITY, context)
+            concavity = self.parameterAsDouble(parameters, self.CONCAVITY, context)
             commands.append("-concavity")
             commands.append(str(concavity))
-            if self.parameterAsBool(parameters, LasBoundary.HOLES, context):
+            if self.parameterAsBool(parameters, self.HOLES, context):
                 commands.append("-holes")
-            if self.parameterAsBool(parameters, LasBoundary.DISJOINT, context):
+            if self.parameterAsBool(parameters, self.DISJOINT, context):
                 commands.append("-disjoint")
-            if self.parameterAsBool(parameters, LasBoundary.LABELS, context):
+            if self.parameterAsBool(parameters, self.LABELS, context):
                 commands.append("-labels")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -138,17 +142,15 @@ class LasBoundaryPro(LastoolsAlgorithm):
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_filter1_return_class_flags_gui()
-        self.addParameter(
-            QgsProcessingParameterEnum(LasBoundaryPro.MODE, "compute boundary based on", LasBoundaryPro.MODES, False, 0)
-        )
+        self.addParameter(QgsProcessingParameterEnum(self.MODE, "compute boundary based on", self.MODES, False, 0))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasBoundaryPro.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
+                self.CONCAVITY, "concavity", QgsProcessingParameterNumber.Double, 50.0, False, 0.0001
             )
         )
-        self.addParameter(QgsProcessingParameterBoolean(LasBoundaryPro.HOLES, "interior holes", False))
-        self.addParameter(QgsProcessingParameterBoolean(LasBoundaryPro.DISJOINT, "disjoint polygon", False))
-        self.addParameter(QgsProcessingParameterBoolean(LasBoundaryPro.LABELS, "produce labels", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.HOLES, "interior holes", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.DISJOINT, "disjoint polygon", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.LABELS, "produce labels", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
@@ -157,10 +159,16 @@ class LasBoundaryPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
-        mode = self.parameterAsInt(parameters, LasBoundaryPro.MODE, context)
+        mode = self.parameterAsInt(parameters, self.MODE, context)
         if mode != 0:
             if mode == 1:
                 commands.append("-use_lax")
@@ -169,14 +177,14 @@ class LasBoundaryPro(LastoolsAlgorithm):
             else:
                 commands.append("-use_tile_bb")
         else:
-            concavity = self.parameterAsDouble(parameters, LasBoundaryPro.CONCAVITY, context)
+            concavity = self.parameterAsDouble(parameters, self.CONCAVITY, context)
             commands.append("-concavity")
             commands.append(str(concavity))
-            if self.parameterAsBool(parameters, LasBoundaryPro.HOLES, context):
+            if self.parameterAsBool(parameters, self.HOLES, context):
                 commands.append("-holes")
-            if self.parameterAsBool(parameters, LasBoundaryPro.DISJOINT, context):
+            if self.parameterAsBool(parameters, self.DISJOINT, context):
                 commands.append("-disjoint")
-            if self.parameterAsBool(parameters, LasBoundaryPro.LABELS, context):
+            if self.parameterAsBool(parameters, self.LABELS, context):
                 commands.append("-labels")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)

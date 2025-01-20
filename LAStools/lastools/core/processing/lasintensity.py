@@ -4,8 +4,8 @@
 ***************************************************************************
     las3dpoly.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -45,7 +45,7 @@ class LasIntensity(LastoolsAlgorithm):
         # Scanner Height
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasIntensity.SCANNER_HEIGHT,
+                self.SCANNER_HEIGHT,
                 "scanner altitude in [km]",
                 QgsProcessingParameterNumber.Double,
                 3.0,
@@ -57,7 +57,7 @@ class LasIntensity(LastoolsAlgorithm):
         # atmospheric visibility range
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasIntensity.ATMOSPHERIC_VISIBILITY_RANGE,
+                self.ATMOSPHERIC_VISIBILITY_RANGE,
                 "atmospheric visibility range in [km]",
                 QgsProcessingParameterNumber.Double,
                 10.0,
@@ -69,7 +69,7 @@ class LasIntensity(LastoolsAlgorithm):
         # Laser Wavelength
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasIntensity.LASER_WAVELENGTH,
+                self.LASER_WAVELENGTH,
                 "laser wavelength in [µm]",
                 QgsProcessingParameterNumber.Double,
                 0.905,
@@ -141,7 +141,7 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
         # Scanner Height
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasIntensityAttenuationFactor.SCANNER_HEIGHT,
+                self.SCANNER_HEIGHT,
                 "scanner altitude in [km]",
                 QgsProcessingParameterNumber.Double,
                 3.0,
@@ -153,7 +153,7 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
         # Attenuation Coefficient factor
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasIntensityAttenuationFactor.ATTENUATION_COEFFICIENT,
+                self.ATTENUATION_COEFFICIENT,
                 "attenuation coefficient in [km^-1]",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -165,13 +165,13 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
         # output las path
         self.addParameter(
             QgsProcessingParameterFileDestination(
-                LasIntensityAttenuationFactor.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False
+                self.OUTPUT_LAS_PATH, "Output LAS/LAZ file", "*.laz *.las", "", False, False
             )
         )
         # additional parameters
         self.addParameter(
             QgsProcessingParameterString(
-                LasIntensityAttenuationFactor.ADDITIONAL_PARAM,
+                self.ADDITIONAL_PARAM,
                 "additional command line arguments",
                 " ",
                 False,

@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    lasoverage.py
+    lasreturn.py
     ---------------------
-    Date                 : January 2025
-    Copyright            : (c) 2025 by rapidlasso GmbH
+    Date                 : November 2023
+    Copyright            : (C) 2023 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,67 +18,57 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "January 2025"
-__copyright__ = "(c) 2025, rapidlasso GmbH"
+__date__ = "March 2024"
+__copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
 from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterNumber
-from qgis.core import QgsProcessingParameterEnum
+from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber, QgsProcessingParameterEnum
 
 from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
 
 
-class LasOverage(LastoolsAlgorithm):
-    TOOL_NAME = "LasOverage"
-    LASTOOL = "lasoverage"
+class LasReturn(LastoolsAlgorithm):
+    TOOL_NAME = "LasReturn"
+    LASTOOL = "lasreturn"
     LICENSE = "c"
-    LASGROUP = 3
-    CHECK_STEP = "CHECK_STEP"
-    OPERATION = "OPERATION"
-    OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
+    LASGROUP = 6
+
+    CHECK_RETURN_NUMBERING = "CHECK_RETURN_NUMBERING"
+    COMPUTE_GAP_TO_NEXT_RETURN = "COMPUTE_GAP_TO_NEXT_RETURN"
+    REPAIR_NUMBER_OF_RETURNS = "REPAIR_NUMBER_OF_RETURNS"
+    SKIP_INCOMPLETE = "SKIP_INCOMPLETE"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.add_parameters_horizontal_feet_gui()
-        self.add_parameters_files_are_flightlines_gui()
+
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.CHECK_STEP,
-                "size of grid used for scan angle check",
-                QgsProcessingParameterNumber.Double,
-                1.0,
-                False,
-                0.0,
-            )
+            QgsProcessingParameterBoolean(self.CHECK_RETURN_NUMBERING, "print histogram about returns", False)
         )
-        self.addParameter(QgsProcessingParameterEnum(self.OPERATION, "mode of operation", self.OPERATIONS, False, 0))
+        self.addParameter(
+            QgsProcessingParameterBoolean(self.COMPUTE_GAP_TO_NEXT_RETURN, "adds attribute 'gap to next return'", False)
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(self.REPAIR_NUMBER_OF_RETURNS, "repair invalid number of returns", False)
+        )
+        self.addParameter(QgsProcessingParameterBoolean(self.SKIP_INCOMPLETE, "skip incomplete returns", False))
+        self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui_64()
-        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        self.add_parameters_horizontal_feet_commands(parameters, context, commands)
-        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
-        step = self.parameterAsDouble(parameters, self.CHECK_STEP, context)
-        if step != 1.0:
-            commands.append("-step")
-            commands.append(str(step))
-        operation = self.parameterAsInt(parameters, self.OPERATION, context)
-        if operation == 1:
-            commands.append("-flag_as_withheld")
-        elif operation == 2:
-            commands.append("-remove_overage")
+        if self.parameterAsBool(parameters, self.CHECK_RETURN_NUMBERING, context):
+            commands.append("-check_return_numbering")
+        if self.parameterAsBool(parameters, self.COMPUTE_GAP_TO_NEXT_RETURN, context):
+            commands.append("-compute_gap_to_next_return")
+        if self.parameterAsBool(parameters, self.REPAIR_NUMBER_OF_RETURNS, context):
+            commands.append("-repair_number_of_returns")
+        if self.parameterAsBool(parameters, self.SKIP_INCOMPLETE, context):
+            commands.append("-skip_incomplete")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
@@ -86,7 +76,7 @@ class LasOverage(LastoolsAlgorithm):
         return {"commands": commands}
 
     def createInstance(self):
-        return LasOverage()
+        return LasReturn()
 
     def name(self):
         return self.TOOL_NAME
@@ -114,68 +104,55 @@ class LasOverage(LastoolsAlgorithm):
         return QIcon(f"{paths['img']}{icon_file}")
 
 
-class LasOveragePro(LastoolsAlgorithm):
-    TOOL_NAME = "LasOveragePro"
-    LASTOOL = "lasoverage"
+class LasReturnPro(LastoolsAlgorithm):
+    TOOL_NAME = "LasReturnPro"
+    LASTOOL = "lasreturn"
     LICENSE = "c"
-    LASGROUP = 3
-    CHECK_STEP = "CHECK_STEP"
-    OPERATION = "OPERATION"
-    OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
+    LASGROUP = 6
+
+    CHECK_RETURN_NUMBERING = "CHECK_RETURN_NUMBERING"
+    COMPUTE_GAP_TO_NEXT_RETURN = "COMPUTE_GAP_TO_NEXT_RETURN"
+    REPAIR_NUMBER_OF_RETURNS = "REPAIR_NUMBER_OF_RETURNS"
+    SKIP_INCOMPLETE = "SKIP_INCOMPLETE"
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_folder_gui()
-        self.add_parameters_horizontal_feet_gui()
-        self.add_parameters_files_are_flightlines_gui()
         self.addParameter(
-            QgsProcessingParameterNumber(
-                self.CHECK_STEP,
-                "size of grid used for scan angle check",
-                QgsProcessingParameterNumber.Double,
-                1.0,
-                False,
-                0.0,
-            )
+            QgsProcessingParameterBoolean(self.CHECK_RETURN_NUMBERING, "print histogram about returns", False)
         )
-        self.addParameter(QgsProcessingParameterEnum(self.OPERATION, "mode of operation", self.OPERATIONS, False, 0))
+        self.addParameter(
+            QgsProcessingParameterBoolean(self.COMPUTE_GAP_TO_NEXT_RETURN, "adds attribute 'gap to next return'", False)
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(self.REPAIR_NUMBER_OF_RETURNS, "repair invalid number of returns", False)
+        )
+        self.addParameter(QgsProcessingParameterBoolean(self.SKIP_INCOMPLETE, "skip incomplete returns", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
         self.add_parameters_verbose_gui_64()
         self.add_parameters_output_appendix_gui()
-        self.add_parameters_point_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())]
+        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
-        self.add_parameters_horizontal_feet_commands(parameters, context, commands)
-        self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
-        step = self.parameterAsDouble(parameters, self.CHECK_STEP, context)
-        if step != 1.0:
-            commands.append("-step")
-            commands.append(str(step))
-        operation = self.parameterAsInt(parameters, self.OPERATION, context)
-        if operation == 1:
-            commands.append("-flag_as_withheld")
-        elif operation == 2:
-            commands.append("-remove_overage")
+        if self.parameterAsBool(parameters, self.CHECK_RETURN_NUMBERING, context):
+            commands.append("-check_return_numbering")
+        if self.parameterAsBool(parameters, self.COMPUTE_GAP_TO_NEXT_RETURN, context):
+            commands.append("-compute_gap_to_next_return")
+        if self.parameterAsBool(parameters, self.REPAIR_NUMBER_OF_RETURNS, context):
+            commands.append("-repair_number_of_returns")
+        if self.parameterAsBool(parameters, self.SKIP_INCOMPLETE, context):
+            commands.append("-skip_incomplete")
+        self.add_parameters_output_directory_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        self.add_parameters_output_appendix_commands(parameters, context, commands)
-        self.add_parameters_point_output_format_commands(parameters, context, commands)
-        self.add_parameters_output_directory_commands(parameters, context, commands)
         LastoolsUtils.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
-        return LasOveragePro()
+        return LasReturnPro()
 
     def name(self):
         return self.TOOL_NAME

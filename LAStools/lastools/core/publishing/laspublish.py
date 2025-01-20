@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    laspublish.py
+    self.py
     ---------------------
     Date                 : November 2023
     Copyright            : (C) 2023 by rapidlasso GmbH
@@ -52,66 +52,62 @@ class LasPublish(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(QgsProcessingParameterEnum(LasPublish.MODE, "type of portal", LasPublish.MODES, False, 1))
-        self.addParameter(QgsProcessingParameterBoolean(LasPublish.USE_EDL, "use Eye Dome Lighting (EDL)", True))
-        self.addParameter(QgsProcessingParameterBoolean(LasPublish.SHOW_SKYBOX, "show Skybox", True))
+        self.addParameter(QgsProcessingParameterEnum(self.MODE, "type of portal", self.MODES, False, 1))
+        self.addParameter(QgsProcessingParameterBoolean(self.USE_EDL, "use Eye Dome Lighting (EDL)", True))
+        self.addParameter(QgsProcessingParameterBoolean(self.SHOW_SKYBOX, "show Skybox", True))
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasPublish.MATERIAL, "default material colors on start-up", LasPublish.MATERIALS, False, 0
-            )
+            QgsProcessingParameterEnum(self.MATERIAL, "default material colors on start-up", self.MATERIALS, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasPublish.COPY_OR_MOVE,
+                self.COPY_OR_MOVE,
                 "copy or move source LiDAR files into portal (only for download portals)",
-                LasPublish.COPY_OR_MOVE_OPTIONS,
+                self.COPY_OR_MOVE_OPTIONS,
                 False,
                 2,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasPublish.OVERWRITE_EXISTING, "overwrite existing files", True)
-        )
-        self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"))
-        self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
-        self.addParameter(QgsProcessingParameterString(LasPublish.PORTAL_DESCRIPTION, "portal description", ""))
+        self.addParameter(QgsProcessingParameterBoolean(self.OVERWRITE_EXISTING, "overwrite existing files", True))
+        self.addParameter(QgsProcessingParameterString(self.PORTAL_HTML_PAGE, "portal HTML page", "portal.html"))
+        self.addParameter(QgsProcessingParameterString(self.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
+        self.addParameter(QgsProcessingParameterString(self.PORTAL_DESCRIPTION, "portal description", ""))
         self.add_parameters_additional_gui()
         self.add_parameters_verbose_gui()
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
-        mode = self.parameterAsInt(parameters, LasPublish.MODE, context)
+        mode = self.parameterAsInt(parameters, self.MODE, context)
         if mode == 0:
             commands.append("-only_3D")
         elif mode == 2:
             commands.append("-only_2D")
-        material = self.parameterAsInt(parameters, LasPublish.MATERIAL, context)
-        commands.append("-" + LasPublish.MATERIALS[material])
-        if not self.parameterAsBool(parameters, LasPublish.USE_EDL, context):
+        material = self.parameterAsInt(parameters, self.MATERIAL, context)
+        commands.append("-" + self.MATERIALS[material])
+        if not self.parameterAsBool(parameters, self.USE_EDL, context):
             commands.append("-no_edl")
-        if not self.parameterAsBool(parameters, LasPublish.SHOW_SKYBOX, context):
+        if not self.parameterAsBool(parameters, self.SHOW_SKYBOX, context):
             commands.append("-no_skybox")
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        copy_or_move = self.parameterAsInt(parameters, LasPublish.COPY_OR_MOVE, context)
+        copy_or_move = self.parameterAsInt(parameters, self.COPY_OR_MOVE, context)
         if copy_or_move == 0:
             commands.append("-copy_source_files")
         elif copy_or_move == 1:
             commands.append("-move_source_files")
             commands.append("-really_move")
-        if self.parameterAsBool(parameters, LasPublish.OVERWRITE_EXISTING, context):
+        if self.parameterAsBool(parameters, self.OVERWRITE_EXISTING, context):
             commands.append("-overwrite")
-        portal_html_page = self.parameterAsString(parameters, LasPublish.PORTAL_HTML_PAGE, context)
+        portal_html_page = self.parameterAsString(parameters, self.PORTAL_HTML_PAGE, context)
         if portal_html_page != "":
             commands.append("-o")
             commands.append('"' + portal_html_page + '"')
-        title = self.parameterAsString(parameters, LasPublish.PORTAL_TITLE, context)
+        title = self.parameterAsString(parameters, self.PORTAL_TITLE, context)
         if title != "":
             commands.append("-title")
             commands.append('"' + title + '"')
-        description = self.parameterAsString(parameters, LasPublish.PORTAL_DESCRIPTION, context)
+        description = self.parameterAsString(parameters, self.PORTAL_DESCRIPTION, context)
         if description != "":
             commands.append("-description")
             commands.append('"' + description + '"')
@@ -203,7 +199,7 @@ class LasPublishPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublishPro.MODE, context)

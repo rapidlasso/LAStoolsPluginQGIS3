@@ -4,8 +4,8 @@
 ***************************************************************************
     lasnoise.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -48,7 +48,7 @@ class LasNoise(LastoolsAlgorithm):
         self.add_parameters_ignore_class2_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoise.ISOLATED,
+                self.ISOLATED,
                 "isolated if surrounding cells have only",
                 QgsProcessingParameterNumber.Integer,
                 5,
@@ -58,7 +58,7 @@ class LasNoise(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoise.STEP_XY,
+                self.STEP_XY,
                 "resolution of isolation grid in xy",
                 QgsProcessingParameterNumber.Double,
                 4.0,
@@ -68,7 +68,7 @@ class LasNoise(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoise.STEP_Z,
+                self.STEP_Z,
                 "resolution of isolation grid in z",
                 QgsProcessingParameterNumber.Double,
                 4.0,
@@ -77,13 +77,11 @@ class LasNoise(LastoolsAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasNoise.OPERATION, "what to do with isolated points", LasNoise.OPERATIONS, False, 0
-            )
+            QgsProcessingParameterEnum(self.OPERATION, "what to do with isolated points", self.OPERATIONS, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoise.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 7, False, 0, 255
+                self.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 7, False, 0, 255
             )
         )
         self.add_parameters_additional_gui()
@@ -91,25 +89,31 @@ class LasNoise(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        isolated = self.parameterAsInt(parameters, LasNoise.ISOLATED, context)
+        isolated = self.parameterAsInt(parameters, self.ISOLATED, context)
         commands.append("-isolated")
         commands.append(str(isolated))
-        step_xy = self.parameterAsDouble(parameters, LasNoise.STEP_XY, context)
+        step_xy = self.parameterAsDouble(parameters, self.STEP_XY, context)
         commands.append("-step_xy")
         commands.append(str(step_xy))
-        step_z = self.parameterAsDouble(parameters, LasNoise.STEP_Z, context)
+        step_z = self.parameterAsDouble(parameters, self.STEP_Z, context)
         commands.append("-step_z")
         commands.append(str(step_z))
-        operation = self.parameterAsInt(parameters, LasNoise.OPERATION, context)
+        operation = self.parameterAsInt(parameters, self.OPERATION, context)
         if operation != 0:
             commands.append("-remove_noise")
         else:
             commands.append("-classify_as")
-            classify_as = self.parameterAsInt(parameters, LasNoise.CLASSIFY_AS, context)
+            classify_as = self.parameterAsInt(parameters, self.CLASSIFY_AS, context)
             commands.append(str(classify_as))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -164,7 +168,7 @@ class LasNoisePro(LastoolsAlgorithm):
         self.add_parameters_ignore_class2_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoisePro.ISOLATED,
+                self.ISOLATED,
                 "isolated if surrounding cells have only",
                 QgsProcessingParameterNumber.Integer,
                 5,
@@ -174,7 +178,7 @@ class LasNoisePro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoisePro.STEP_XY,
+                self.STEP_XY,
                 "resolution of isolation grid in xy",
                 QgsProcessingParameterNumber.Double,
                 4.0,
@@ -184,7 +188,7 @@ class LasNoisePro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoisePro.STEP_Z,
+                self.STEP_Z,
                 "resolution of isolation grid in z",
                 QgsProcessingParameterNumber.Double,
                 4.0,
@@ -193,13 +197,11 @@ class LasNoisePro(LastoolsAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasNoisePro.OPERATION, "what to do with isolated points", LasNoisePro.OPERATIONS, False, 0
-            )
+            QgsProcessingParameterEnum(self.OPERATION, "what to do with isolated points", self.OPERATIONS, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasNoisePro.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 7, False, 0, 255
+                self.CLASSIFY_AS, "classify as", QgsProcessingParameterNumber.Integer, 7, False, 0, 255
             )
         )
         self.add_parameters_additional_gui()
@@ -210,25 +212,31 @@ class LasNoisePro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        isolated = self.parameterAsInt(parameters, LasNoisePro.ISOLATED, context)
+        isolated = self.parameterAsInt(parameters, self.ISOLATED, context)
         commands.append("-isolated")
         commands.append(str(isolated))
-        step_xy = self.parameterAsDouble(parameters, LasNoisePro.STEP_XY, context)
+        step_xy = self.parameterAsDouble(parameters, self.STEP_XY, context)
         commands.append("-step_xy")
         commands.append(str(step_xy))
-        step_z = self.parameterAsDouble(parameters, LasNoisePro.STEP_Z, context)
+        step_z = self.parameterAsDouble(parameters, self.STEP_Z, context)
         commands.append("-step_z")
         commands.append(str(step_z))
-        operation = self.parameterAsInt(parameters, LasNoisePro.OPERATION, context)
+        operation = self.parameterAsInt(parameters, self.OPERATION, context)
         if operation != 0:
             commands.append("-remove_noise")
         else:
             commands.append("-classify_as")
-            classify_as = self.parameterAsInt(parameters, LasNoisePro.CLASSIFY_AS, context)
+            classify_as = self.parameterAsInt(parameters, self.CLASSIFY_AS, context)
             commands.append(str(classify_as))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)

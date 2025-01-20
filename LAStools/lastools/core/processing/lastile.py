@@ -4,8 +4,8 @@
 ***************************************************************************
     lastile.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -45,7 +45,7 @@ class LasTile(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasTile.TILE_SIZE,
+                self.TILE_SIZE,
                 "tile size (side length of square tile)",
                 QgsProcessingParameterNumber.Double,
                 1000.0,
@@ -56,17 +56,17 @@ class LasTile(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasTile.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0
+                self.BUFFER, "buffer around each tile", QgsProcessingParameterNumber.Double, 30.0, False, 0.0, 100.0
             )
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasTile.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
+                self.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
             )
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasTile.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False
+                self.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False
             )
         )
         self.add_parameters_additional_gui()
@@ -74,18 +74,24 @@ class LasTile(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        tile_size = self.parameterAsInt(parameters, LasTile.TILE_SIZE, context)
+        tile_size = self.parameterAsInt(parameters, self.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(str(tile_size))
-        buffer = self.parameterAsDouble(parameters, LasTile.BUFFER, context)
+        buffer = self.parameterAsDouble(parameters, self.BUFFER, context)
         if buffer != 0.0:
             commands.append("-buffer")
             commands.append(str(buffer))
-        if self.parameterAsBool(parameters, LasTile.FLAG_AS_WITHHELD, context):
+        if self.parameterAsBool(parameters, self.FLAG_AS_WITHHELD, context):
             commands.append("-flag_as_withheld")
-        if self.parameterAsBool(parameters, LasTile.REVERSIBLE, context):
+        if self.parameterAsBool(parameters, self.REVERSIBLE, context):
             commands.append("-reversible")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -139,7 +145,7 @@ class LasTilePro(LastoolsAlgorithm):
         self.add_parameters_apply_file_source_id_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasTilePro.TILE_SIZE,
+                self.TILE_SIZE,
                 "tile size (side length of square tile)",
                 QgsProcessingParameterNumber.Double,
                 1000.0,
@@ -150,7 +156,7 @@ class LasTilePro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasTilePro.BUFFER,
+                self.BUFFER,
                 "buffer around each tile",
                 QgsProcessingParameterNumber.Double,
                 30.0,
@@ -161,13 +167,13 @@ class LasTilePro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterBoolean(
-                LasTilePro.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
+                self.FLAG_AS_WITHHELD, "flag buffer points as 'withheld' for easier removal later", True
             )
         )
-        self.addParameter(QgsProcessingParameterBoolean(LasTilePro.EXTRA_PASS, "more than 2000 output tiles", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.EXTRA_PASS, "more than 2000 output tiles", False))
         self.addParameter(
             QgsProcessingParameterString(
-                LasTilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)", ""
+                self.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)", ""
             )
         )
         self.add_parameters_additional_gui()
@@ -177,23 +183,29 @@ class LasTilePro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
-        tile_size = self.parameterAsInt(parameters, LasTilePro.TILE_SIZE, context)
+        tile_size = self.parameterAsInt(parameters, self.TILE_SIZE, context)
         commands.append("-tile_size")
         commands.append(str(tile_size))
-        buffer = self.parameterAsDouble(parameters, LasTilePro.BUFFER, context)
+        buffer = self.parameterAsDouble(parameters, self.BUFFER, context)
         if buffer != 0.0:
             commands.append("-buffer")
             commands.append(str(buffer))
-        if self.parameterAsBool(parameters, LasTilePro.FLAG_AS_WITHHELD, context):
+        if self.parameterAsBool(parameters, self.FLAG_AS_WITHHELD, context):
             commands.append("-flag_as_withheld")
-        if self.parameterAsBool(parameters, LasTilePro.EXTRA_PASS, context):
+        if self.parameterAsBool(parameters, self.EXTRA_PASS, context):
             commands.append("-extra_pass")
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        base_name = self.parameterAsString(parameters, LasTilePro.BASE_NAME, context)
+        base_name = self.parameterAsString(parameters, self.BASE_NAME, context)
         if base_name != "":
             commands.append("-o")
             commands.append('"' + base_name + '"')

@@ -4,8 +4,8 @@
 ***************************************************************************
     blast2iso.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -45,12 +45,12 @@ class Blast2Iso(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2Iso.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10
+                self.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2Iso.ISO_EVERY,
+                self.ISO_EVERY,
                 "extract isoline with a spacing of",
                 QgsProcessingParameterNumber.Double,
                 10.0,
@@ -61,7 +61,7 @@ class Blast2Iso(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2Iso.CLEAN,
+                self.CLEAN,
                 "clean isolines shorter than (0 = do not clean)",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -72,7 +72,7 @@ class Blast2Iso(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2Iso.SIMPLIFY_LENGTH,
+                self.SIMPLIFY_LENGTH,
                 "simplify segments shorter than (0 = do not simplify)",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -83,7 +83,7 @@ class Blast2Iso(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2Iso.SIMPLIFY_AREA,
+                self.SIMPLIFY_AREA,
                 "simplify segments pairs with area less than (0 = do not simplify)",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -97,23 +97,29 @@ class Blast2Iso(LastoolsAlgorithm):
         self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        smooth = self.parameterAsInt(parameters, Blast2Iso.SMOOTH, context)
+        smooth = self.parameterAsInt(parameters, self.SMOOTH, context)
         if smooth != 0:
             commands.append("-smooth")
             commands.append(str(smooth))
         commands.append("-iso_every")
-        commands.append(str(self.parameterAsDouble(parameters, Blast2Iso.ISO_EVERY, context)))
-        clean = self.parameterAsDouble(parameters, Blast2Iso.CLEAN, context)
+        commands.append(str(self.parameterAsDouble(parameters, self.ISO_EVERY, context)))
+        clean = self.parameterAsDouble(parameters, self.CLEAN, context)
         if clean != 0.0:
             commands.append("-clean")
             commands.append(str(clean))
-        simplify_length = self.parameterAsDouble(parameters, Blast2Iso.SIMPLIFY_LENGTH, context)
+        simplify_length = self.parameterAsDouble(parameters, self.SIMPLIFY_LENGTH, context)
         if simplify_length != 0.0:
             commands.append("-simplify_length")
             commands.append(str(simplify_length))
-        simplify_area = self.parameterAsDouble(parameters, Blast2Iso.SIMPLIFY_AREA, context)
+        simplify_area = self.parameterAsDouble(parameters, self.SIMPLIFY_AREA, context)
         if simplify_area != 0.0:
             commands.append("-simplify_area")
             commands.append(str(simplify_area))
@@ -168,12 +174,12 @@ class Blast2IsoPro(LastoolsAlgorithm):
         self.add_parameters_point_input_merged_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2IsoPro.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10
+                self.SMOOTH, "smooth underlying TIN", QgsProcessingParameterNumber.Integer, 0, False, 0, 10
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2IsoPro.ISO_EVERY,
+                self.ISO_EVERY,
                 "extract isoline with a spacing of",
                 QgsProcessingParameterNumber.Double,
                 10.0,
@@ -184,7 +190,7 @@ class Blast2IsoPro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2IsoPro.CLEAN,
+                self.CLEAN,
                 "clean isolines shorter than (0 = do not clean)",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -195,7 +201,7 @@ class Blast2IsoPro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2IsoPro.SIMPLIFY_LENGTH,
+                self.SIMPLIFY_LENGTH,
                 "simplify segments shorter than (0 = do not simplify)",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -206,7 +212,7 @@ class Blast2IsoPro(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                Blast2IsoPro.SIMPLIFY_AREA,
+                self.SIMPLIFY_AREA,
                 "simplify segments pairs with area less than (0 = do not simplify)",
                 QgsProcessingParameterNumber.Double,
                 0.0,
@@ -224,24 +230,30 @@ class Blast2IsoPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_point_input_merged_commands(parameters, context, commands)
-        smooth = self.parameterAsInt(parameters, Blast2IsoPro.SMOOTH, context)
+        smooth = self.parameterAsInt(parameters, self.SMOOTH, context)
         if smooth != 0:
             commands.append("-smooth")
             commands.append(str(smooth))
         commands.append("-iso_every")
-        commands.append(str(self.parameterAsDouble(parameters, Blast2IsoPro.ISO_EVERY, context)))
-        clean = self.parameterAsDouble(parameters, Blast2IsoPro.CLEAN, context)
+        commands.append(str(self.parameterAsDouble(parameters, self.ISO_EVERY, context)))
+        clean = self.parameterAsDouble(parameters, self.CLEAN, context)
         if clean != 0.0:
             commands.append("-clean")
             commands.append(str(clean))
-        simplify_length = self.parameterAsDouble(parameters, Blast2IsoPro.SIMPLIFY_LENGTH, context)
+        simplify_length = self.parameterAsDouble(parameters, self.SIMPLIFY_LENGTH, context)
         if simplify_length != 0.0:
             commands.append("-simplify_length")
             commands.append(str(simplify_length))
-        simplify_area = self.parameterAsDouble(parameters, Blast2IsoPro.SIMPLIFY_AREA, context)
+        simplify_area = self.parameterAsDouble(parameters, self.SIMPLIFY_AREA, context)
         if simplify_area != 0.0:
             commands.append("-simplify_area")
             commands.append(str(simplify_area))

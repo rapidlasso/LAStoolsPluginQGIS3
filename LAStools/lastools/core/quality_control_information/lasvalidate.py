@@ -4,8 +4,8 @@
 ***************************************************************************
     lasvalidate.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -40,16 +40,20 @@ class LasValidate(LastoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.add_parameters_point_input_gui()
-        self.addParameter(
-            QgsProcessingParameterBoolean(LasValidate.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False)
-        )
+        self.addParameter(QgsProcessingParameterBoolean(self.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
         self.add_parameters_generic_output_gui("Output XML file", "xml", True)
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + LastoolsUtils.command_ext(),  # no64bit: self.cpu64(parameters, context) +
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasValidate.ONE_REPORT_PER_FILE, context):
+        if self.parameterAsBool(parameters, self.ONE_REPORT_PER_FILE, context):
             commands.append("-oxml")
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
@@ -101,7 +105,13 @@ class LasValidatePro(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasValidatePro.ONE_REPORT_PER_FILE, context):
             commands.append("-oxml")

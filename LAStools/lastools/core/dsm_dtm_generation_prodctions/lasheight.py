@@ -4,8 +4,8 @@
 ***************************************************************************
     lasheight.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = "rapidlasso"
-__date__ = "March 2024"
-__copyright__ = "(C) 2024, rapidlasso GmbH"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
@@ -45,17 +45,17 @@ class LasHeight(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_ignore_class2_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasHeight.REPLACE_Z, "replace z", False))
-        self.addParameter(QgsProcessingParameterBoolean(LasHeight.DROP_ABOVE, "drop above", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.DROP_ABOVE, "drop above", False))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeight.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0
+                self.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0
             )
         )
-        self.addParameter(QgsProcessingParameterBoolean(LasHeight.DROP_BELOW, "drop below", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.DROP_BELOW, "drop below", False))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeight.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0
+                self.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0
             )
         )
         self.add_parameters_additional_gui()
@@ -63,18 +63,24 @@ class LasHeight(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasHeight.REPLACE_Z, context):
+        if self.parameterAsBool(parameters, self.REPLACE_Z, context):
             commands.append("-replace_z")
-        if self.parameterAsBool(parameters, LasHeight.DROP_ABOVE, context):
+        if self.parameterAsBool(parameters, self.DROP_ABOVE, context):
             commands.append("-drop_above")
-            commands.append(str(self.parameterAsDouble(parameters, LasHeight.DROP_ABOVE_HEIGHT, context)))
-        if self.parameterAsBool(parameters, LasHeight.DROP_BELOW, context):
+            commands.append(str(self.parameterAsDouble(parameters, self.DROP_ABOVE_HEIGHT, context)))
+        if self.parameterAsBool(parameters, self.DROP_BELOW, context):
             commands.append("-drop_below")
-            commands.append(str(self.parameterAsDouble(parameters, LasHeight.DROP_BELOW_HEIGHT, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.DROP_BELOW_HEIGHT, context)))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
@@ -149,19 +155,19 @@ class LasHeightClassify(LastoolsAlgorithm):
         self.add_parameters_point_input_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_ignore_class2_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasHeightClassify.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.REPLACE_Z, "replace z", False))
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasHeightClassify.CLASSIFY_BELOW,
+                self.CLASSIFY_BELOW,
                 "classify below height as",
-                LasHeightClassify.CLASSIFY_CLASSES,
+                self.CLASSIFY_CLASSES,
                 False,
                 0,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightClassify.CLASSIFY_BELOW_HEIGHT,
+                self.CLASSIFY_BELOW_HEIGHT,
                 "below height",
                 QgsProcessingParameterNumber.Double,
                 -2.0,
@@ -170,16 +176,16 @@ class LasHeightClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasHeightClassify.CLASSIFY_BETWEEN1,
+                self.CLASSIFY_BETWEEN1,
                 "classify between height as",
-                LasHeightClassify.CLASSIFY_CLASSES,
+                self.CLASSIFY_CLASSES,
                 False,
                 0,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM,
+                self.CLASSIFY_BETWEEN1_HEIGHT_FROM,
                 "between height ... ",
                 QgsProcessingParameterNumber.Double,
                 0.5,
@@ -187,7 +193,7 @@ class LasHeightClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_TO,
+                self.CLASSIFY_BETWEEN1_HEIGHT_TO,
                 "... and height",
                 QgsProcessingParameterNumber.Double,
                 2.0,
@@ -195,16 +201,16 @@ class LasHeightClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasHeightClassify.CLASSIFY_BETWEEN2,
+                self.CLASSIFY_BETWEEN2,
                 "classify between height as",
-                LasHeightClassify.CLASSIFY_CLASSES,
+                self.CLASSIFY_CLASSES,
                 False,
                 0,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM,
+                self.CLASSIFY_BETWEEN2_HEIGHT_FROM,
                 "between height ...",
                 QgsProcessingParameterNumber.Double,
                 2.0,
@@ -212,20 +218,18 @@ class LasHeightClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_TO,
+                self.CLASSIFY_BETWEEN2_HEIGHT_TO,
                 "... and height",
                 QgsProcessingParameterNumber.Double,
                 5.0,
             )
         )
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasHeightClassify.CLASSIFY_ABOVE, "classify above", LasHeightClassify.CLASSIFY_CLASSES, False, 0
-            )
+            QgsProcessingParameterEnum(self.CLASSIFY_ABOVE, "classify above", self.CLASSIFY_CLASSES, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightClassify.CLASSIFY_ABOVE_HEIGHT,
+                self.CLASSIFY_ABOVE_HEIGHT,
                 "classify above height",
                 QgsProcessingParameterNumber.Double,
                 100.0,
@@ -236,41 +240,39 @@ class LasHeightClassify(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasHeightClassify.REPLACE_Z, context):
+        if self.parameterAsBool(parameters, self.REPLACE_Z, context):
             commands.append("-replace_z")
-        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_BELOW, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_BELOW, context)
         if classify != 0:
             commands.append("-classify_below")
-            commands.append(str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BELOW_HEIGHT, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BELOW_HEIGHT, context)))
             commands.append(str(classify - 1))
-        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_BETWEEN1, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_BETWEEN1, context)
         if classify != 0:
             commands.append("-classify_between")
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM, context))
-            )
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN1_HEIGHT_TO, context))
-            )
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN1_HEIGHT_FROM, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN1_HEIGHT_TO, context)))
             commands.append(str(classify - 1))
-        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_BETWEEN2, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_BETWEEN2, context)
         if classify != 0:
             commands.append("-classify_between")
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM, context))
-            )
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_BETWEEN2_HEIGHT_TO, context))
-            )
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN2_HEIGHT_FROM, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN2_HEIGHT_TO, context)))
             commands.append(str(classify - 1))
-        classify = self.parameterAsInt(parameters, LasHeightClassify.CLASSIFY_ABOVE, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_ABOVE, context)
         if classify != 0:
             commands.append("-classify_above")
-            commands.append(str(self.parameterAsDouble(parameters, LasHeightClassify.CLASSIFY_ABOVE_HEIGHT, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_ABOVE_HEIGHT, context)))
             commands.append(str(classify - 1))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -322,17 +324,17 @@ class LasHeightPro(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_ignore_class2_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasHeightPro.REPLACE_Z, "replace z", False))
-        self.addParameter(QgsProcessingParameterBoolean(LasHeightPro.DROP_ABOVE, "drop above", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.DROP_ABOVE, "drop above", False))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightPro.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0
+                self.DROP_ABOVE_HEIGHT, "drop above height", QgsProcessingParameterNumber.Double, 100.0
             )
         )
-        self.addParameter(QgsProcessingParameterBoolean(LasHeightPro.DROP_BELOW, "drop below", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.DROP_BELOW, "drop below", False))
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightPro.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0
+                self.DROP_BELOW_HEIGHT, "drop below height", QgsProcessingParameterNumber.Double, -2.0
             )
         )
         self.add_parameters_additional_gui()
@@ -343,18 +345,24 @@ class LasHeightPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasHeightPro.REPLACE_Z, context):
+        if self.parameterAsBool(parameters, self.REPLACE_Z, context):
             commands.append("-replace_z")
-        if self.parameterAsBool(parameters, LasHeightPro.DROP_ABOVE, context):
+        if self.parameterAsBool(parameters, self.DROP_ABOVE, context):
             commands.append("-drop_above")
-            commands.append(str(self.parameterAsDouble(parameters, LasHeightPro.DROP_ABOVE_HEIGHT, context)))
-        if self.parameterAsBool(parameters, LasHeightPro.DROP_BELOW, context):
+            commands.append(str(self.parameterAsDouble(parameters, self.DROP_ABOVE_HEIGHT, context)))
+        if self.parameterAsBool(parameters, self.DROP_BELOW, context):
             commands.append("-drop_below")
-            commands.append(str(self.parameterAsDouble(parameters, LasHeightPro.DROP_BELOW_HEIGHT, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.DROP_BELOW_HEIGHT, context)))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
@@ -432,19 +440,19 @@ class LasHeightProClassify(LastoolsAlgorithm):
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_ignore_class2_gui()
-        self.addParameter(QgsProcessingParameterBoolean(LasHeightProClassify.REPLACE_Z, "replace z", False))
+        self.addParameter(QgsProcessingParameterBoolean(self.REPLACE_Z, "replace z", False))
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasHeightProClassify.CLASSIFY_BELOW,
+                self.CLASSIFY_BELOW,
                 "classify below height as",
-                LasHeightProClassify.CLASSIFY_CLASSES,
+                self.CLASSIFY_CLASSES,
                 False,
                 0,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightProClassify.CLASSIFY_BELOW_HEIGHT,
+                self.CLASSIFY_BELOW_HEIGHT,
                 "below height",
                 QgsProcessingParameterNumber.Double,
                 -2.0,
@@ -453,16 +461,16 @@ class LasHeightProClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasHeightProClassify.CLASSIFY_BETWEEN1,
+                self.CLASSIFY_BETWEEN1,
                 "classify between height as",
-                LasHeightProClassify.CLASSIFY_CLASSES,
+                self.CLASSIFY_CLASSES,
                 False,
                 0,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM,
+                self.CLASSIFY_BETWEEN1_HEIGHT_FROM,
                 "between height ... ",
                 QgsProcessingParameterNumber.Double,
                 0.5,
@@ -470,7 +478,7 @@ class LasHeightProClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_TO,
+                self.CLASSIFY_BETWEEN1_HEIGHT_TO,
                 "... and height",
                 QgsProcessingParameterNumber.Double,
                 2.0,
@@ -478,16 +486,16 @@ class LasHeightProClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterEnum(
-                LasHeightProClassify.CLASSIFY_BETWEEN2,
+                self.CLASSIFY_BETWEEN2,
                 "classify between height as",
-                LasHeightProClassify.CLASSIFY_CLASSES,
+                self.CLASSIFY_CLASSES,
                 False,
                 0,
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM,
+                self.CLASSIFY_BETWEEN2_HEIGHT_FROM,
                 "between height ...",
                 QgsProcessingParameterNumber.Double,
                 2.0,
@@ -495,20 +503,18 @@ class LasHeightProClassify(LastoolsAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_TO,
+                self.CLASSIFY_BETWEEN2_HEIGHT_TO,
                 "... and height",
                 QgsProcessingParameterNumber.Double,
                 5.0,
             )
         )
         self.addParameter(
-            QgsProcessingParameterEnum(
-                LasHeightProClassify.CLASSIFY_ABOVE, "classify above", LasHeightProClassify.CLASSIFY_CLASSES, False, 0
-            )
+            QgsProcessingParameterEnum(self.CLASSIFY_ABOVE, "classify above", self.CLASSIFY_CLASSES, False, 0)
         )
         self.addParameter(
             QgsProcessingParameterNumber(
-                LasHeightProClassify.CLASSIFY_ABOVE_HEIGHT,
+                self.CLASSIFY_ABOVE_HEIGHT,
                 "classify above height",
                 QgsProcessingParameterNumber.Double,
                 100.0,
@@ -522,45 +528,39 @@ class LasHeightProClassify(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
-        if self.parameterAsBool(parameters, LasHeightProClassify.REPLACE_Z, context):
+        if self.parameterAsBool(parameters, self.REPLACE_Z, context):
             commands.append("-replace_z")
-        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_BELOW, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_BELOW, context)
         if classify != 0:
             commands.append("-classify_below")
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BELOW_HEIGHT, context))
-            )
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BELOW_HEIGHT, context)))
             commands.append(str(classify - 1))
-        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_BETWEEN1, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_BETWEEN1, context)
         if classify != 0:
             commands.append("-classify_between")
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_FROM, context))
-            )
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN1_HEIGHT_TO, context))
-            )
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN1_HEIGHT_FROM, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN1_HEIGHT_TO, context)))
             commands.append(str(classify - 1))
-        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_BETWEEN2, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_BETWEEN2, context)
         if classify != 0:
             commands.append("-classify_between")
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_FROM, context))
-            )
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_BETWEEN2_HEIGHT_TO, context))
-            )
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN2_HEIGHT_FROM, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_BETWEEN2_HEIGHT_TO, context)))
             commands.append(str(classify - 1))
-        classify = self.parameterAsInt(parameters, LasHeightProClassify.CLASSIFY_ABOVE, context)
+        classify = self.parameterAsInt(parameters, self.CLASSIFY_ABOVE, context)
         if classify != 0:
             commands.append("-classify_above")
-            commands.append(
-                str(self.parameterAsDouble(parameters, LasHeightProClassify.CLASSIFY_ABOVE_HEIGHT, context))
-            )
+            commands.append(str(self.parameterAsDouble(parameters, self.CLASSIFY_ABOVE_HEIGHT, context)))
             commands.append(str(classify - 1))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)

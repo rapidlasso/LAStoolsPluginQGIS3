@@ -4,8 +4,8 @@
 /***************************************************************************
     lastools_provider.py
     ---------------------
-    Date                 : November 2023
-    Copyright            : (C) 2023 by rapidlasso GmbH
+    Date                 : January 2025
+    Copyright            : (c) 2025 by rapidlasso GmbH
     Email                : info near rapidlasso point de
 ***************************************************************************
 *                                                                         *
@@ -17,79 +17,124 @@
 ***************************************************************************
 """
 
-__author__ = 'rapidlasso'
-__date__ = 'September 2023'
-__copyright__ = '(C) 2023, rapidlasso GmbH'
+__author__ = "rapidlasso"
+__date__ = "January 2025"
+__copyright__ = "(c) 2025, rapidlasso GmbH"
 
 from PyQt5.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 from .lastools.core.processing import (
-    LasIndex, LasIndexPro,
-    LasMerge, LasMergePro,
-    LasOverage, LasOveragePro,
-    LasBoundary, LasBoundaryPro,
+    LasIndex,
+    LasIndexPro,
+    LasMerge,
+    LasMergePro,
+    LasOverage,
+    LasOveragePro,
+    LasBoundary,
+    LasBoundaryPro,
     LasClip,
-    LasTile, LasTilePro,
+    LasPrecision,
+    LasTile,
+    LasTilePro,
     LasSplit,
-    LasNoise, LasNoisePro,
+    LasSort,
+    LasSortPro,
+    LasNoise,
+    LasNoisePro,
     LasDiff,
-    Las3dPolyHorizontalVerticalDistance, Las3dPolyRadialDistance,
-    LasIntensity, LasIntensityAttenuationFactor,
+    LasCopy,
+    LasDistance,
+    LasDuplicate,
+    LasDuplicatePro,
+    Las3dPolyHorizontalVerticalDistance,
+    Las3dPolyRadialDistance,
+    LasIntensity,
+    LasIntensityAttenuationFactor,
 )
 from .lastools.core.data_convert import (
-    Las2txt, Las2txtPro,
-    Txt2Las, Txt2LasPro,
-    Las2LasFilter, Las2LasProFilter,
-    Las2LasProject, Las2LasProProject,
-    Las2LasTransform, Las2LasProTransform,
+    Las2txt,
+    Las2txtPro,
+    Txt2Las,
+    Txt2LasPro,
+    Las2LasFilter,
+    Las2LasProFilter,
+    Las2LasProject,
+    Las2LasProProject,
+    Las2LasTransform,
+    Las2LasProTransform,
     Las2Shp,
     Shp2Las,
+    e572las,
 )
 from .lastools.core.classification_filtering import (
-    LasGround, LasGroundPro,
-    LasGroundNew, LasGroundProNew,
-    LasClassify, LasClassifyPro,
-    LasThin, LasThinPro,
+    LasGround,
+    LasGroundPro,
+    LasGroundNew,
+    LasGroundProNew,
+    LasClassify,
+    LasClassifyPro,
+    LasThin,
+    LasThinPro,
 )
-from .lastools.core.data_compression import (
-    LasZip, LasZipPro
-)
+from .lastools.core.data_compression import LasZip, LasZipPro
 from .lastools.core.dsm_dtm_generation_prodctions import (
-    Las2Dem, Las2DemPro,
+    Las2Dem,
+    Las2DemPro,
     Las2Iso,
-    LasGrid, LasGridPro,
-    LasHeight, LasHeightClassify, LasHeightPro, LasHeightProClassify,
-    LasCanopy, LasCanopyPro,
-    Blast2Dem, Blast2DemPro,
-    Blast2Iso, Blast2IsoPro,
+    LasPlanes,
+    LasGrid,
+    LasGridPro,
+    LasHeight,
+    LasHeightClassify,
+    LasHeightPro,
+    LasHeightProClassify,
+    LasCanopy,
+    LasCanopyPro,
+    LasVoxel,
+    Blast2Dem,
+    Blast2DemPro,
+    Blast2Iso,
+    Blast2IsoPro,
 )
-from .lastools.core.publishing import (
-    LasPublish, LasPublishPro
-)
+from .lastools.core.publishing import LasPublish, LasPublishPro
 from .lastools.core.quality_control_information import (
-    LasInfo, LasInfoPro,
-    LasOverlap, LasOverlapPro,
+    LasInfo,
+    LasInfoPro,
+    LasOverlap,
+    LasOverlapPro,
     LasControl,
-    LasValidate, LasValidatePro,
+    LasProbe,
+    LasReturn,
+    LasReturnPro,
+    LasValidate,
+    LasValidatePro,
+    LasOptimize,
 )
 from .lastools.core.visualization_colorization import (
-    LasView, LasViewPro,
+    LasView,
+    LasViewPro,
     LasColor,
 )
 from .lastools.core.pipelines import (
-    FlightLinesToCHMFirstReturn, FlightLinesToCHMHighestReturn, FlightLinesToCHMSpikeFree,
-    FlightLinesToDTMandDSMFirstReturn, FlightLinesToDTMandDSMSpikeFree,
-    FlightLinesToMergedCHMFirstReturn, FlightLinesToMergedCHMHighestReturn, FlightLinesToMergedCHMPitFree,
+    FlightLinesToCHMFirstReturn,
+    FlightLinesToCHMHighestReturn,
+    FlightLinesToCHMSpikeFree,
+    FlightLinesToDTMandDSMFirstReturn,
+    FlightLinesToDTMandDSMSpikeFree,
+    FlightLinesToMergedCHMFirstReturn,
+    FlightLinesToMergedCHMHighestReturn,
+    FlightLinesToMergedCHMPitFree,
     FlightLinesToMergedCHMSpikeFree,
-    HugeFileClassify, HugeFileNormalize, HugeFileGroundClassify,
+    HugeFileClassify,
+    HugeFileNormalize,
+    HugeFileGroundClassify,
 )
 from .lastools.core.utils import paths
 
 
 class LAStoolsProvider(QgsProcessingProvider):
-
     def __init__(self):
         QgsProcessingProvider.__init__(self)
         self.algos = None
@@ -99,10 +144,11 @@ class LAStoolsProvider(QgsProcessingProvider):
         provider.
         """
         ProcessingConfig.settingIcons[self.name()] = self.icon()
-        ProcessingConfig.addSetting(Setting(self.name(), 'LASTOOLS_ACTIVATED', 'Activate', True))
+        ProcessingConfig.addSetting(Setting(self.name(), "LASTOOLS_ACTIVATED", "Activate", True))
         ProcessingConfig.addSetting(
-            Setting(self.name(), 'LASTOOLS_FOLDER', 'LAStools folder', "C:\LAStools", valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.name(), 'WINE_FOLDER', 'Wine folder', "", valuetype=Setting.FOLDER))
+            Setting(self.name(), "LASTOOLS_FOLDER", "LAStools folder", "C:\LAStools", valuetype=Setting.FOLDER)
+        )
+        ProcessingConfig.addSetting(Setting(self.name(), "WINE_FOLDER", "Wine folder", "", valuetype=Setting.FOLDER))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -112,98 +158,149 @@ class LAStoolsProvider(QgsProcessingProvider):
         Unloads the provider. Any tear-down steps required by the provider
         should be implemented here.
         """
-        ProcessingConfig.removeSetting('LASTOOLS_ACTIVATED')
-        ProcessingConfig.removeSetting('LASTOOLS_FOLDER')
-        ProcessingConfig.removeSetting('WINE_FOLDER')
+        ProcessingConfig.removeSetting("LASTOOLS_ACTIVATED")
+        ProcessingConfig.removeSetting("LASTOOLS_FOLDER")
+        ProcessingConfig.removeSetting("WINE_FOLDER")
         pass
 
     def isActive(self):
         """Return True if the provider is activated and ready to run algorithms"""
-        return ProcessingConfig.getSetting('LASTOOLS_ACTIVATED')
+        return ProcessingConfig.getSetting("LASTOOLS_ACTIVATED")
 
     def setActive(self, active):
-        ProcessingConfig.setSettingValue('LASTOOLS_ACTIVATED', active)
+        ProcessingConfig.setSettingValue("LASTOOLS_ACTIVATED", active)
 
     def loadAlgorithms(self):
         """
         Loads all algorithms belonging to this provider.
         """
         processing_algorithms = [
-            LasIndex(), LasIndexPro(),
-            LasMerge(), LasMergePro(),
-            LasOverage(), LasOveragePro(),
-            LasBoundary(), LasBoundaryPro(),
+            LasIndex(),
+            LasIndexPro(),
+            LasMerge(),
+            LasMergePro(),
+            LasOverage(),
+            LasOveragePro(),
+            LasBoundary(),
+            LasBoundaryPro(),
             LasClip(),
-            LasTile(), LasTilePro(),
+            LasTile(),
+            LasTilePro(),
             LasSplit(),
-            LasNoise(), LasNoisePro(),
+            LasSort(),
+            LasSortPro(),
+            LasDuplicate(),
+            LasDuplicatePro(),
+            LasPrecision(),
+            LasNoise(),
+            LasNoisePro(),
             LasDiff(),
-            Las3dPolyRadialDistance(), Las3dPolyHorizontalVerticalDistance(),
-            LasIntensity(), LasIntensityAttenuationFactor()
+            LasDistance(),
+            LasCopy(),
+            Las3dPolyRadialDistance(),
+            Las3dPolyHorizontalVerticalDistance(),
+            LasIntensity(),
+            LasIntensityAttenuationFactor(),
         ]
         self.algos = processing_algorithms
 
         data_convert_algorithms = [
-            Las2txt(), Las2txtPro(),
-            Txt2Las(), Txt2LasPro(),
-            Las2LasFilter(), Las2LasProFilter(),
-            Las2LasProject(), Las2LasProProject(),
-            Las2LasTransform(), Las2LasProTransform(),
+            Las2txt(),
+            Las2txtPro(),
+            Txt2Las(),
+            Txt2LasPro(),
+            Las2LasFilter(),
+            Las2LasProFilter(),
+            Las2LasProject(),
+            Las2LasProProject(),
+            Las2LasTransform(),
+            Las2LasProTransform(),
             Las2Shp(),
             Shp2Las(),
+            e572las(),
         ]
         self.algos.extend(data_convert_algorithms)
 
         classification_filtering_algorithms = [
-            LasGround(), LasGroundPro(),
-            LasGroundNew(), LasGroundProNew(),
-            LasClassify(), LasClassifyPro(),
-            LasThin(), LasThinPro(),
+            LasGround(),
+            LasGroundPro(),
+            LasGroundNew(),
+            LasGroundProNew(),
+            LasClassify(),
+            LasClassifyPro(),
+            LasThin(),
+            LasThinPro(),
         ]
         self.algos.extend(classification_filtering_algorithms)
 
         data_compression_algorithms = [
-            LasZip(), LasZipPro(),
+            LasZip(),
+            LasZipPro(),
         ]
         self.algos.extend(data_compression_algorithms)
 
         dsm_dtm_generation_productions_algorithms = [
-            Las2Dem(), Las2DemPro(),
+            Las2Dem(),
+            Las2DemPro(),
             Las2Iso(),
-            LasGrid(), LasGridPro(),
-            LasHeight(), LasHeightClassify(), LasHeightPro(), LasHeightProClassify(),
-            LasCanopy(), LasCanopyPro(),
-            Blast2Dem(), Blast2DemPro(),
-            Blast2Iso(), Blast2IsoPro(),
+            LasPlanes(),
+            LasGrid(),
+            LasGridPro(),
+            LasHeight(),
+            LasHeightClassify(),
+            LasHeightPro(),
+            LasHeightProClassify(),
+            LasCanopy(),
+            LasCanopyPro(),
+            LasVoxel(),
+            Blast2Dem(),
+            Blast2DemPro(),
+            Blast2Iso(),
+            Blast2IsoPro(),
         ]
         self.algos.extend(dsm_dtm_generation_productions_algorithms)
 
         publishing_algorithms = [
-            LasPublish(), LasPublishPro(),
+            LasPublish(),
+            LasPublishPro(),
         ]
         self.algos.extend(publishing_algorithms)
 
         quality_control_information_algorithms = [
-            LasInfo(), LasInfoPro(),
-            LasOverlap(), LasOverlapPro(),
+            LasInfo(),
+            LasInfoPro(),
+            LasOverlap(),
+            LasOverlapPro(),
             LasControl(),
-            LasValidate(), LasValidatePro(),
+            LasProbe(),
+            LasReturn(),
+            LasReturnPro(),
+            LasValidate(),
+            LasValidatePro(),
+            LasOptimize(),
         ]
         self.algos.extend(quality_control_information_algorithms)
 
         visualization_colorization_algorithms = [
-            LasView(), LasViewPro(),
+            LasView(),
+            LasViewPro(),
             LasColor(),
         ]
         self.algos.extend(visualization_colorization_algorithms)
 
         pipelines_algorithms = [
-            FlightLinesToCHMFirstReturn(), FlightLinesToCHMHighestReturn(), FlightLinesToCHMSpikeFree(),
-            FlightLinesToDTMandDSMFirstReturn(), FlightLinesToDTMandDSMSpikeFree(),
-            FlightLinesToMergedCHMFirstReturn(), FlightLinesToMergedCHMHighestReturn(), FlightLinesToMergedCHMPitFree(),
+            FlightLinesToCHMFirstReturn(),
+            FlightLinesToCHMHighestReturn(),
+            FlightLinesToCHMSpikeFree(),
+            FlightLinesToDTMandDSMFirstReturn(),
+            FlightLinesToDTMandDSMSpikeFree(),
+            FlightLinesToMergedCHMFirstReturn(),
+            FlightLinesToMergedCHMHighestReturn(),
+            FlightLinesToMergedCHMPitFree(),
             FlightLinesToMergedCHMSpikeFree(),
-            HugeFileClassify(), HugeFileGroundClassify(), HugeFileNormalize(),
-
+            HugeFileClassify(),
+            HugeFileGroundClassify(),
+            HugeFileNormalize(),
         ]
         self.algos.extend(pipelines_algorithms)
 
@@ -219,7 +316,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         string should be a unique, short, character only string, eg "qgis" or
         "gdal". This string should not be localised.
         """
-        return 'LAStools'
+        return "LAStools"
 
     def name(self):
         """
@@ -228,7 +325,7 @@ class LAStoolsProvider(QgsProcessingProvider):
 
         This string should be short (e.g. "LAStools") and localised.
         """
-        return 'LAStools'
+        return "LAStools"
 
     def longName(self):
         """
@@ -237,4 +334,4 @@ class LAStoolsProvider(QgsProcessingProvider):
         (version 2.2.1)". This string should be localised. The default
         implementation returns the same string as name().
         """
-        return 'LAStools LiDAR and point cloud processing'
+        return "LAStools LiDAR and point cloud processing"
