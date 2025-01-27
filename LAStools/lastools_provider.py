@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 /***************************************************************************
     lastools_provider.py
@@ -21,101 +19,54 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
-from PyQt5.QtGui import QIcon
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import QgsProcessingProvider
-from processing.core.ProcessingConfig import Setting, ProcessingConfig
+from qgis.PyQt.QtGui import QIcon
 
-from .lastools.core.processing import (
-    LasIndex,
-    LasIndexPro,
-    LasMerge,
-    LasMergePro,
-    LasOverage,
-    LasOveragePro,
-    LasBoundary,
-    LasBoundaryPro,
-    LasClip,
-    LasPrecision,
-    LasTile,
-    LasTilePro,
-    LasSplit,
-    LasSort,
-    LasSortPro,
-    LasNoise,
-    LasNoisePro,
-    LasDiff,
-    LasCopy,
-    LasDistance,
-    LasDuplicate,
-    LasDuplicatePro,
-    Las3dPolyHorizontalVerticalDistance,
-    Las3dPolyRadialDistance,
-    LasIntensity,
-    LasIntensityAttenuationFactor,
-)
-from .lastools.core.data_convert import (
-    Las2txt,
-    Las2txtPro,
-    Txt2Las,
-    Txt2LasPro,
-    Las2LasFilter,
-    Las2LasProFilter,
-    Las2LasProject,
-    Las2LasProProject,
-    Las2LasTransform,
-    Las2LasProTransform,
-    Las2Shp,
-    Shp2Las,
-    e572las,
-)
 from .lastools.core.classification_filtering import (
-    LasGround,
-    LasGroundPro,
-    LasGroundNew,
-    LasGroundProNew,
     LasClassify,
     LasClassifyPro,
+    LasGround,
+    LasGroundNew,
+    LasGroundPro,
+    LasGroundProNew,
     LasThin,
     LasThinPro,
 )
 from .lastools.core.data_compression import LasZip, LasZipPro
+from .lastools.core.data_convert import (
+    Las2LasFilter,
+    Las2LasProFilter,
+    Las2LasProject,
+    Las2LasProProject,
+    Las2LasProTransform,
+    Las2LasTransform,
+    Las2Shp,
+    Las2txt,
+    Las2txtPro,
+    Shp2Las,
+    Txt2Las,
+    Txt2LasPro,
+    e572las,
+)
 from .lastools.core.dsm_dtm_generation_prodctions import (
+    Blast2Dem,
+    Blast2DemPro,
+    Blast2Iso,
+    Blast2IsoPro,
     Las2Dem,
     Las2DemPro,
     Las2Iso,
-    LasPlanes,
+    LasCanopy,
+    LasCanopyPro,
     LasGrid,
     LasGridPro,
     LasHeight,
     LasHeightClassify,
     LasHeightPro,
     LasHeightProClassify,
-    LasCanopy,
-    LasCanopyPro,
+    LasPlanes,
     LasVoxel,
-    Blast2Dem,
-    Blast2DemPro,
-    Blast2Iso,
-    Blast2IsoPro,
-)
-from .lastools.core.publishing import LasPublish, LasPublishPro
-from .lastools.core.quality_control_information import (
-    LasInfo,
-    LasInfoPro,
-    LasOverlap,
-    LasOverlapPro,
-    LasControl,
-    LasProbe,
-    LasReturn,
-    LasReturnPro,
-    LasValidate,
-    LasValidatePro,
-    LasOptimize,
-)
-from .lastools.core.visualization_colorization import (
-    LasView,
-    LasViewPro,
-    LasColor,
 )
 from .lastools.core.pipelines import (
     FlightLinesToCHMFirstReturn,
@@ -128,10 +79,53 @@ from .lastools.core.pipelines import (
     FlightLinesToMergedCHMPitFree,
     FlightLinesToMergedCHMSpikeFree,
     HugeFileClassify,
-    HugeFileNormalize,
     HugeFileGroundClassify,
+    HugeFileNormalize,
+)
+from .lastools.core.processing import (
+    Las3dPolyHorizontalVerticalDistance,
+    Las3dPolyRadialDistance,
+    LasBoundary,
+    LasBoundaryPro,
+    LasClip,
+    LasCopy,
+    LasDiff,
+    LasDistance,
+    LasDuplicate,
+    LasDuplicatePro,
+    LasIndex,
+    LasIndexPro,
+    LasIntensity,
+    LasIntensityAttenuationFactor,
+    LasMerge,
+    LasMergePro,
+    LasNoise,
+    LasNoisePro,
+    LasOverage,
+    LasOveragePro,
+    LasPrecision,
+    LasSort,
+    LasSortPro,
+    LasSplit,
+    LasTile,
+    LasTilePro,
+)
+from .lastools.core.publishing import LasPublish, LasPublishPro
+from .lastools.core.quality_control_information import (
+    LasControl,
+    LasInfo,
+    LasInfoPro,
+    LasOptimize,
+    LasOverlap,
+    LasOverlapPro,
+    LasProbe,
+    LasReturn,
+    LasReturnPro,
+    LasValidate,
+    LasValidatePro,
 )
 from .lastools.core.utils import paths
+from .lastools.core.visualization_colorization import LasColor, LasView, LasViewPro
 
 
 class LAStoolsProvider(QgsProcessingProvider):

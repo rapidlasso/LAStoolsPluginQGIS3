@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     lastools_algorithm.py
@@ -21,18 +19,18 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
-from PyQt5.QtGui import QIcon
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterString,
     QgsProcessingParameterEnum,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
 )
 from qgis.PyQt.QtCore import QCoreApplication
+
 from ..utils import LastoolsUtils
 
 

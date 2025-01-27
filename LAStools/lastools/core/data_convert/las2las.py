@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     las2las.py
@@ -23,12 +21,11 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
-from PyQt5.QtGui import QIcon
+from qgis.core import QgsProcessingParameterEnum, QgsProcessingParameterNumber, QgsProcessingParameterString
+from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsProcessingParameterEnum, QgsProcessingParameterString, QgsProcessingParameterNumber
-
-from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
+from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
 
 
 class Las2LasFilter(LastoolsAlgorithm):
@@ -181,7 +178,7 @@ class Las2LasProject(LastoolsAlgorithm):
                 source_sp_code = self.parameterAsInt(parameters, self.SOURCE_SP, context)
                 if source_sp_code != 0:
                     commands.append("-" + self.PROJECTIONS[source_projection])
-                    commands.append(STATE_PLANES[source_sp_code])
+                    commands.append(self.STATE_PLANES[source_sp_code])
             else:
                 commands.append("-" + self.PROJECTIONS[source_projection])
         target_projection = self.parameterAsInt(parameters, self.TARGET_PROJECTION, context)
@@ -203,7 +200,7 @@ class Las2LasProject(LastoolsAlgorithm):
                 target_sp_code = self.parameterAsInt(parameters, self.TARGET_SP, context)
                 if target_sp_code != 0:
                     commands.append("-target_" + self.PROJECTIONS[target_projection])
-                    commands.append(STATE_PLANES[target_sp_code])
+                    commands.append(self.STATE_PLANES[target_sp_code])
             else:
                 commands.append("-target_" + self.PROJECTIONS[target_projection])
         self.add_parameters_additional_commands(parameters, context, commands)
@@ -501,7 +498,7 @@ class Las2LasProProject(LastoolsAlgorithm):
                 source_sp_code = self.parameterAsInt(parameters, self.SOURCE_SP, context)
                 if source_sp_code != 0:
                     commands.append("-" + self.PROJECTIONS[source_projection])
-                    commands.append(STATE_PLANES[source_sp_code])
+                    commands.append(self.STATE_PLANES[source_sp_code])
             else:
                 commands.append("-" + self.PROJECTIONS[source_projection])
         target_projection = self.parameterAsInt(parameters, self.TARGET_PROJECTION, context)
@@ -523,7 +520,7 @@ class Las2LasProProject(LastoolsAlgorithm):
                 target_sp_code = self.parameterAsInt(parameters, self.TARGET_SP, context)
                 if target_sp_code != 0:
                     commands.append("-target_" + self.PROJECTIONS[target_projection])
-                    commands.append(STATE_PLANES[target_sp_code])
+                    commands.append(self.STATE_PLANES[target_sp_code])
             else:
                 commands.append("-target_" + self.PROJECTIONS[target_projection])
         self.add_parameters_additional_commands(parameters, context, commands)

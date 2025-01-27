@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     self.py
@@ -23,11 +21,11 @@ __copyright__ = "(C) 2024, rapidlasso GmbH"
 
 import os
 
-from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterEnum, QgsProcessingParameterBoolean, QgsProcessingParameterString
+from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterEnum, QgsProcessingParameterString
+from qgis.PyQt.QtGui import QIcon
 
-from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
+from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
 
 
 class LasPublish(LastoolsAlgorithm):
@@ -76,7 +74,13 @@ class LasPublish(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, self.MODE, context)
@@ -199,7 +203,13 @@ class LasPublishPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())]
+        commands = [
+            os.path.join(
+                LastoolsUtils.lastools_path(),
+                "bin",
+                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
+            )
+        ]
         self.add_parameters_verbose_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublishPro.MODE, context)
