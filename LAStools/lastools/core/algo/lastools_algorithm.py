@@ -451,8 +451,7 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
 
     @staticmethod
     def check_before_opening_parameters_dialog():
-        path = LastoolsUtils.lastools_path()
-        if path == "":
+        if not LastoolsUtils.validate_config_paths():
             return "LAStools folder is not configured. Please configure it before running LAStools algorithms."
 
     def cpu64(self, parameters, context):

@@ -21,12 +21,25 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 import subprocess
+from pathlib import Path
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
 
 
 class LastoolsUtils:
+    @staticmethod
+    def validate_config_paths():
+        wine_path, lastools_path = LastoolsUtils.lastools_path()
+        if not lastools_path.exists():
+            return False
+        if not isWindows():
+            if wine_path is None or wine_path == Path(""):
+                return False
+            if not wine_path.exists():
+                return False
+        return True
+
     @staticmethod
     def has_wine():
         wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
