@@ -23,7 +23,6 @@ __author__ = "Victor Olaya"
 __date__ = "August 2012"
 __copyright__ = "(C) 2012, Victor Olaya"
 
-import os
 
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterEnum, QgsProcessingParameterNumber
 from qgis.PyQt.QtGui import QIcon
@@ -59,13 +58,7 @@ class LasClip(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
         if self.parameterAsBool(parameters, self.INTERIOR, context):

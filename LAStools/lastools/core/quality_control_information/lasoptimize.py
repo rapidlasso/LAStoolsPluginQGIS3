@@ -19,7 +19,6 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(C) 2025, rapidlasso GmbH"
 
-import os
 
 # QgsProcessingParameterNumber, QgsProcessingParameterString, QgsProcessingParameterEnum,
 from qgis.core import QgsProcessingParameterBoolean
@@ -56,13 +55,7 @@ class LasOptimize(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.ARGAPPEND, context):
             commands.append("-append")

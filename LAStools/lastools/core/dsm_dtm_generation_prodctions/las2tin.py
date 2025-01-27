@@ -19,7 +19,6 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
-import os
 
 from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
 from lastools.core.utils.utils import LastoolsUtils
@@ -36,13 +35,7 @@ class las2tin(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
