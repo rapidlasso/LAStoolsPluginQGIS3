@@ -53,17 +53,27 @@ class LastoolsUtils:
             return ""
 
     @staticmethod
+    def lastools_windows_path():
+        lastools_folder = Path(ProcessingConfig.getSetting("LASTOOLS_FOLDER"))
+        return (None, lastools_folder)
+
+    @staticmethod
+    def lastools_linux_path():
+        lastools_folder = Path(ProcessingConfig.getSetting("LASTOOLS_FOLDER"))
+        wine_setting = ProcessingConfig.getSetting("WINE_FOLDER")
+
+        if wine_setting is None or wine_setting == "":
+            return (None, lastools_folder)
+
+        wine_folder = Path(wine_setting)
+        return (wine_folder, lastools_folder)
+
+    @staticmethod
     def lastools_path():
-        lastools_folder = ProcessingConfig.getSetting("LASTOOLS_FOLDER")
         if isWindows():
-            wine_folder = ""
+            return LastoolsUtils.lastools_windows_path()
         else:
-            wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
-        if (wine_folder is None) or (wine_folder == ""):
-            folder = lastools_folder
-        else:
-            folder = wine_folder + "/wine " + lastools_folder
-        return folder
+            return LastoolsUtils.lastools_linux_path()
 
     @staticmethod
     def run_lastools(commands, feedback):
