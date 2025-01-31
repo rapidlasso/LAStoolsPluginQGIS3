@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "davidanson.vscode-markdownlint",
+    "ms-python.black-formatter",
+    "ms-python.flake8",
+    "ms-python.isort",
+
+    "ms-python.python",
+    "njpwerner.autodocstring",
+    "redhat.vscode-yaml",
+    "zhoufeng.pyqt-integration"
+  ]
+}

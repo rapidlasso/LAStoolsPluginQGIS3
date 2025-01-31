@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     utils.py
@@ -26,8 +24,6 @@ import subprocess
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
-from qgis.utils import iface
-from qgis.core import Qgis, QgsMessageLog
 
 
 class LastoolsUtils:

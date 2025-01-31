@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     lasdistance.py
@@ -24,18 +22,16 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 import os
 
 from qgis.core import (
-    QgsProcessingParameterNumber,
-    QgsProcessingParameterDefinition,
     QgsProcessingParameterBoolean,
-    QgsProcessingParameterString,
-    QgsProcessingParameterFile,
-    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterEnum,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterNumber,
 )
+from qgis.PyQt.QtGui import QIcon
 
-from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
-from PyQt5.QtGui import QIcon
+from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
 
 
 class LasDistance(LastoolsAlgorithm):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     las2tin.py
@@ -22,8 +20,9 @@ __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
-from lastools.core.utils.utils import LastoolsUtils
+
 from lastools.core.algo.lastools_algorithm import LastoolsAlgorithm
+from lastools.core.utils.utils import LastoolsUtils
 
 
 class las2tin(LastoolsAlgorithm):

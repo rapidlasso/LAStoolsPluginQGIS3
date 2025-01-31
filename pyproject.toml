@@ -1,0 +1,79 @@
+[tool.flake8]
+count = true
+exclude = [
+    ".git",
+    "**pycache**",
+    "docs/conf.py",
+    "old",
+    "build",
+    "dist",
+    ".venv*",
+    "tests",
+    "*/external/*",
+    "ext_libs/*"
+]
+ignore = ["E121", "E123", "E126", "E203", "E226", "E24", "E704", "QGS105", "W503", "W504"]
+max-complexity = 15
+max-doc-length = 130
+max-line-length = 120
+output-file = "dev_flake8_report.txt"
+statistics = true
+tee = true
+
+[tool.black]
+line-length = 120
+target-version = ["py39"]
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 120
+multi_line_output = 3
+profile = "black"
+use_parentheses = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--junitxml=junit/test-results.xml",
+    "--cov-config=pyproject.toml",
+    "--cov=pyqgisgmsher",
+    "--cov-report=html",
+    "--cov-report=term",
+    "--cov-report=xml",
+    "--ignore=tests/_wip/"
+]
+norecursedirs = [
+    ".*",
+    "build",
+    "dev",
+    "development",
+    "dist",
+    "docs",
+    "CVS",
+    "fixtures",
+    "*darcs",
+    "{arch}",
+    "*.egg",
+    "venv",
+    "*wip"
+]
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    ".venv/*",
+    "*tests*"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if self.debug:",
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:"
+]
+ignore_errors = true
+show_missing = true

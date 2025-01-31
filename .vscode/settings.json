@@ -1,0 +1,44 @@
+{
+    // Editor
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "files.associations": {
+        "./requirements/*.txt": "pip-requirements",
+        "metadata.txt": "ini",
+        "**/*.model3": "xml",
+        "**/*.ts": "xml",
+        "**/*.ui": "xml"
+    },
+    // Python
+    "python.analysis.autoFormatStrings": false, // breaking PyQt translation
+    "python.analysis.typeCheckingMode": "off",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.activateEnvironment": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        },
+        "editor.rulers": [
+            120
+        ],
+        "editor.wordWrapColumn": 120,
+    },
+    // Linter
+
+    "flake8.args": [
+        "--config=pyproject.toml",
+        "--verbose"
+    ],
+
+    // Tests
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": true,
+    // Extensions
+    "autoDocstring.docstringFormat": "sphinx",
+    "black-formatter.args": [
+        "--config",
+        "pyproject.toml"
+    ]
+}

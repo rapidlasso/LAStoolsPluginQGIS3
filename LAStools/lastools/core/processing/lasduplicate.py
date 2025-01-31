@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     lasduplicate.py
@@ -23,11 +21,11 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 
-from PyQt5.QtGui import QIcon
-from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterEnum, QgsProcessingParameterNumber
+from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterNumber
+from qgis.PyQt.QtGui import QIcon
 
-from ..utils import LastoolsUtils, lastool_info, lasgroup_info, paths, licence, help_string_help, readme_url
 from ..algo import LastoolsAlgorithm
+from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
 
 
 class LasDuplicate(LastoolsAlgorithm):
@@ -94,7 +92,7 @@ class LasDuplicate(LastoolsAlgorithm):
             commands.append("-single_returns")
         if self.parameterAsBool(parameters, self.NEARBY, context):
             commands.append("-nearby")
-            commands.append(unicode(self.parameterAsDouble(parameters, self.NEARBY_TOLERANCE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.NEARBY_TOLERANCE, context)))
         if self.parameterAsBool(parameters, self.RECORD_REMOVED, context):
             commands.append("-record_removed")
         self.add_parameters_additional_commands(parameters, context, commands)
@@ -200,7 +198,7 @@ class LasDuplicatePro(LastoolsAlgorithm):
             commands.append("-single_returns")
         if self.parameterAsBool(parameters, self.NEARBY, context):
             commands.append("-nearby")
-            commands.append(unicode(self.parameterAsDouble(parameters, self.NEARBY_TOLERANCE, context)))
+            commands.append(str(self.parameterAsDouble(parameters, self.NEARBY_TOLERANCE, context)))
         if self.parameterAsBool(parameters, self.RECORD_REMOVED, context):
             commands.append("-record_removed")
         self.add_parameters_output_directory_commands(parameters, context, commands)
