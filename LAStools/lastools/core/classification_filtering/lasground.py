@@ -19,7 +19,6 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
-import os
 
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterEnum
 from qgis.PyQt.QtGui import QIcon
@@ -59,13 +58,7 @@ class LasGround(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
@@ -147,13 +140,7 @@ class LasGroundPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_horizontal_and_vertical_feet_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.NO_BULGE, context):

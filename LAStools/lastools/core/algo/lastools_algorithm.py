@@ -66,6 +66,12 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
     APPLY_FILE_SOURCE_ID = "APPLY_FILE_SOURCE_ID"
     STEP = "STEP"
 
+    # Generic options that should be reimplemented in child classes
+    TOOL_NAME = "Generic"
+    LASTOOL = "generic"
+    LICENSE = "o"
+    LASGROUP = 1
+
     FILTER_RETURN_CLASS_FLAGS1 = "FILTER_RETURN_CLASS_FLAGS1"
     FILTER_RETURN_CLASS_FLAGS2 = "FILTER_RETURN_CLASS_FLAGS2"
     FILTER_RETURN_CLASS_FLAGS3 = "FILTER_RETURN_CLASS_FLAGS3"
@@ -451,8 +457,7 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
 
     @staticmethod
     def check_before_opening_parameters_dialog():
-        path = LastoolsUtils.lastools_path()
-        if path == "":
+        if not LastoolsUtils.validate_config_paths():
             return "LAStools folder is not configured. Please configure it before running LAStools algorithms."
 
     def cpu64(self, parameters, context):
@@ -460,6 +465,16 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
             return "64"
         else:
             return ""
+
+    def get_command(self, parameters, context):
+        wine_path, lastools_path = LastoolsUtils.lastools_path()
+        las_command = (
+            lastools_path / "bin" / (self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())
+        ).as_posix()
+        if wine_path is None:  # Windows
+            return f'"{las_command}"'
+        else:  # Linux
+            return f'"{(wine_path / "wine").as_posix()}" "{las_command}"'
 
     def add_parameters_verbose_gui(self):
         self.addParameter(QgsProcessingParameterBoolean(self.VERBOSE, "verbose", False))

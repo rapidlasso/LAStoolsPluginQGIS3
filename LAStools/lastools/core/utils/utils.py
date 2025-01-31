@@ -21,12 +21,25 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 import subprocess
+from pathlib import Path
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
 
 
 class LastoolsUtils:
+    @staticmethod
+    def validate_config_paths():
+        wine_path, lastools_path = LastoolsUtils.lastools_path()
+        if not lastools_path.exists():
+            return False
+        if not isWindows():
+            if wine_path is None or wine_path == Path(""):
+                return False
+            if not wine_path.exists():
+                return False
+        return True
+
     @staticmethod
     def has_wine():
         wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
@@ -40,22 +53,35 @@ class LastoolsUtils:
             return ""
 
     @staticmethod
+    def lastools_windows_path():
+        lastools_folder = Path(ProcessingConfig.getSetting("LASTOOLS_FOLDER"))
+        return (None, lastools_folder)
+
+    @staticmethod
+    def lastools_linux_path():
+        lastools_folder = Path(ProcessingConfig.getSetting("LASTOOLS_FOLDER"))
+        wine_setting = ProcessingConfig.getSetting("WINE_FOLDER")
+
+        if wine_setting is None or wine_setting == "":
+            return (None, lastools_folder)
+
+        wine_folder = Path(wine_setting)
+        return (wine_folder, lastools_folder)
+
+    @staticmethod
     def lastools_path():
-        lastools_folder = ProcessingConfig.getSetting("LASTOOLS_FOLDER")
         if isWindows():
-            wine_folder = ""
+            return LastoolsUtils.lastools_windows_path()
         else:
-            wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
-        if (wine_folder is None) or (wine_folder == ""):
-            folder = lastools_folder
-        else:
-            folder = wine_folder + "/wine " + lastools_folder
-        return folder
+            return LastoolsUtils.lastools_linux_path()
 
     @staticmethod
     def run_lastools(commands, feedback):
         if ("-gui" in commands) and ("-cpu64" in commands):
             feedback.reportError("Parameters '64 bit' and 'open LAStools GUI' can't be combined")
+        if (commands[0].endswith('64.exe"') or commands[0].endswith('64"')) and "-cpu64" in commands:
+            feedback.pushWarning("Parameter '64 bit' can't be combined with 64 bit executable. Removing '-cpu64'")
+            commands.remove("-cpu64")
         commandline = " ".join(commands)
         feedback.pushConsoleInfo("LAStools command line")
         feedback.pushConsoleInfo(commandline)

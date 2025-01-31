@@ -19,7 +19,6 @@ __author__ = "rapidlasso"
 __date__ = "March 2024"
 __copyright__ = "(C) 2024, rapidlasso GmbH"
 
-import os
 
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.PyQt.QtGui import QIcon
@@ -57,13 +56,7 @@ class LasReturn(LastoolsAlgorithm):
         self.add_parameters_verbose_gui_64()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.CHECK_RETURN_NUMBERING, context):
             commands.append("-check_return_numbering")
@@ -138,13 +131,7 @@ class LasReturnPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.CHECK_RETURN_NUMBERING, context):

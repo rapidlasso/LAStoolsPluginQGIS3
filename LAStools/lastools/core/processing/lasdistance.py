@@ -19,7 +19,6 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
-import os
 
 from qgis.core import (
     QgsProcessingParameterBoolean,
@@ -141,13 +140,7 @@ class LasDistance(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # calling the specific .exe files from source of software
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext(),
-            )
-        ]
+        commands = [self.get_command(parameters, context)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append poly
         commands.append(f"-poly {parameters['INPUT_POLYLINE_PATH']}")

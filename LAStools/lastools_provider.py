@@ -140,7 +140,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(), "LASTOOLS_ACTIVATED", "Activate", True))
         ProcessingConfig.addSetting(
-            Setting(self.name(), "LASTOOLS_FOLDER", "LAStools folder", "C:\LAStools", valuetype=Setting.FOLDER)
+            Setting(self.name(), "LASTOOLS_FOLDER", "LAStools folder", "C:/LAStools", valuetype=Setting.FOLDER)
         )
         ProcessingConfig.addSetting(Setting(self.name(), "WINE_FOLDER", "Wine folder", "", valuetype=Setting.FOLDER))
         ProcessingConfig.readSettings()
