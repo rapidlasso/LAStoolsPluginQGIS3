@@ -79,9 +79,6 @@ class LastoolsUtils:
     def run_lastools(commands, feedback):
         if ("-gui" in commands) and ("-cpu64" in commands):
             feedback.reportError("Parameters '64 bit' and 'open LAStools GUI' can't be combined")
-        if (commands[0].endswith('64.exe"') or commands[0].endswith('64"')) and "-cpu64" in commands:
-            feedback.pushWarning("Parameter '64 bit' can't be combined with 64 bit executable. Removing '-cpu64'")
-            commands.remove("-cpu64")
         commandline = " ".join(commands)
         feedback.pushConsoleInfo("LAStools command line")
         feedback.pushConsoleInfo(commandline)
