@@ -36,10 +36,14 @@ if cmd_folder not in sys.path:
 class LAStoolsPlugin(object):
 
     def __init__(self, iface):
+        self.provider = None
+
+    def initProcessing(self):
         self.provider = LAStoolsProvider()
+        QgsApplication.processingRegistry().addProvider(self.provider)
 
     def initGui(self):
-        QgsApplication.processingRegistry().addProvider(self.provider)
+        self.initProcessing()
 
     def unload(self):
         QgsApplication.processingRegistry().removeProvider(self.provider)
