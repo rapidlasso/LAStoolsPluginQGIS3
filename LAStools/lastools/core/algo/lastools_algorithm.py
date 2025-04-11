@@ -19,6 +19,8 @@ __author__ = "rapidlasso"
 __date__ = "January 2025"
 __copyright__ = "(c) 2025, rapidlasso GmbH"
 
+import re
+
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingParameterBoolean,
@@ -472,9 +474,23 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
             lastools_path / "bin" / (self.LASTOOL + self.cpu64(parameters, context) + LastoolsUtils.command_ext())
         ).as_posix()
         if wine_path is None:  # Windows
-            return f'"{las_command}"'
+            las_command = f'"{las_command}"'
         else:  # Linux
-            return f'"{(wine_path / "wine").as_posix()}" "{las_command}"'
+            las_command = f'"{(wine_path / "wine").as_posix()}" "{las_command}"'
+
+        if self.LICENSE == "c" and self.check_unlicensed(las_command):
+            las_command = f"{las_command} -demo"
+        return las_command
+
+    def check_unlicensed(self, command):
+        output = LastoolsUtils.execute_command(command + " -v")
+        version_match = re.search(r"version\s+(\d+)", output)
+        version = version_match.group(1) if version_match else None
+        is_unlicensed = "unlicensed" in output
+
+        if is_unlicensed and int(version) >= 250219:
+            return True
+        return False
 
     def add_parameters_verbose_gui(self):
         self.addParameter(QgsProcessingParameterBoolean(self.VERBOSE, "verbose", False))
