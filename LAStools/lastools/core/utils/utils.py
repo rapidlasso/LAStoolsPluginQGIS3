@@ -47,7 +47,7 @@ class LastoolsUtils:
 
     @staticmethod
     def command_ext():
-        if LastoolsUtils.has_wine():
+        if LastoolsUtils.has_wine() or isWindows():
             return ".exe"
         else:
             return ""
@@ -76,13 +76,7 @@ class LastoolsUtils:
             return LastoolsUtils.lastools_linux_path()
 
     @staticmethod
-    def run_lastools(commands, feedback):
-        if ("-gui" in commands) and ("-cpu64" in commands):
-            feedback.reportError("Parameters '64 bit' and 'open LAStools GUI' can't be combined")
-        commandline = " ".join(commands)
-        feedback.pushConsoleInfo("LAStools command line")
-        feedback.pushConsoleInfo(commandline)
-        feedback.pushConsoleInfo("LAStools console output")
+    def execute_command(commandline: str):
         output = subprocess.Popen(
             commandline,
             shell=True,
@@ -91,4 +85,17 @@ class LastoolsUtils:
             stderr=subprocess.STDOUT,
             universal_newlines=False,
         ).communicate()[0]
-        feedback.pushConsoleInfo(output.decode("utf-8"))
+        if isWindows():
+            return output.decode("cp850", errors="replace")
+        return output.decode("utf-8", errors="replace")
+
+    @staticmethod
+    def run_lastools(commands, feedback):
+        if ("-gui" in commands) and ("-cpu64" in commands):
+            feedback.reportError("Parameters '64 bit' and 'open LAStools GUI' can't be combined")
+        commandline = " ".join(commands)
+        feedback.pushConsoleInfo("LAStools command line")
+        feedback.pushConsoleInfo(commandline)
+        feedback.pushConsoleInfo("LAStools console output")
+        output = LastoolsUtils.execute_command(commandline)
+        feedback.pushConsoleInfo(output)

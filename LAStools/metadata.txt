@@ -12,6 +12,7 @@ deprecated=False
 category=Plugins
 collaborators=Martin Isenburg and Victor Olaya
 
+hasProcessingProvider=yes
 
 homepage=http://github.com/rapidlasso/LAStoolsPluginQGIS3
 tracker=http://github.com/rapidlasso/LAStoolsPluginQGIS3/issues
