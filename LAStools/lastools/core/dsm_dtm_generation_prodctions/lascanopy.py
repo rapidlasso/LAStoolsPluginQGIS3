@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lascanopy.py
@@ -89,6 +90,7 @@ class LasCanopy(LastoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -120,11 +122,11 @@ class LasCanopy(LastoolsAlgorithm):
         )
         self.addParameter(QgsProcessingParameterBoolean(self.FILES_ARE_PLOTS, "input file is single plot", False))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_raster_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         plot_size = self.parameterAsDouble(parameters, self.PLOT_SIZE, context)
         if plot_size != 20.0:
@@ -176,9 +178,9 @@ class LasCanopy(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.FILES_ARE_PLOTS, context):
             commands.append("-files_are_plots")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_raster_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -267,6 +269,7 @@ class LasCanopyPro(LastoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_point_input_merged_gui()
         self.addParameter(
@@ -300,14 +303,14 @@ class LasCanopyPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.FILES_ARE_PLOTS, "input files are single plots", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_raster_output_format_gui()
         self.add_parameters_raster_output_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_point_input_merged_commands(parameters, context, commands)
         plot_size = self.parameterAsDouble(parameters, self.PLOT_SIZE, context)
@@ -361,12 +364,12 @@ class LasCanopyPro(LastoolsAlgorithm):
             commands.append("-files_are_plots")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_raster_output_format_commands(parameters, context, commands)
         self.add_parameters_raster_output_commands(parameters, context, commands)
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def createInstance(self):

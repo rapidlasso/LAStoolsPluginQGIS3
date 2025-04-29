@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasoptimize.py
@@ -42,6 +43,7 @@ class LasOptimize(LastoolsAlgorithm):
     ARGNOZUD = "ARGNOZUD"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.ARGAPPEND, "append LAX index to existing file", False))
         self.addParameter(QgsProcessingParameterBoolean(self.ARGNOLAX, "do not create index file", False))
@@ -51,11 +53,11 @@ class LasOptimize(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.ARGNOOFFS, "do not auto reoffset", False))
         self.addParameter(QgsProcessingParameterBoolean(self.ARGNOZUD, "do not zero user data", False))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.ARGAPPEND, context):
             commands.append("-append")
@@ -72,9 +74,9 @@ class LasOptimize(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.ARGNOZUD, context):
             commands.append("-do_not_zero_user_data")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

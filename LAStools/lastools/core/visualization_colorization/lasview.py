@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasview.py
@@ -39,6 +40,7 @@ class LasView(LastoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -54,11 +56,11 @@ class LasView(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.COLORING, "color by", self.COLORINGS, False, 0))
         self.addParameter(QgsProcessingParameterEnum(self.SIZE, "window size (x y) in pixels", self.SIZES, False, 0))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         points = self.parameterAsInt(parameters, self.POINTS, context)
         commands.append("-points " + str(points))
@@ -69,7 +71,7 @@ class LasView(LastoolsAlgorithm):
         if size != 0:
             commands.append("-win " + self.SIZES[size])
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -113,6 +115,7 @@ class LasViewPro(LastoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.addParameter(
@@ -131,11 +134,11 @@ class LasViewPro(LastoolsAlgorithm):
             QgsProcessingParameterEnum(LasViewPro.SIZE, "window size (x y) in pixels", LasViewPro.SIZES, False, 0)
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         points = self.parameterAsInt(parameters, LasViewPro.POINTS, context)
@@ -147,7 +150,7 @@ class LasViewPro(LastoolsAlgorithm):
         if size != 0:
             commands.append("-win " + LasViewPro.SIZES[size])
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def createInstance(self):

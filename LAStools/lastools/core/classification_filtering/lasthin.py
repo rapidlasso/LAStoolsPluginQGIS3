@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasthin.py
@@ -41,6 +42,7 @@ class LasThin(LastoolsAlgorithm):
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_ignore_class2_gui()
@@ -76,11 +78,11 @@ class LasThin(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
@@ -99,9 +101,9 @@ class LasThin(LastoolsAlgorithm):
             commands.append("-classify_as")
             commands.append(str(self.parameterAsInt(parameters, self.CLASSIFY_AS_CLASS, context)))
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -147,6 +149,7 @@ class LasThinPro(LastoolsAlgorithm):
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_ignore_class1_gui()
         self.add_parameters_ignore_class2_gui()
@@ -189,13 +192,13 @@ class LasThinPro(LastoolsAlgorithm):
         )
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_ignore_class1_commands(parameters, context, commands)
         self.add_parameters_ignore_class2_commands(parameters, context, commands)
@@ -215,11 +218,11 @@ class LasThinPro(LastoolsAlgorithm):
             commands.append(str(self.parameterAsInt(parameters, self.CLASSIFY_AS_CLASS, context)))
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_directory_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_point_output_format_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

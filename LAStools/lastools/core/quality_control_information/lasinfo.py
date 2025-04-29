@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasinfo.py
@@ -62,6 +63,7 @@ class LasInfo(LastoolsAlgorithm):
     JSON = "JSON"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_DENSITY, "compute density", False))
         self.addParameter(QgsProcessingParameterBoolean(self.REPAIR_BB, "repair bounding box", False))
@@ -87,11 +89,11 @@ class LasInfo(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.JSON, "JSON output", False))
         self.add_parameters_generic_output_gui("Output ASCII file", "txt", True)
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.COMPUTE_DENSITY, context):
             commands.append("-cd")
@@ -118,7 +120,7 @@ class LasInfo(LastoolsAlgorithm):
             commands.append("-js")
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -185,6 +187,7 @@ class LasInfoPro(LastoolsAlgorithm):
     JSON = "JSON"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_DENSITY, "compute density", False))
         self.addParameter(QgsProcessingParameterBoolean(self.REPAIR_BB, "repair bounding box", False))
@@ -210,13 +213,13 @@ class LasInfoPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.JSON, "JSON output", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.COMPUTE_DENSITY, context):
             commands.append("-cd")
@@ -246,7 +249,7 @@ class LasInfoPro(LastoolsAlgorithm):
         commands.append("-otxt")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

@@ -2,7 +2,7 @@
 name=LAStools
 qgisMinimumVersion=3.2
 description=batch-scriptable, multicore command-line tools for processing point clouds in LAS, LAZ, and ASCII formats
-version=2.2.0
+version=2.3.0
 author=rapidlasso GmbH
 email=info@rapidlasso.de
 icon=lastools/assets/img/lastools.png
@@ -27,6 +27,15 @@ about=
 
 
 changelog=
+    2.3.0: redesign of general functions and behaviour
+    - LAStools configuration checking on plugin load
+    - utf8/codepage support for filenames and log output
+    - space-in-path-support for path where possible
+    - autodetection of 32 and 64 bit versions, 64 bit as default
+    - auto demo mode if no license file at all
+    - introducing LAStools log output window
+    - colorized plugin log output depending on warnings/errors and exit code
+    - introducing debug settings for logging and default parameters
     2.2.0:
     - new tools: lascopy, lasdistance, lasduplicate, lasoptimize, lasplanes, lasprecision, lasprobe, lasreturn, lassort, lasvoxel, e572las
     - run in 64bit mode by default

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasmerge.py
@@ -32,72 +33,39 @@ class LasMerge(LastoolsAlgorithm):
     LASTOOL = "lasmerge"
     LICENSE = "o"
     LASGROUP = 3
-    FILE2 = "FILE2"
-    FILE3 = "FILE3"
-    FILE4 = "FILE4"
-    FILE5 = "FILE5"
-    FILE6 = "FILE6"
-    FILE7 = "FILE7"
+    FILE_CNT = 7
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
+        fc = 2
+        while fc <= self.FILE_CNT:
+            param = QgsProcessingParameterFile(f"FILE{fc}", f"{fc}nd file", QgsProcessingParameterFile.File, "", None, True)
+            param.setFileFilter(self.FILE_FILTER_LASLAZ)
+            self.addParameter(param)
+            fc+=1
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
-        self.addParameter(
-            QgsProcessingParameterFile(self.FILE2, "2nd file", QgsProcessingParameterFile.File, "laz", None, True)
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(self.FILE3, "3rd file", QgsProcessingParameterFile.File, "laz", None, True)
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(self.FILE4, "4th file", QgsProcessingParameterFile.File, "laz", None, True)
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(self.FILE5, "5th file", QgsProcessingParameterFile.File, "laz", None, True)
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(self.FILE6, "6th file", QgsProcessingParameterFile.File, "laz", None, True)
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(self.FILE7, "7th file", QgsProcessingParameterFile.File, "laz", None, True)
-        )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        file2 = self.parameterAsString(parameters, self.FILE2, context)
-        if file2 != "":
-            commands.append("-i")
-            commands.append(file2)
-        file3 = self.parameterAsString(parameters, self.FILE3, context)
-        if file3 != "":
-            commands.append("-i")
-            commands.append(file3)
-        file4 = self.parameterAsString(parameters, self.FILE4, context)
-        if file4 != "":
-            commands.append("-i")
-            commands.append(file4)
-        file5 = self.parameterAsString(parameters, self.FILE5, context)
-        if file5 != "":
-            commands.append("-i")
-            commands.append(file5)
-        file6 = self.parameterAsString(parameters, self.FILE6, context)
-        if file6 != "":
-            commands.append("-i")
-            commands.append(file6)
-        file7 = self.parameterAsString(parameters, self.FILE7, context)
-        if file7 != "":
-            commands.append("-i")
-            commands.append(file7)
+        fc = 2
+        while fc <= self.FILE_CNT:
+            file = self.parameterAsString(parameters, f"FILE{fc}", context)
+            if file != "":
+                commands.append("-i")
+                commands.append(file)
+            fc+=1
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -136,22 +104,23 @@ class LasMergePro(LastoolsAlgorithm):
     LASGROUP = 3
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

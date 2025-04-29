@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasvoxel.py
@@ -46,6 +47,7 @@ class LasVoxel(LastoolsAlgorithm):
     ARG_STORE_IDS_IN_POINT_SOURCE = "ARG_STORE_IDS_IN_POINT_SOURCE"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -89,17 +91,18 @@ class LasVoxel(LastoolsAlgorithm):
         self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, self.ARG_STEP, context)
         commands.append("-step")
         commands.append(str(step))
         count = self.parameterAsInt(parameters, self.ARG_MAX_COUNT, context)
-        commands.append("-max_count")
-        commands.append(str(count))
+        if count > 0:
+            commands.append("-max_count")
+            commands.append(str(count))
         if self.parameterAsBool(parameters, self.ARG_COMPUTE_MEAN_XYZ, context):
             commands.append("-compute_mean_xyz")
         if self.parameterAsBool(parameters, self.ARG_EMPTY_VOXELS, context):
@@ -108,12 +111,13 @@ class LasVoxel(LastoolsAlgorithm):
             commands.append("-store_IDs_in_intensity")
         if self.parameterAsBool(parameters, self.ARG_STORE_IDS_IN_POINT_SOURCE, context):
             commands.append("-store_IDs_in_point_source")
+
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_point_output_format_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

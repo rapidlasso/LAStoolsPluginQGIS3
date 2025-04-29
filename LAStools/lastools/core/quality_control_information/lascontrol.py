@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lascontrol.py
@@ -43,6 +44,7 @@ class LasControl(LastoolsAlgorithm):
     ADJUST_Z = "ADJUST_Z"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("ASCII text file of control points", "csv", False)
         self.addParameter(
@@ -61,11 +63,11 @@ class LasControl(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-cp")
         parse = self.parameterAsString(parameters, self.PARSE_STRING, context)
@@ -85,7 +87,7 @@ class LasControl(LastoolsAlgorithm):
             commands.append("-odix _adjusted")
             commands.append("-olaz")
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

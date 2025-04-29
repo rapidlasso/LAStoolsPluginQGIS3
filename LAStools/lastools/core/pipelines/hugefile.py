@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     hugefile.py
@@ -42,6 +43,7 @@ class HugeFileClassify(LastoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -75,12 +77,12 @@ class HugeFileClassify(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, HugeFileClassify.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -94,11 +96,11 @@ class HugeFileClassify(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("hugeFileClassify.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*.laz"
         )
@@ -117,11 +119,11 @@ class HugeFileClassify(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we compute the height for each points in the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*_g.laz"
         )
@@ -131,11 +133,11 @@ class HugeFileClassify(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we classify buildings and trees in the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasclassify")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*_gh.laz"
         )
@@ -145,18 +147,18 @@ class HugeFileClassify(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we reverse the tiling
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileClassify*_ghc.laz"
         )
         commands.append("-reverse_tiling")
         self.add_parameters_point_output_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         return {"commands": commands}
 
@@ -203,6 +205,7 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -238,12 +241,12 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, HugeFileGroundClassify.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -257,11 +260,11 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("hugeFileGroundClassify.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileGroundClassify*.laz"
         )
@@ -280,18 +283,18 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we reverse the tiling
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileGroundClassify*_g.laz"
         )
         commands.append("-reverse_tiling")
         self.add_parameters_point_output_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         return {"commands": commands}
 
@@ -337,7 +340,8 @@ class HugeFileNormalize(LastoolsAlgorithm):
     GRANULARITY = "GRANULARITY"
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -371,12 +375,12 @@ class HugeFileNormalize(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_point_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # first we tile the data with option '-reversible'
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsDouble(parameters, HugeFileNormalize.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -390,11 +394,11 @@ class HugeFileNormalize(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("hugeFileNormalize.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileNormalize*.laz"
         )
@@ -413,11 +417,11 @@ class HugeFileNormalize(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we height-normalize each points in the reversible tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileNormalize*_g.laz"
         )
@@ -428,18 +432,18 @@ class HugeFileNormalize(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we reverse the tiling
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, "hugeFileNormalize*_gh.laz"
         )
         commands.append("-reverse_tiling")
         self.add_parameters_point_output_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         return {"commands": commands}
 

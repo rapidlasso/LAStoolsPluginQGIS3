@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     shp2las.py
@@ -36,7 +37,8 @@ class Shp2Las(LastoolsAlgorithm):
     SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def initAlgorithm(self, config=None):
-        self.add_parameters_generic_input_gui("input polygon(s)", "shp", False)
+        super().initAlgorithm(config)
+        self.add_parameters_generic_input_gui("input shapefile", "shp", False)
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.SCALE_FACTOR_XY,
@@ -58,11 +60,11 @@ class Shp2Las(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         scale_factor_xy = self.parameterAsDouble(parameters, self.SCALE_FACTOR_XY, context)
         scale_factor_z = self.parameterAsInt(parameters, self.SCALE_FACTOR_Z, context)
@@ -70,9 +72,9 @@ class Shp2Las(LastoolsAlgorithm):
             commands.append("-set_scale")
             commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

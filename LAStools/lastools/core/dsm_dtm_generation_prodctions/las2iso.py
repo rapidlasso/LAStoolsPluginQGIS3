@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     las2iso.py
@@ -39,6 +40,7 @@ class Las2Iso(LastoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -90,11 +92,11 @@ class Las2Iso(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         smooth = self.parameterAsInt(parameters, self.SMOOTH, context)
         if smooth != 0:
@@ -115,9 +117,9 @@ class Las2Iso(LastoolsAlgorithm):
             commands.append("-simplify_area")
             commands.append(str(simplify_area))
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_vector_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

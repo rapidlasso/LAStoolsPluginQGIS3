@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     e572las.py
@@ -37,6 +38,8 @@ class e572las(LastoolsAlgorithm):
     SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
+        self.canGui = False
         self.add_parameters_generic_input_gui("Input ASCII file", "e57", False)
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -62,13 +65,12 @@ class e572las(LastoolsAlgorithm):
         )
         self.addParameter(QgsProcessingParameterBoolean(self.SPLIT, "split output files by scan", False))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
-
         scale_factor_xy = self.parameterAsDouble(parameters, self.SCALE_FACTOR_XY, context)
         scale_factor_z = self.parameterAsDouble(parameters, self.SCALE_FACTOR_Z, context)
         if scale_factor_xy != 0.001 or scale_factor_z != 0.001:
@@ -79,9 +81,9 @@ class e572las(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.SPLIT, context):
             commands.append("-split")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.addParameter(QgsProcessingParameterBoolean(self.VERBOSE, "verbose", False))
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

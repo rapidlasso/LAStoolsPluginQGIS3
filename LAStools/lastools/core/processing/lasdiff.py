@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasdiff.py
@@ -37,6 +38,8 @@ class LasDiff(LastoolsAlgorithm):
     SHUTUP_AFTER = ["5", "10", "50", "100", "1000", "10000", "50000"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
+        isFree = True
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("other input LAS/LAZ file", "laz", False)
         self.addParameter(
@@ -52,11 +55,11 @@ class LasDiff(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         shutup = self.parameterAsInt(parameters, self.SHUTUP, context)
@@ -64,10 +67,10 @@ class LasDiff(LastoolsAlgorithm):
             commands.append("-shutup")
             commands.append(self.SHUTUP_AFTER[shutup])
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.CREATE_DIFFERENCE_FILE, context):
             self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

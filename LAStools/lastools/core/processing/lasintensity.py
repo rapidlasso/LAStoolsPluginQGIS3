@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     las3dpoly.py
@@ -39,6 +40,7 @@ class LasIntensity(LastoolsAlgorithm):
     ADDITIONAL_PARAM = "ADDITIONAL_PARAM"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         # Scanner Height
         self.addParameter(
@@ -77,22 +79,19 @@ class LasIntensity(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        # calling the specific .exe files from source of software
-        commands = [
-            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
-        ]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         commands.append(f"-av {parameters['ATMOSPHERIC_VISIBILITY_RANGE']} ")
         commands.append(f"-w {parameters['LASER_WAVELENGTH']} ")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):
@@ -135,6 +134,7 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
     OUTPUT_LAS_PATH = "OUTPUT_LAS_PATH"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         # Scanner Height
         self.addParameter(
@@ -177,23 +177,20 @@ class LasIntensityAttenuationFactor(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        # calling the specific .exe files from source of software
-        commands = [
-            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
-        ]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append -scanner_height
         commands.append(f"-scanner_height {parameters['SCANNER_HEIGHT']}")
         # append -a
         commands.append(f"-a {parameters['ATTENUATION_COEFFICIENT']}")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):

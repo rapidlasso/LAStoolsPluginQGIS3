@@ -23,7 +23,10 @@ import inspect
 import os
 import sys
 
-from qgis.core import QgsApplication
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+)
 
 from .lastools_provider import LAStoolsProvider
 

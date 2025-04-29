@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasindex.py
@@ -35,7 +36,8 @@ class LasIndex(LastoolsAlgorithm):
     MOBILE_OR_TERRESTRIAL = "MOBILE_OR_TERRESTRIAL"
     APPEND_LAX = "APPEND_LAX"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(
@@ -44,10 +46,10 @@ class LasIndex(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.APPEND_LAX, context):
             commands.append("-append")
@@ -57,8 +59,8 @@ class LasIndex(LastoolsAlgorithm):
             commands.append("-maximum")
             commands.append("-100")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def createInstance(self):
@@ -98,7 +100,8 @@ class LasIndexPro(LastoolsAlgorithm):
     MOBILE_OR_TERRESTRIAL = "MOBILE_OR_TERRESTRIAL"
     APPEND_LAX = "APPEND_LAX"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(
@@ -108,10 +111,10 @@ class LasIndexPro(LastoolsAlgorithm):
         )
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.APPEND_LAX, context):
             commands.append("-append")
@@ -122,8 +125,8 @@ class LasIndexPro(LastoolsAlgorithm):
             commands.append("-100")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def createInstance(self):

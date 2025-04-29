@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasreturn.py
@@ -39,6 +40,7 @@ class LasReturn(LastoolsAlgorithm):
     SKIP_INCOMPLETE = "SKIP_INCOMPLETE"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
 
         self.addParameter(
@@ -53,10 +55,10 @@ class LasReturn(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.SKIP_INCOMPLETE, "skip incomplete returns", False))
         self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.CHECK_RETURN_NUMBERING, context):
             commands.append("-check_return_numbering")
@@ -67,9 +69,9 @@ class LasReturn(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.SKIP_INCOMPLETE, context):
             commands.append("-skip_incomplete")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -113,6 +115,7 @@ class LasReturnPro(LastoolsAlgorithm):
     SKIP_INCOMPLETE = "SKIP_INCOMPLETE"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterBoolean(self.CHECK_RETURN_NUMBERING, "print histogram about returns", False)
@@ -126,13 +129,13 @@ class LasReturnPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.SKIP_INCOMPLETE, "skip incomplete returns", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.CHECK_RETURN_NUMBERING, context):
             commands.append("-check_return_numbering")
@@ -145,7 +148,7 @@ class LasReturnPro(LastoolsAlgorithm):
         self.add_parameters_output_directory_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

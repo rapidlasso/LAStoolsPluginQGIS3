@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     self.py
@@ -52,7 +53,10 @@ class LasCopy(LastoolsAlgorithm):
     UNMATCHED = "UNMATCHED"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
+        self.canCpu64 = False # 32 bit version is not compatible to the arguments: supress 32 bit
         self.add_parameters_point_input_gui()
+        self.add_parameters_generic_input_gui("other input LAS/LAZ file", "laz", False)
         self.addParameter(QgsProcessingParameterBoolean(self.MATCH_GPS_TIME, "match by gps time (default)", True))
         self.addParameter(
             QgsProcessingParameterBoolean(self.MATCH_RETURN_NUMBER, "match by number of return (default)", True)
@@ -96,13 +100,13 @@ class LasCopy(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.ZERO, "zero target if not found in source", False))
         self.addParameter(QgsProcessingParameterBoolean(self.UNMATCHED, "copy attributes by point order", False))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
-
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         if self.parameterAsBool(parameters, self.MATCH_GPS_TIME, context):
             commands.append("-match_gps_time")
         if self.parameterAsBool(parameters, self.MATCH_RETURN_NUMBER, context):
@@ -136,9 +140,9 @@ class LasCopy(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.UNMATCHED, context):
             commands.append("-unmatched")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

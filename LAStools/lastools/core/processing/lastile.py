@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lastile.py
@@ -38,6 +39,7 @@ class LasTile(LastoolsAlgorithm):
     FLAG_AS_WITHHELD = "FLAG_AS_WITHHELD"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -66,11 +68,11 @@ class LasTile(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         tile_size = self.parameterAsInt(parameters, self.TILE_SIZE, context)
         commands.append("-tile_size")
@@ -84,9 +86,9 @@ class LasTile(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.REVERSIBLE, context):
             commands.append("-reversible")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -130,6 +132,7 @@ class LasTilePro(LastoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_files_are_flightlines_gui()
         self.add_parameters_apply_file_source_id_gui()
@@ -167,13 +170,13 @@ class LasTilePro(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         self.add_parameters_apply_file_source_id_commands(parameters, context, commands)
@@ -194,10 +197,10 @@ class LasTilePro(LastoolsAlgorithm):
             commands.append("-o")
             commands.append('"' + base_name + '"')
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_point_output_format_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

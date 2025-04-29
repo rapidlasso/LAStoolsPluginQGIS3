@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     utils.py
@@ -21,81 +22,83 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 
 import os
 import subprocess
-from pathlib import Path
-
+from qgis.core import (
+    Qgis,
+    QgsMessageLog,
+)  
+from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
 
-
 class LastoolsUtils:
     @staticmethod
-    def validate_config_paths():
-        wine_path, lastools_path = LastoolsUtils.lastools_path()
-        if not lastools_path.exists():
-            return False
-        if not isWindows():
-            if wine_path is None or wine_path == Path(""):
-                return False
-            if not wine_path.exists():
-                return False
-        return True
+    def isDebug():
+        return False # todo: always set to False prio delivery
+
+    @staticmethod
+    def log(str_out):
+        # output-message, output-window, messagetype
+        QgsMessageLog.logMessage(str_out, "LAStools", Qgis.Info)
+
+    @staticmethod
+    def debug(str_out):
+        if LastoolsUtils.isDebug():
+            LastoolsUtils.log(str_out)
+
+    @staticmethod
+    def wine_folder():
+        val = ProcessingConfig.getSetting("WINE_FOLDER")
+        return "" if val is None else val
 
     @staticmethod
     def has_wine():
-        wine_folder = ProcessingConfig.getSetting("WINE_FOLDER")
-        return (wine_folder is not None) and (wine_folder != "")
-
-    @staticmethod
-    def command_ext():
-        if LastoolsUtils.has_wine() or isWindows():
-            return ".exe"
-        else:
-            return ""
-
-    @staticmethod
-    def lastools_windows_path():
-        lastools_folder = Path(ProcessingConfig.getSetting("LASTOOLS_FOLDER"))
-        return (None, lastools_folder)
-
-    @staticmethod
-    def lastools_linux_path():
-        lastools_folder = Path(ProcessingConfig.getSetting("LASTOOLS_FOLDER"))
-        wine_setting = ProcessingConfig.getSetting("WINE_FOLDER")
-
-        if wine_setting is None or wine_setting == "":
-            return (None, lastools_folder)
-
-        wine_folder = Path(wine_setting)
-        return (wine_folder, lastools_folder)
+        return LastoolsUtils.wine_folder() != ""
 
     @staticmethod
     def lastools_path():
-        if isWindows():
-            return LastoolsUtils.lastools_windows_path()
+        val = ProcessingConfig.getSetting("LASTOOLS_FOLDER")
+        if val is None:
+            return ""
         else:
-            return LastoolsUtils.lastools_linux_path()
+            # remove trailing path delimiter if present 
+            val = os.path.normpath(val) 
+            # if no "bin" ending: add
+            if not val.endswith("bin"):
+                # LastoolsUtils.log(f"LAStools directory [{ltp}] adjusted.")
+                val = os.path.join(val, "bin")
+            return val
+
+    @staticmethod
+    def lastools_check_path():
+        # check config path on plugin load and report problems to the main notification
+        err = ""
+        ltp = LastoolsUtils.lastools_path()
+        LastoolsUtils.debug(f"path={ltp}")
+        if ltp == "":
+            err = "No LAStools directory configured."
+        if not os.path.isdir(ltp):
+            err = f"LAStools directory [{ltp}] not found."
+        # report
+        if err != "":
+            # show in main window message bar
+            iface.messageBar().pushMessage("Error", ": " + err + " Please check LAStool plugin configuration.", level=Qgis.Critical)            
+        return
 
     @staticmethod
     def execute_command(commandline: str):
-        output = subprocess.Popen(
+        sub = subprocess.Popen(
             commandline,
             shell=True,
             stdout=subprocess.PIPE,
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=False,
-        ).communicate()[0]
+        )
+        output = sub.communicate()[0]
+        sub.kill()
+        out = ""
         if isWindows():
-            return output.decode("cp850", errors="replace")
-        return output.decode("utf-8", errors="replace")
-
-    @staticmethod
-    def run_lastools(commands, feedback):
-        if ("-gui" in commands) and ("-cpu64" in commands):
-            feedback.reportError("Parameters '64 bit' and 'open LAStools GUI' can't be combined")
-        commandline = " ".join(commands)
-        feedback.pushConsoleInfo("LAStools command line")
-        feedback.pushConsoleInfo(commandline)
-        feedback.pushConsoleInfo("LAStools console output")
-        output = LastoolsUtils.execute_command(commandline)
-        feedback.pushConsoleInfo(output)
+            out = output.decode("cp850", errors="replace")
+        else:
+            out = output.decode("utf-8", errors="replace")
+        return sub.returncode, out

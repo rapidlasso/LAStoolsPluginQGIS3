@@ -22,6 +22,7 @@ __copyright__ = "(c) 2025, rapidlasso GmbH"
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
+from .lastools.core.utils import LastoolsUtils
 
 from .lastools.core.classification_filtering import (
     LasClassify,
@@ -144,6 +145,7 @@ class LAStoolsProvider(QgsProcessingProvider):
         )
         ProcessingConfig.addSetting(Setting(self.name(), "WINE_FOLDER", "Wine folder", "", valuetype=Setting.FOLDER))
         ProcessingConfig.readSettings()
+        LastoolsUtils.lastools_check_path()
         self.refreshAlgorithms()
         return True
 

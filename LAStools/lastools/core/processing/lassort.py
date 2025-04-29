@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lassortpy
@@ -36,18 +37,19 @@ class LasSort(LastoolsAlgorithm):
     BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
-    def initAlgorithm(self, config):
-        self.add_parameters_verbose_gui_64()
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.BY_GPS_TIME, "sort by GPS time", False))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_RETURN_NUMBER, "sort by return number", False))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_POINT_SOURCE_ID, "sort by point source ID", False))
-        self.add_parameters_point_output_gui()
         self.add_parameters_additional_gui()
+        self.add_parameters_verbose_64_gui()
+        self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.BY_GPS_TIME, context):
             commands.append("-gps_time")
@@ -57,9 +59,7 @@ class LasSort(LastoolsAlgorithm):
             commands.append("-point_source")
         self.add_parameters_point_output_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
-
-        LastoolsUtils.run_lastools(commands, feedback)
-
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def name(self):
@@ -100,25 +100,27 @@ class LasSortPro(LastoolsAlgorithm):
     BY_RETURN_NUMBER = "BY_RETURN_NUMBER"
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.BY_GPS_TIME, "sort by GPS time", False))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_RETURN_NUMBER, "sort by return number", False))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_POINT_SOURCE_ID, "sort by point source ID", False))
-        self.add_parameters_output_directory_gui()
-        self.add_parameters_output_appendix_gui()
-        self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
+        self.add_parameters_output_appendix_gui()
+        self.add_parameters_point_output_format_gui()
+        self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.BY_GPS_TIME, context):
             commands.append("-gps_time")
         if self.parameterAsBool(parameters, self.BY_RETURN_NUMBER, context):
+
             commands.append("-return_number")
         if self.parameterAsBool(parameters, self.BY_POINT_SOURCE_ID, context):
             commands.append("-point_source")
@@ -127,7 +129,7 @@ class LasSortPro(LastoolsAlgorithm):
         self.add_parameters_point_output_format_commands(parameters, context, commands)
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def name(self):

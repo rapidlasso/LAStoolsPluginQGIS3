@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasoverage.py
@@ -37,6 +38,7 @@ class LasOverage(LastoolsAlgorithm):
     OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.add_parameters_horizontal_feet_gui()
         self.add_parameters_files_are_flightlines_gui()
@@ -52,11 +54,11 @@ class LasOverage(LastoolsAlgorithm):
         )
         self.addParameter(QgsProcessingParameterEnum(self.OPERATION, "mode of operation", self.OPERATIONS, False, 0))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_horizontal_feet_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
@@ -70,9 +72,9 @@ class LasOverage(LastoolsAlgorithm):
         elif operation == 2:
             commands.append("-remove_overage")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -114,6 +116,7 @@ class LasOveragePro(LastoolsAlgorithm):
     OPERATIONS = ["classify as overlap", "flag as withheld", "remove from output"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_horizontal_feet_gui()
         self.add_parameters_files_are_flightlines_gui()
@@ -130,17 +133,18 @@ class LasOveragePro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.OPERATION, "mode of operation", self.OPERATIONS, False, 0))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_horizontal_feet_commands(parameters, context, commands)
         self.add_parameters_files_are_flightlines_commands(parameters, context, commands)
         step = self.parameterAsDouble(parameters, self.CHECK_STEP, context)
+# -*- coding: utf-8 -*-
         if step != 1.0:
             commands.append("-step")
             commands.append(str(step))
@@ -151,11 +155,11 @@ class LasOveragePro(LastoolsAlgorithm):
             commands.append("-remove_overage")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_point_output_format_commands(parameters, context, commands)
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

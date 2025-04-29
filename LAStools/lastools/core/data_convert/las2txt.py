@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     las2txt.py
@@ -36,15 +37,16 @@ class Las2txt(LastoolsAlgorithm):
     COLDESC = "COLDESC"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterString(self.PARSE, "parse string", "xyz"))
         self.addParameter(QgsProcessingParameterBoolean(self.COLDESC, "write column description"))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_generic_output_gui("Output ASCII file", "txt", False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, self.PARSE, context)
         if parse != "xyz":
@@ -53,9 +55,9 @@ class Las2txt(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.COLDESC, context):
             commands.append("-coldesc")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -96,17 +98,18 @@ class Las2txtPro(LastoolsAlgorithm):
     COLDESC = "COLDESC"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(QgsProcessingParameterString(self.PARSE, "parse string", "xyz"))
         self.addParameter(QgsProcessingParameterBoolean(self.COLDESC, "write column description"))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         parse = self.parameterAsString(parameters, self.PARSE, context)
         if parse != "xyz":
@@ -117,10 +120,10 @@ class Las2txtPro(LastoolsAlgorithm):
         commands.append("-otxt")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

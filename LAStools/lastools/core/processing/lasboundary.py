@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasboundary.py
@@ -44,6 +45,7 @@ class LasBoundary(LastoolsAlgorithm):
     LABELS = "LABELS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.addParameter(QgsProcessingParameterEnum(self.MODE, "compute boundary based on", self.MODES, False, 0))
@@ -56,11 +58,11 @@ class LasBoundary(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.DISJOINT, "disjoint polygon", False))
         self.addParameter(QgsProcessingParameterBoolean(self.LABELS, "produce labels", False))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_vector_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, self.MODE, context)
@@ -82,9 +84,9 @@ class LasBoundary(LastoolsAlgorithm):
             if self.parameterAsBool(parameters, self.LABELS, context):
                 commands.append("-labels")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_vector_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):
@@ -129,6 +131,7 @@ class LasBoundaryPro(LastoolsAlgorithm):
     LABELS = "LABELS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.add_parameters_filter1_return_class_flags_gui()
         self.addParameter(QgsProcessingParameterEnum(self.MODE, "compute boundary based on", self.MODES, False, 0))
@@ -142,13 +145,13 @@ class LasBoundaryPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.LABELS, "produce labels", False))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_vector_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         self.add_parameters_filter1_return_class_flags_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, self.MODE, context)
@@ -171,11 +174,11 @@ class LasBoundaryPro(LastoolsAlgorithm):
                 commands.append("-labels")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_vector_output_format_commands(parameters, context, commands)
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):

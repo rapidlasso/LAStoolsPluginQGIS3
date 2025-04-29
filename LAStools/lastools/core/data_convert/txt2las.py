@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     txt2las.py
@@ -42,6 +43,7 @@ class Txt2Las(LastoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_generic_input_gui("Input ASCII file", "txt", False)
         self.addParameter(QgsProcessingParameterString(self.PARSE, "parse lines as", "xyz"))
         self.addParameter(
@@ -74,11 +76,11 @@ class Txt2Las(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.UTM, "utm zone", self.UTM_ZONES, False, 0))
         self.addParameter(QgsProcessingParameterEnum(self.SP, "state plane code", self.STATE_PLANES, False, 0))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_generic_input_commands(parameters, context, commands, "-i")
         parse_string = self.parameterAsString(parameters, self.PARSE, context)
         if parse_string != "xyz":
@@ -118,9 +120,9 @@ class Txt2Las(LastoolsAlgorithm):
             else:
                 commands.append("-" + self.PROJECTIONS[projection])
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -168,6 +170,7 @@ class Txt2LasPro(LastoolsAlgorithm):
     SP = "SP"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_generic_input_folder_gui("*.txt")
         self.addParameter(QgsProcessingParameterString(self.PARSE, "parse lines as", "xyz"))
         self.addParameter(
@@ -203,13 +206,13 @@ class Txt2LasPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.SP, "state plane code", self.STATE_PLANES, False, 0))
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         # TODO: check the output and use f string
         self.add_parameters_generic_input_folder_commands(parameters, context, commands)
         parse_string = self.parameterAsString(parameters, self.PARSE, context)
@@ -251,11 +254,11 @@ class Txt2LasPro(LastoolsAlgorithm):
                 commands.append("-" + self.PROJECTIONS[projection])
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_output_appendix_commands(parameters, context, commands)
         self.add_parameters_point_output_format_commands(parameters, context, commands)
         self.add_parameters_output_directory_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

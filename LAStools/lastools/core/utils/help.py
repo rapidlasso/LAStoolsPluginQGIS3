@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 descriptions of all the lastools
 """

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasvalidate.py
@@ -37,25 +38,20 @@ class LasValidate(LastoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterBoolean(self.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
         self.add_parameters_generic_output_gui("Output XML file", "xml", True)
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [
-            os.path.join(
-                LastoolsUtils.lastools_path(),
-                "bin",
-                self.LASTOOL + LastoolsUtils.command_ext(),  # no64bit: self.cpu64(parameters, context) +
-            )
-        ]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.ONE_REPORT_PER_FILE, context):
             commands.append("-oxml")
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -95,6 +91,7 @@ class LasValidatePro(LastoolsAlgorithm):
     ONE_REPORT_PER_FILE = "ONE_REPORT_PER_FILE"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterBoolean(LasValidatePro.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False)
@@ -103,13 +100,13 @@ class LasValidatePro(LastoolsAlgorithm):
         self.add_parameters_additional_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, LasValidatePro.ONE_REPORT_PER_FILE, context):
             commands.append("-oxml")
         self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

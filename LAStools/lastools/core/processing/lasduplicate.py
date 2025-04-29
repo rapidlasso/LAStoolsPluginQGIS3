@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasduplicate.py
@@ -40,7 +41,8 @@ class LasDuplicate(LastoolsAlgorithm):
     NEARBY_TOLERANCE = "NEARBY_TOLERANCE"
     RECORD_REMOVED = "RECORD_REMOVED"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterBoolean(self.LOWEST_Z, "keep duplicate with lowest z coordinate", False)
@@ -68,12 +70,12 @@ class LasDuplicate(LastoolsAlgorithm):
         self.addParameter(
             QgsProcessingParameterBoolean(self.RECORD_REMOVED, "record removed duplicates to LAS/LAZ file", False)
         )
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.LOWEST_Z, context):
             commands.append("-lowest_z")
@@ -90,8 +92,8 @@ class LasDuplicate(LastoolsAlgorithm):
             commands.append("-record_removed")
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
+        self.run_lastools(commands, feedback)
         return {"": None}
 
     def createInstance(self):
@@ -136,7 +138,8 @@ class LasDuplicatePro(LastoolsAlgorithm):
     NEARBY_TOLERANCE = "NEARBY_TOLERANCE"
     RECORD_REMOVED = "RECORD_REMOVED"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterBoolean(self.LOWEST_Z, "keep duplicate with lowest z coordinate", False)
@@ -169,11 +172,11 @@ class LasDuplicatePro(LastoolsAlgorithm):
         self.add_parameters_point_output_format_gui()
         self.add_parameters_additional_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         if self.parameterAsBool(parameters, self.LOWEST_Z, context):
             commands.append("-lowest_z")
@@ -194,7 +197,7 @@ class LasDuplicatePro(LastoolsAlgorithm):
         self.add_parameters_additional_commands(parameters, context, commands)
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         return {"": None}
 

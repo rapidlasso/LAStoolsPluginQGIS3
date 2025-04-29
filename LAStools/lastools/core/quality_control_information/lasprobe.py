@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     self.py
@@ -39,6 +40,7 @@ class LasProbe(LastoolsAlgorithm):
     ARGXYZ = "ARGXYZ"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -56,11 +58,11 @@ class LasProbe(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.ARGXYZ, "output xyz value", False))
         self.add_parameters_generic_output_gui("Result file", "txt", True)
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         # xy pos
         commands.append(f"-probe {parameters['ARGPROBEX']} {parameters['ARGPROBEY']}")
@@ -69,10 +71,10 @@ class LasProbe(LastoolsAlgorithm):
         if self.parameterAsBool(parameters, self.ARGXYZ, context):
             commands.append("-xyz")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         if self.parameterAsString(parameters, self.OUTPUT_GENERIC, context):
             self.add_parameters_generic_output_commands(parameters, context, commands, "-o")
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

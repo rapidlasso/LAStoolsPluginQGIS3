@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasdistance.py
@@ -31,7 +32,6 @@ from qgis.PyQt.QtGui import QIcon
 
 from ..algo import LastoolsAlgorithm
 from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
-
 
 class LasDistance(LastoolsAlgorithm):
     TOOL_NAME = "LasDistance"
@@ -68,21 +68,11 @@ class LasDistance(LastoolsAlgorithm):
     FLAG_AS_KEYPOINT = "FLAG_AS_KEYPOINT"
     FLAG_AS_SYNTHETIC = "FLAG_AS_SYNTHETIC"
     ADDITIONAL_PARAM = "ADDITIONAL_PARAM"
-    INPUT_POLYLINE_PATH = "INPUT_POLYLINE_PATH"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.INPUT_POLYLINE_PATH,
-                "Input polyline(s)/polygons SHP/CSV file",
-                QgsProcessingParameterFile.File,
-                "",
-                None,
-                False,
-                None,
-            )
-        )
+        self.add_parameters_generic_input_gui("input polyline(s)/polygons", "shp", False)
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.DISTANCE_XY,
@@ -135,15 +125,14 @@ class LasDistance(LastoolsAlgorithm):
         self.addParameter(csv_sep_param)
         #
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        # calling the specific .exe files from source of software
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append poly
-        commands.append(f"-poly {parameters['INPUT_POLYLINE_PATH']}")
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
         # append -distance
         commands.append(f"-distance_xy {parameters['DISTANCE_XY']}")
         # append -classify_as
@@ -163,9 +152,9 @@ class LasDistance(LastoolsAlgorithm):
             commands.append(f"-sep {self.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}")
         #
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):

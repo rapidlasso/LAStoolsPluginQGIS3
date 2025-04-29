@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     flightlines2mergedchm.py
@@ -39,6 +40,7 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
     TERRAINS = ["archaeology", "wilderness", "nature", "town", "city", "metro"]
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -73,7 +75,7 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_raster_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # needed for thinning and killing
@@ -81,7 +83,7 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
 
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToMergedCHMFirstReturn.TILE_SIZE, context)
@@ -95,11 +97,11 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("tile.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*.laz")
         method = self.parameterAsInt(parameters, FlightLinesToMergedCHMFirstReturn.TERRAIN, context)
         if method != 2:
@@ -116,11 +118,11 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_g.laz")
         commands.append("-replace_z")
         self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
@@ -129,11 +131,11 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the height-normalized tiles into trivial zero-level DTMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         commands.append("-keep_class")
         commands.append("2")
@@ -148,11 +150,11 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into first-return CHMs (with kill)
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         commands.append("-keep_first")
         self.add_parameters_step_commands(parameters, context, commands)
@@ -167,17 +169,17 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we combine the zero-level DTMs and the first-return CHMs into a single output CHM
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasgrid")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile_*.bil")
         commands.append("-merged")
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-highest")
         self.add_parameters_raster_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -220,7 +222,8 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
     TERRAINS = ["archaeology", "wilderness", "nature", "town", "city", "metro"]
     BEAM_WIDTH = "BEAM_WIDTH"
 
-    def initAlgorithm(self, config):
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -265,7 +268,7 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_raster_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # needed for thinning and killing
@@ -273,7 +276,7 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
 
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToMergedCHMHighestReturn.TILE_SIZE, context)
@@ -287,11 +290,11 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("tile.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*.laz")
         method = self.parameterAsInt(parameters, FlightLinesToMergedCHMHighestReturn.TERRAIN, context)
         if method != 2:
@@ -308,11 +311,11 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_g.laz")
         commands.append("-replace_z")
         self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
@@ -321,11 +324,11 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         beam_width = self.parameterAsDouble(parameters, FlightLinesToMergedCHMHighestReturn.BEAM_WIDTH, context)
         if beam_width != 0.0:
@@ -340,11 +343,11 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the height-normalized tiles into trivial zero-level DTMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         commands.append("-keep_class")
         commands.append("2")
@@ -359,11 +362,11 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into highest-return CHMs (with kill)
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-kill")
@@ -377,17 +380,17 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we combine the zero-level DTMs and the highest-return CHMs into a single output CHM
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasgrid")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile_*.bil")
         commands.append("-merged")
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-highest")
         self.add_parameters_raster_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -431,6 +434,7 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
     BEAM_WIDTH = "BEAM_WIDTH"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -471,7 +475,7 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_raster_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # needed for thinning and killing
@@ -479,7 +483,7 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
 
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToMergedCHMPitFree.TILE_SIZE, context)
@@ -493,11 +497,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("tile.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*.laz")
         method = self.parameterAsInt(parameters, FlightLinesToMergedCHMPitFree.TERRAIN, context)
         if method != 2:
@@ -514,11 +518,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_g.laz")
         commands.append("-replace_z")
         self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
@@ -527,11 +531,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         beam_width = self.parameterAsDouble(parameters, FlightLinesToMergedCHMPitFree.BEAM_WIDTH, context)
         if beam_width != 0.0:
@@ -546,11 +550,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the height-normalized tiles into trivial zero-level DTMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         commands.append("-keep_class")
         commands.append("2")
@@ -565,11 +569,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 00
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-kill")
@@ -583,11 +587,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 02
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
         commands.append("2.0")
@@ -603,11 +607,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 05
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
         commands.append("5.0")
@@ -623,12 +627,12 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 10
 
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
         commands.append("10.0")
@@ -644,12 +648,12 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 15
 
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
         commands.append("15.0")
@@ -665,11 +669,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 20
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
         commands.append("20.0")
@@ -685,11 +689,11 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into the partial CHMs at level 25
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
         commands.append("25.0")
@@ -705,17 +709,17 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we combine the partial CHMs into a single output CHM
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasgrid")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile_*.bil")
         commands.append("-merged")
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-highest")
         self.add_parameters_raster_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -760,6 +764,7 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
     FREEZE_VALUE = "FREEZE_VALUE"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -815,7 +820,7 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         self.add_parameters_temporary_directory_gui()
         self.add_parameters_raster_output_gui()
         self.add_parameters_cores_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
         # needed for thinning and killing
@@ -823,7 +828,7 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
 
         # first we tile the data
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
         tile_size = self.parameterAsDouble(parameters, FlightLinesToMergedCHMSpikeFree.TILE_SIZE, context)
@@ -837,11 +842,11 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         commands.append("-o")
         commands.append("tile.laz")
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*.laz")
         method = self.parameterAsInt(parameters, FlightLinesToMergedCHMSpikeFree.TERRAIN, context)
         if method != 2:
@@ -858,11 +863,11 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we height-normalize the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_g.laz")
         commands.append("-replace_z")
         self.add_parameters_temporary_directory_as_output_directory_commands(parameters, context, commands)
@@ -871,11 +876,11 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we thin and splat the tiles
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         beam_width = self.parameterAsDouble(parameters, FlightLinesToMergedCHMSpikeFree.BEAM_WIDTH, context)
         if beam_width != 0.0:
@@ -890,11 +895,11 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         commands.append("-olaz")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the height-normalized tiles into trivial zero-level DTMs
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_gh.laz")
         commands.append("-keep_class")
         commands.append("2")
@@ -909,11 +914,11 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into spike-free CHMs (with kill)
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile*_ght.laz")
         self.add_parameters_step_commands(parameters, context, commands)
         freeze_value = self.parameterAsDouble(parameters, FlightLinesToMergedCHMSpikeFree.FREEZE_VALUE, context)
@@ -933,17 +938,17 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         commands.append("-obil")
         self.add_parameters_cores_commands(parameters, context, commands)
 
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
 
         # then we combine the zero-level DTMs and the spike-free CHMs into a single output CHM
         commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasgrid")]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(parameters, context, commands, "tile_*.bil")
         commands.append("-merged")
         self.add_parameters_step_commands(parameters, context, commands)
         commands.append("-highest")
         self.add_parameters_raster_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

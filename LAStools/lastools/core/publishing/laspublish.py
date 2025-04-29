@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     self.py
@@ -48,6 +49,7 @@ class LasPublish(LastoolsAlgorithm):
     PORTAL_DESCRIPTION = "PORTAL_DESCRIPTION"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.addParameter(QgsProcessingParameterEnum(self.MODE, "type of portal", self.MODES, False, 1))
         self.addParameter(QgsProcessingParameterBoolean(self.USE_EDL, "use Eye Dome Lighting (EDL)", True))
@@ -69,12 +71,12 @@ class LasPublish(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(self.PORTAL_DESCRIPTION, "portal description", ""))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, self.MODE, context)
         if mode == 0:
@@ -110,7 +112,7 @@ class LasPublish(LastoolsAlgorithm):
             commands.append('"' + description + '"')
         commands.append("-olaz")
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
@@ -163,6 +165,7 @@ class LasPublishPro(LastoolsAlgorithm):
     PORTAL_DESCRIPTION = "PORTAL_DESCRIPTION"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_folder_gui()
         self.addParameter(
             QgsProcessingParameterEnum(LasPublishPro.MODE, "type of portal", LasPublishPro.MODES, False, 1)
@@ -192,12 +195,12 @@ class LasPublishPro(LastoolsAlgorithm):
         self.addParameter(QgsProcessingParameterString(LasPublishPro.PORTAL_TITLE, "portal title", "My LiDAR Portal"))
         self.addParameter(QgsProcessingParameterString(LasPublishPro.PORTAL_DESCRIPTION, "portal description", ""))
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_directory_gui(optional_value=False)
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
-        self.add_parameters_verbose_gui_commands(parameters, context, commands)
+        commands = [self.get_command(parameters, context, feedback)]
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         mode = self.parameterAsInt(parameters, LasPublishPro.MODE, context)
         if mode == 0:
@@ -233,7 +236,7 @@ class LasPublishPro(LastoolsAlgorithm):
             commands.append('"' + description + '"')
         commands.append("-olaz")
         self.add_parameters_additional_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):

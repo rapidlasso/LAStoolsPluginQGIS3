@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     las3dpoly.py
@@ -69,21 +70,11 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
     FLAG_AS_KEYPOINT = "FLAG_AS_KEYPOINT"
     FLAG_AS_SYNTHETIC = "FLAG_AS_SYNTHETIC"
     ADDITIONAL_PARAM = "ADDITIONAL_PARAM"
-    INPUT_POLYLINE_PATH = "INPUT_POLYLINE_PATH"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.INPUT_POLYLINE_PATH,
-                "Input polyline(s)/polygons SHP/CSV file",
-                QgsProcessingParameterFile.File,
-                "",
-                None,
-                False,
-                None,
-            )
-        )
+        self.add_parameters_generic_input_gui("input polyline(s)/polygons", "shp", False)
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.DISTANCE_RADIAL,
@@ -103,25 +94,18 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
             False,
             0,
         )
-        classify_as_param.setFlags(classify_as_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(classify_as_param)
         # remove point
         remove_point_param = QgsProcessingParameterBoolean(self.REMOVE_POINT, "Remove Point", False)
-        remove_point_param.setFlags(remove_point_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(remove_point_param)
         # flag as withheld
         flag_as_withheld_param = QgsProcessingParameterBoolean(self.FLAG_AS_WITHHELD, "Flag as Withheld", False)
-        flag_as_withheld_param.setFlags(flag_as_withheld_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(flag_as_withheld_param)
         # flag as keypoint
         flag_as_keypoint_param = QgsProcessingParameterBoolean(self.FLAG_AS_KEYPOINT, "Flag as Keypoint", False)
-        flag_as_keypoint_param.setFlags(flag_as_keypoint_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(flag_as_keypoint_param)
         # flag as synthetic
         flag_as_synthetic_param = QgsProcessingParameterBoolean(self.FLAG_AS_SYNTHETIC, "Flag as Synthetic", False)
-        flag_as_synthetic_param.setFlags(
-            flag_as_synthetic_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced
-        )
         self.addParameter(flag_as_synthetic_param)
         # csv options
         csv_sep_param = QgsProcessingParameterEnum(
@@ -132,21 +116,17 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
             0,
         )
         # sep
-        csv_sep_param.setFlags(csv_sep_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(csv_sep_param)
         #
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        # calling the specific .exe files from source of software
-        commands = [
-            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
-        ]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         # append poly
-        commands.append(f"-poly {parameters['INPUT_POLYLINE_PATH']}")
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
         # append -distance
         commands.append(f"-distance {parameters['DISTANCE_RADIAL']}")
         # append -classify_as
@@ -166,9 +146,9 @@ class Las3dPolyRadialDistance(LastoolsAlgorithm):
             commands.append(f"-sep {self.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}")
         #
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):
@@ -235,25 +215,15 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
     FLAG_AS_KEYPOINT = "FLAG_AS_KEYPOINT"
     FLAG_AS_SYNTHETIC = "FLAG_AS_SYNTHETIC"
     ADDITIONAL_PARAM = "ADDITIONAL_PARAM"
-    INPUT_POLYLINE_PATH = "INPUT_POLYLINE_PATH"
     OUTPUT_LAS_PATH = "OUTPUT_LAS_PATH"
     VERBOSE = "VERBOSE"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         # input las file
         self.add_parameters_point_input_gui()
         # input shp
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.INPUT_POLYLINE_PATH,
-                "input polyline(s)/polygons SHP/CSV file",
-                QgsProcessingParameterFile.File,
-                "",
-                None,
-                False,
-                None,
-            )
-        )
+        self.add_parameters_generic_input_gui("input polyline(s)/polygons", "shp", False)
         # horizontal and vertical distance
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -277,7 +247,6 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
                 10000,
             )
         )
-        # advance tools
         # classify_as
         classify_as_param = QgsProcessingParameterEnum(
             self.CLASSIFY_AS["name"],
@@ -286,25 +255,18 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
             False,
             0,
         )
-        classify_as_param.setFlags(classify_as_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(classify_as_param)
         # remove point
         remove_point_param = QgsProcessingParameterBoolean(self.REMOVE_POINT, "remove point", False)
-        remove_point_param.setFlags(remove_point_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(remove_point_param)
         # flag as withheld
         flag_as_withheld_param = QgsProcessingParameterBoolean(self.FLAG_AS_WITHHELD, "flag as withheld", False)
-        flag_as_withheld_param.setFlags(flag_as_withheld_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(flag_as_withheld_param)
         # flag as keypoint
         flag_as_keypoint_param = QgsProcessingParameterBoolean(self.FLAG_AS_KEYPOINT, "flag as keypoint", False)
-        flag_as_keypoint_param.setFlags(flag_as_keypoint_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(flag_as_keypoint_param)
         # flag as synthetic
         flag_as_synthetic_param = QgsProcessingParameterBoolean(self.FLAG_AS_SYNTHETIC, "flag as synthetic", False)
-        flag_as_synthetic_param.setFlags(
-            flag_as_synthetic_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced
-        )
         self.addParameter(flag_as_synthetic_param)
         # csv options
         csv_sep_param = QgsProcessingParameterEnum(
@@ -314,26 +276,19 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
             False,
             0,
         )
-        csv_sep_param.setFlags(csv_sep_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(csv_sep_param)
         #
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_output_appendix_gui()
         self.add_parameters_point_output_format_gui()
         self.add_parameters_output_directory_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        # calling the specific .exe files from source of software
-        commands = [
-            os.path.join(LastoolsUtils.lastools_path(), "bin", self.LASTOOL + "64" + LastoolsUtils.command_ext())
-        ]
-        # append -i
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
-        # append -i
-        commands.append(f"-i {parameters['INPUT_LASLAZ']}")
         # append poly
-        commands.append(f"-poly {parameters['INPUT_POLYLINE_PATH']}")
+        self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
         # append -distance
         commands.append(f"-distance {parameters['DISTANCE_VERTICAL']} {parameters['DISTANCE_HORIZONTAL']}")
         # append -classify_as
@@ -352,9 +307,9 @@ class Las3dPolyHorizontalVerticalDistance(LastoolsAlgorithm):
         if parameters["CSV_SEPARATOR"] != 0:
             commands.append(f"-sep {self.CSV_SEPARATOR['options'][parameters['CSV_SEPARATOR']]}")
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"command": commands}
 
     def createInstance(self):

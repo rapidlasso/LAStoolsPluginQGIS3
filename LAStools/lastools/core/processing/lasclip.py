@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ***************************************************************************
     lasclip.py
@@ -42,6 +43,7 @@ class LasClip(LastoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
         self.add_parameters_point_input_gui()
         self.add_parameters_generic_input_gui("input polygon(s)", "shp", False)
         self.addParameter(QgsProcessingParameterBoolean(self.INTERIOR, "interior", False))
@@ -54,11 +56,11 @@ class LasClip(LastoolsAlgorithm):
             )
         )
         self.add_parameters_additional_gui()
-        self.add_parameters_verbose_gui_64()
+        self.add_parameters_verbose_64_gui()
         self.add_parameters_point_output_gui()
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = [self.get_command(parameters, context)]
+        commands = [self.get_command(parameters, context, feedback)]
         self.add_parameters_point_input_commands(parameters, context, commands)
         self.add_parameters_generic_input_commands(parameters, context, commands, "-poly")
         if self.parameterAsBool(parameters, self.INTERIOR, context):
@@ -69,9 +71,9 @@ class LasClip(LastoolsAlgorithm):
             classify_as = self.parameterAsInt(parameters, self.CLASSIFY_AS, context)
             commands.append(str(classify_as))
         self.add_parameters_additional_commands(parameters, context, commands)
-        self.add_parameters_verbose_gui_64_commands(parameters, context, commands)
+        self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_output_commands(parameters, context, commands)
-        LastoolsUtils.run_lastools(commands, feedback)
+        self.run_lastools(commands, feedback)
         return {"commands": commands}
 
     def createInstance(self):
