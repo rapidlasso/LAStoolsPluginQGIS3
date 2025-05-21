@@ -153,11 +153,11 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
 
     def run_lastools(self, commands, feedback):
         # add path to command
-        commands[0] = os.path.join(LastoolsUtils.lastools_path(),commands[0])
+        commands[0] = self.pathwrap(os.path.join(LastoolsUtils.lastools_path(),commands[0]))
         # add optional wine
         if not isWindows() and LastoolsUtils.has_wine():
-            wine_path = os.path.join(LastoolsUtils.wine_folder(),"wine")
-            commands.insert(0,os.path.join(wine_path,"wine"))
+            command_prefix = self.pathwrap(LastoolsUtils.wine_folder())
+            commands.insert(0,command_prefix)
         #
         if ("-gui" in commands) and (self.isCpu64):
             feedback.reportError("GUI not available at 64 bit")

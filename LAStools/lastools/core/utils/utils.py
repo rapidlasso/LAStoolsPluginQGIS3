@@ -25,7 +25,7 @@ import subprocess
 from qgis.core import (
     Qgis,
     QgsMessageLog,
-)  
+)
 from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows
