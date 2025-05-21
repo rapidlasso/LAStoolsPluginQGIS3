@@ -27,6 +27,9 @@ about=
 
 
 changelog=
+    2.3.1:
+    - allow spaces in LAStools path settings
+    - allow general command prefix in wine settings
     2.3.0: redesign of general functions and behaviour
     - LAStools configuration checking on plugin load
     - utf8/codepage support for filenames and log output
