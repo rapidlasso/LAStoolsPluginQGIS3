@@ -144,16 +144,16 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         # report missing executeable
         if not self.has32 and not self.has64:
             feedback.reportError(f"Executeable {las_command} not found. Check configuration.")
-        # check for license file - if no license at all: run in demo mode. otherwise fail if license is overdue
-        isDemo = not os.path.isfile(os.path.join(LastoolsUtils.lastools_path(),"lastoolslicense.txt"))
-        if isDemo and (self.LICENSE == "c") and self.isCpu64:
-            feedback.pushWarning("No license file found. Run in demo mode.")
-            las_command = f"{las_command} -demo"
         return las_command
 
     def run_lastools(self, commands, feedback):
         # add path to command
         commands[0] = self.pathwrap(os.path.join(LastoolsUtils.lastools_path(),commands[0]))
+        # check for license file - if no license at all: run in demo mode. otherwise fail if license is overdue
+        isDemo = not os.path.isfile(os.path.join(LastoolsUtils.lastools_path(),"lastoolslicense.txt"))
+        if isDemo and (self.LICENSE == "c") and self.isCpu64:
+            feedback.pushWarning("No license file found. Run in demo mode.")
+            commands.insert(1,"-demo")
         # add optional wine
         if not isWindows() and LastoolsUtils.has_wine():
             command_prefix = self.pathwrap(LastoolsUtils.wine_folder())
