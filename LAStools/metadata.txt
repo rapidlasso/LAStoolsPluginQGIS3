@@ -2,7 +2,7 @@
 name=LAStools
 qgisMinimumVersion=3.2
 description=batch-scriptable, multicore command-line tools for processing point clouds in LAS, LAZ, and ASCII formats
-version=2.3.1
+version=2.3.2
 author=rapidlasso GmbH
 email=info@rapidlasso.de
 icon=lastools/assets/img/lastools.png
@@ -27,6 +27,8 @@ about=
 
 
 changelog=
+    2.3.2:
+    - fix "-demo" injection
     2.3.1:
     - allow spaces in LAStools path settings
     - allow general command prefix in wine settings
