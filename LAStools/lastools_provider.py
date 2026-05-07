@@ -33,6 +33,8 @@ from .lastools.core.classification_filtering import (
     LasGroundProNew,
     LasThin,
     LasThinPro,
+    LasThin3d,
+    LasThin3dPro,
 )
 from .lastools.core.data_compression import LasZip, LasZipPro
 from .lastools.core.data_convert import (
@@ -57,6 +59,8 @@ from .lastools.core.dsm_dtm_generation_prodctions import (
     Blast2IsoPro,
     Las2Dem,
     Las2DemPro,
+    Las2DemNew,
+    Las2DemNewPro,
     Las2Iso,
     LasCanopy,
     LasCanopyPro,
@@ -226,6 +230,8 @@ class LAStoolsProvider(QgsProcessingProvider):
             LasClassifyPro(),
             LasThin(),
             LasThinPro(),
+            LasThin3d(),
+            LasThin3dPro(),
         ]
         self.algos.extend(classification_filtering_algorithms)
 
@@ -238,6 +244,8 @@ class LAStoolsProvider(QgsProcessingProvider):
         dsm_dtm_generation_productions_algorithms = [
             Las2Dem(),
             Las2DemPro(),
+            Las2DemNew(),
+            Las2DemNewPro(),
             Las2Iso(),
             LasPlanes(),
             LasGrid(),

@@ -198,7 +198,7 @@ class FlightLinesToMergedCHMFirstReturn(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("las2dem")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
@@ -409,7 +409,7 @@ class FlightLinesToMergedCHMHighestReturn(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("las2dem")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
@@ -738,7 +738,7 @@ class FlightLinesToMergedCHMPitFree(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("las2dem")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
@@ -967,7 +967,7 @@ class FlightLinesToMergedCHMSpikeFree(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("las2dem")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)

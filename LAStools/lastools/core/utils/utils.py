@@ -86,19 +86,18 @@ class LastoolsUtils:
 
     @staticmethod
     def execute_command(commandline: str):
-        sub = subprocess.Popen(
+        with subprocess.Popen(
             commandline,
-            shell=True,
+            shell=False,
             stdout=subprocess.PIPE,
-            stdin=open(os.devnull),
+            stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
-            universal_newlines=False,
-        )
-        output = sub.communicate()[0]
-        sub.kill()
-        out = ""
-        if isWindows():
-            out = output.decode("cp850", errors="replace")
-        else:
-            out = output.decode("utf-8", errors="replace")
-        return sub.returncode, out
+            universal_newlines=False, ) as sub:
+          output = sub.communicate()[0]
+          out = ""
+          if isWindows():
+              out = output.decode("cp850", errors="replace")
+          else:
+              out = output.decode("utf-8", errors="replace")
+          returncode = sub.returncode
+        return returncode, out

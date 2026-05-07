@@ -178,7 +178,7 @@ class HugeFileClassify(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("lastile")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
@@ -314,7 +314,7 @@ class HugeFileGroundClassify(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("lastile")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
@@ -463,7 +463,7 @@ class HugeFileNormalize(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("lastile")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)

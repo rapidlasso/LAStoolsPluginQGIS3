@@ -196,7 +196,7 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("las2dem")
 
     def shortHelpString(self):
         return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
@@ -388,10 +388,10 @@ class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url(self.LASTOOL)
+        return readme_url("las2dem")
 
     def shortHelpString(self):
-        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
+        return lastool_info[self.TOOL_NAME]["help"] # + help_string_help(self.LASTOOL, self.LICENSE)
 
     def shortDescription(self):
         return lastool_info[self.TOOL_NAME]["desc"]
