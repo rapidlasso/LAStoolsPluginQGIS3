@@ -26,13 +26,13 @@ from qgis.core import QgsProcessingParameterEnum, QgsProcessingParameterNumber, 
 from qgis.PyQt.QtGui import QIcon
 
 from ..algo import LastoolsAlgorithm
-from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
+from ..utils import LastoolsUtils, help_string_pipeline, lasgroup_info, lastool_info, licence, paths, readme_url
 
 
 class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
     TOOL_NAME = "FlightLinesToCHMFirstReturn"
     LASTOOL = "flightlines2chm"
-    LICENSE = "c"
+    LICENSE = "f"
     LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
@@ -84,7 +84,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # first we tile the data
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lastile64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
@@ -105,7 +105,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasground64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*.laz"
@@ -128,7 +128,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we height-normalize the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasheight64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -143,7 +143,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into CHMs
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem_new64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_gh.laz"
@@ -176,10 +176,10 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url("las2dem")
+        return readme_url("las2dem_new")
 
     def shortHelpString(self):
-        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_pipeline()
 
     def shortDescription(self):
         return lastool_info[self.TOOL_NAME]["desc"]
@@ -192,7 +192,7 @@ class FlightLinesToCHMFirstReturn(LastoolsAlgorithm):
 class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
     TOOL_NAME = "FlightLinesToCHMHighestReturn"
     LASTOOL = "flightlines2chm"
-    LICENSE = "c"
+    LICENSE = "f"
     LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
@@ -255,7 +255,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # first we tile the data
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lastile64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
@@ -277,7 +277,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasground64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*.laz"
@@ -300,7 +300,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we height-normalize the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasheight64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -315,7 +315,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we thin and splat the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasthin64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_gh.laz"
@@ -337,7 +337,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we rasterize the normalized tiles into CHMs
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_ght.laz"
@@ -372,10 +372,10 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url("las2dem")
+        return readme_url("las2dem_new")
 
     def shortHelpString(self):
-        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_pipeline()
 
     def shortDescription(self):
         return lastool_info[self.TOOL_NAME]["desc"]
@@ -388,7 +388,7 @@ class FlightLinesToCHMHighestReturn(LastoolsAlgorithm):
 class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
     TOOL_NAME = "FlightLinesToCHMSpikeFree"
     LASTOOL = "flightlines2chm"
-    LICENSE = "c"
+    LICENSE = "f"
     LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
@@ -467,7 +467,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
         # first we tile the data
 
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lastile64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
@@ -489,7 +489,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasground64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*.laz"
@@ -513,7 +513,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
         # then we height-normalize the tiles
 
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasheight" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasheight64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -528,7 +528,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we thin and splat the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasthin" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasthin64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_gh.laz"
@@ -550,7 +550,7 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
 
         # then we rasterize the normalized tiles into CHMs
 
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem_new64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_ght.laz"
@@ -591,10 +591,10 @@ class FlightLinesToCHMSpikeFree(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url("las2dem")
+        return readme_url("las2dem_new")
 
     def shortHelpString(self):
-        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_pipeline()
 
     def shortDescription(self):
         return lastool_info[self.TOOL_NAME]["desc"]

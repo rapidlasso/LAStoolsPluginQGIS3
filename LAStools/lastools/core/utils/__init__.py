@@ -2,7 +2,7 @@
 defining all the classes and objects
 """
 
-from .help import help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
+from .help import help_string_help, help_string_pipeline, lasgroup_info, lastool_info, licence, paths, readme_url
 from .utils import LastoolsUtils
 
 __all__ = [
@@ -12,5 +12,6 @@ __all__ = [
     lasgroup_info,
     licence,
     help_string_help,
+    help_string_pipeline,
     readme_url,
 ]

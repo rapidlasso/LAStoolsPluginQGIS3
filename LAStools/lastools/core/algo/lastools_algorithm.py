@@ -79,6 +79,8 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
     LASTOOL = "generic"
     LICENSE = "o"
     LASGROUP = 1
+    
+    output_dir_temp = ""
 
     def __init__(self):
         super().__init__()
@@ -471,14 +473,13 @@ class LastoolsAlgorithm(QgsProcessingAlgorithm):
         output_dir = self.parameterAsString(parameters, self.TEMPORARY_DIRECTORY, context)
         if output_dir != "":
             commands.append("-odir")
-            output_dir = output_dir.removesuffix(self.OUTPUT_DIRECTORY) # may added on temp dir, remove now!
+            output_dir = output_dir.removesuffix(self.TEMPORARY_DIRECTORY) # may added on temp dir, remove now!
             commands.append(self.pathwrap(output_dir))
+        self.output_dir_temp = output_dir
 
     def add_parameters_temporary_directory_as_input_files_commands(self, parameters, context, commands, files):
-        temp_output = self.parameterAsString(parameters, self.TEMPORARY_DIRECTORY, context)
-        if temp_output != "":
-            commands.append("-i")
-            commands.append(os.path.join(self.pathwrap(temp_output), files))
+        commands.append("-i")
+        commands.append(os.path.join(self.pathwrap(self.output_dir_temp), files))
 
     def add_parameters_additional_gui(self):
         self.addParameter(

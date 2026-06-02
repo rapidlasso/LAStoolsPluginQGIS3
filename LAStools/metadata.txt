@@ -1,8 +1,9 @@
 [general]
 name=LAStools
 qgisMinimumVersion=3.2
+qgisMaximumVersion=4.99
 description=batch-scriptable, multicore command-line tools for processing point clouds in LAS, LAZ, and ASCII formats
-version=2.3.3
+version=2.4.0
 author=rapidlasso GmbH
 email=info@rapidlasso.de
 icon=lastools/assets/img/lastools.png
@@ -27,6 +28,8 @@ about=
 
 
 changelog=
+    2.4.0:
+    - QGIS 4 support; pipeline + doc fixes and updates
     2.3.3:
     - add new tools lasthin3d and las2dem_new
     - update doc/help

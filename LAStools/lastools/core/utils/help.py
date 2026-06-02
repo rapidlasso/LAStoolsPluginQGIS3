@@ -43,6 +43,8 @@ def readme_url(lastool):
 def readme_link(lastool):
     return f"<a href={readme_url(lastool)}>README file</a>"
 
+def readme_lastool(lastool):
+    return f"<a href={readme_url(lastool)}>{lastool}</a>"
 
 # general help text below every individual tool help
 def help_string_help(lastool, lic):
@@ -57,6 +59,18 @@ def help_string_help(lastool, lic):
       <img source="file:///{paths['img']}{licence[lic]['path']}" width="16" height="16"> {licence[lic]["descript"]}
       """
 
+# general help text below the samples and pipeline tools
+def help_string_pipeline():
+    return f"""
+      <h3>Help</h3>
+      This example demonstrates a coordinated sequence of multiple tools.
+      This is just a very general guide how the individual tools can be linked within a workflow. 
+      To achieve the best results, we recommend first performing each step individually and only then integrating them into your own workflow.
+      See the help of the individual tools of the pipeline to get detail informations about available arguments.
+      <h3>Links</h3>
+      See <a href="https://rapidlasso.de">rapidlasso webpage</a> for further informations.
+      See the <a href="https://rapidlasso.de/lastools-as-qgis-plugin">LAStools QGIS page</a> for informations about this plugin.
+      """
 
 # groups
 lasgroup_info = {
@@ -1661,86 +1675,158 @@ create ONE textfile with all LAZ file header information.
     },
     "FlightLinesToCHMFirstReturn": {
         "disp": "Flightlines to CHM - first return",
-        "help": """
-                    Create a canopy height model with first return only
+        "help": rf"""
+                    Create a canopy height model with first return only.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("las2dem_new")}
                 """,
         "desc": "Create a canopy height model with first return only",
     },
     "FlightLinesToCHMHighestReturn": {
         "disp": "Flightlines to CHM - highest return",
-        "help": """
-                    Create a canopy height model with highest return only
+        "help": rf"""
+                    Create a canopy height model with highest return only.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("lasthin")}
+                      {readme_lastool("las2dem_new")}
                 """,
         "desc": "Create a canopy height model with highest return only",
     },
     "FlightLinesToCHMSpikeFree": {
         "disp": "Flightlines to CHM - spike free",
-        "help": """
-                    Create a canopy height model with spike free option
+        "help": rf"""
+                    Create a canopy height model with spike free option.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("lasthin")}
+                      {readme_lastool("las2dem_new")}
                 """,
         "desc": "Create a canopy height model with spike free option",
     },
     "FlightLinesToDTMandDSMFirstReturn": {
         "disp": "FlightLines to DTM & DSM - first return",
-        "help": """
-                     Create a digital terrain model and digital surface model out of lidar data files using the first return only
+        "help": rf"""
+                     Create a digital terrain model and digital surface model out of lidar data files using the first return only.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("las2dem_new")} (ground only)
+                      {readme_lastool("las2dem_new")} (first return only)
                 """,
         "desc": "Create a digital terrain model and digital surface model out of lidar data files using the first return only",
     },
     "FlightLinesToDTMandDSMSpikeFree": {
         "disp": "FlightLines to DTM & DSM - spike free",
-        "help": """
-                    Create a digital terrain model and digital surface model with spike free option
+        "help": rf"""
+                    Create a digital terrain model and digital surface model with spike free option.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("las2dem_new")} (ground only)
+                      {readme_lastool("las2dem_new")} (first return only)
                 """,
         "desc": "Create a digital terrain model and digital surface model with spike free option",
     },
     "FlightLinesToMergedCHMFirstReturn": {
         "disp": "FlightLines to merged CHM - first return",
-        "help": """
-                    Create a merged canopy height model out of lidar data files using the first return only
+        "help": rf"""
+                    Create a merged canopy height model out of lidar data files using the first return only.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("las2dem_new")} (ground only)
+                      {readme_lastool("las2dem_new")} (include first return)
+                      {readme_lastool("lasgrid")} (combine both)
                 """,
         "desc": "Create a merged canopy height model out of lidar data files using the first return only",
     },
     "FlightLinesToMergedCHMHighestReturn": {
         "disp": "FlightLines to merged CHM - highest return",
-        "help": """
-                    Create a merged canopy height model out of lidar data files with highest return
+        "help": rf"""
+                    Create a merged canopy height model out of lidar data files with highest return.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("lasthin")}
+                      {readme_lastool("las2dem_new")} (ground only)
+                      {readme_lastool("las2dem_new")} (several levels)
+                      {readme_lastool("lasgrid (combine all)")}
                 """,
         "desc": "Create a merged canopy height model out of lidar data files with highest return",
     },
     "FlightLinesToMergedCHMPitFree": {
         "disp": "FlightLines to merged CHM - pit free",
-        "help": """
-                    Create a pit free merged canopy height model out of lidar data files
+        "help": rf"""
+                    Create a pit free merged canopy height model out of lidar data files.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("lasthin")}
+                      {readme_lastool("las2dem_new")} (ground only)
+                      {readme_lastool("las2dem_new")} (several levels)
+                      {readme_lastool("lasgrid")} (combine all)
                 """,
         "desc": "Create a pit free merged canopy height model out of lidar data files",
     },
     "FlightLinesToMergedCHMSpikeFree": {
         "disp": "FlightLines to merged CHM - spike free",
-        "help": """
-                    Create a canopy height model out of lidar data files which are optional in flightlines
+        "help": rf"""
+                    Create a spike free canopy height model out of lidar data files which are optional in flightlines.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("las2dem_new")} (ground only)
+                      {readme_lastool("las2dem_new")} (include first return)
+                      {readme_lastool("lasgrid")} (combine both)
                 """,
         "desc": "Create a canopy height model out of lidar data files which are optional in flightlines",
     },
     "HugeFileClassify": {
         "disp": "Huge file - classify",
-        "help": """
-                    Do a classification for huge lidar data files
+        "help": rf"""
+                    Do a classification for huge lidar data files.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lasheight")}
+                      {readme_lastool("lasclassify")}
+                      {readme_lastool("lastile")} (reverse tiling)
                 """,
         "desc": "Do a classification for huge lidar data files",
     },
     "HugeFileGroundClassify": {
         "disp": "Huge file - ground classify",
-        "help": """
-                    Do a ground classification for huge lidar data files
+        "help": rf"""
+                    Do a ground classification for huge lidar data files.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lastile")} (reverse tiling)
                 """,
         "desc": "Do a ground classification for huge lidar data files",
     },
     "HugeFileNormalize": {
         "disp": "Huge file - normalize",
-        "help": """
-                    Normalize huge lidar data files
+        "help": rf"""
+                    Normalize huge lidar data files.
+                    Steps:
+                      {readme_lastool("lastile")}
+                      {readme_lastool("lasground_new")}
+                      {readme_lastool("lastile")} (reverse tiling)
                 """,
-        "desc": "Normalize huge lidar data files",
+        "desc": "Normalize huge lidar data files"
     },
 }

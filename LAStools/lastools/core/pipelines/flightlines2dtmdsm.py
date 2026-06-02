@@ -26,13 +26,13 @@ from qgis.core import QgsProcessingParameterEnum, QgsProcessingParameterNumber, 
 from qgis.PyQt.QtGui import QIcon
 
 from ..algo import LastoolsAlgorithm
-from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info, licence, paths, readme_url
+from ..utils import LastoolsUtils, help_string_pipeline, lasgroup_info, lastool_info, licence, paths, readme_url
 
 
 class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
     TOOL_NAME = "FlightLinesToDTMandDSMFirstReturn"
     LASTOOL = "flightlines2dtmdsm"
-    LICENSE = "c"
+    LICENSE = "f"
     LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
@@ -93,7 +93,7 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
 
         # first we tile the data
 
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lastile64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
@@ -115,7 +115,7 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasground64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*.laz"
@@ -138,7 +138,7 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we rasterize the classified tiles into DTMs
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem_new64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -160,7 +160,7 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we rasterize the classified tiles into first return DSMs
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem_new64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -196,10 +196,10 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url("las2dem")
+        return readme_url("las2dem_new")
 
     def shortHelpString(self):
-        return lastool_info[self.TOOL_NAME]["help"] + help_string_help(self.LASTOOL, self.LICENSE)
+        return lastool_info[self.TOOL_NAME]["help"] + help_string_pipeline()
 
     def shortDescription(self):
         return lastool_info[self.TOOL_NAME]["desc"]
@@ -212,7 +212,7 @@ class FlightLinesToDTMandDSMFirstReturn(LastoolsAlgorithm):
 class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
     TOOL_NAME = "FlightLinesToDTMandDSMSpikeFree"
     LASTOOL = "flightlines2dtmdsm"
-    LICENSE = "c"
+    LICENSE = "f"
     LASGROUP = 9
     TILE_SIZE = "TILE_SIZE"
     BUFFER = "BUFFER"
@@ -282,7 +282,7 @@ class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
         step = self.get_parameters_step_value(parameters, context)
 
         # first we tile the data
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lastile" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lastile64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_point_input_folder_commands(parameters, context, commands)
         commands.append("-files_are_flightlines")
@@ -304,7 +304,7 @@ class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we ground classify the tiles
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "lasground" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "lasground64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*.laz"
@@ -327,7 +327,7 @@ class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we rasterize the classified tiles into DTMs
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem_new64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -349,7 +349,7 @@ class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
         self.run_lastools(commands, feedback)
 
         # then we rasterize the classified tiles into spike-free DSMs
-        commands = [os.path.join(LastoolsUtils.lastools_path(), "bin", "las2dem" + LastoolsUtils.command_ext())]
+        commands = [os.path.join(LastoolsUtils.lastools_path(), "las2dem_new64")]
         self.add_parameters_verbose_64_gui_commands(parameters, context, commands)
         self.add_parameters_temporary_directory_as_input_files_commands(
             parameters, context, commands, base_name + "*_g.laz"
@@ -388,10 +388,10 @@ class FlightLinesToDTMandDSMSpikeFree(LastoolsAlgorithm):
         return lasgroup_info[self.LASGROUP]["group_id"]
 
     def helpUrl(self):
-        return readme_url("las2dem")
+        return readme_url("las2dem_new")
 
     def shortHelpString(self):
-        return lastool_info[self.TOOL_NAME]["help"] # + help_string_help(self.LASTOOL, self.LICENSE)
+        return lastool_info[self.TOOL_NAME]["help"] # + help_string_pipeline()
 
     def shortDescription(self):
         return lastool_info[self.TOOL_NAME]["desc"]

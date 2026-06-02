@@ -93,11 +93,11 @@ class LastoolsUtils:
             stdin=subprocess.DEVNULL,
             stderr=subprocess.STDOUT,
             universal_newlines=False, ) as sub:
-          output = sub.communicate()[0]
-          out = ""
-          if isWindows():
-              out = output.decode("cp850", errors="replace")
-          else:
-              out = output.decode("utf-8", errors="replace")
-          returncode = sub.returncode
+            output = sub.communicate()[0]
+            out = ""
+            if isWindows():
+                out = output.decode("cp850", errors="replace")
+            else:
+                out = output.decode("utf-8", errors="replace")
+            returncode = sub.returncode
         return returncode, out

@@ -31,7 +31,7 @@ from ..utils import LastoolsUtils, help_string_help, lasgroup_info, lastool_info
 class e572las(LastoolsAlgorithm):
     TOOL_NAME = "e572las"
     LASTOOL = "e572las"
-    LICENSE = "f"
+    LICENSE = "o"
     LASGROUP = 2
     SPLIT = "split"
     SCALE_FACTOR_XY = "SCALE_FACTOR_XY"
